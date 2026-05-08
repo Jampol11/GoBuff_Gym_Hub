@@ -1,0 +1,25 @@
+# Credentials — never commit these
+config/mail.php
+config/database.php
+
+# Composer
+/vendor/
+
+# Uploads (user files)
+/public/assets/uploads/*
+!/public/assets/uploads/campaigns/.gitkeep
+!/public/assets/uploads/members/.gitkeep
+
+# Logs & backups
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/backups/*
+!/storage/backups/.gitkeep
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/

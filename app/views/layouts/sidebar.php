@@ -1,0 +1,212 @@
+<?php $user = auth_user(); $role = auth_role(); ?>
+<nav class="sidebar" id="sidebar">
+    <!-- Brand -->
+    <div class="sidebar-brand">
+        <div class="brand-logo">
+            <i class="bi bi-lightning-charge-fill"></i>
+        </div>
+        <div class="brand-text">
+            <span class="brand-name">GoBuff</span>
+            <span class="brand-sub">Gym Hub</span>
+        </div>
+        <button class="sidebar-toggle-btn d-lg-none" id="sidebarClose">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+
+    <!-- User Info -->
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="user-info">
+            <span class="user-name"><?= e($user['name'] ?? 'User') ?></span>
+            <span class="user-role"><?= role_label($role ?? '') ?></span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <ul class="sidebar-nav">
+        <li class="nav-label">Main</li>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/dashboard') ?>" class="nav-link <?= is_active('/dashboard') ?>">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <?php if (has_role(['gym_owner','admin','trainer'])): ?>
+        <li class="nav-item">
+            <a href="<?= base_url('/members') ?>" class="nav-link <?= is_active('/members') ?>">
+                <i class="bi bi-people-fill"></i>
+                <span>Members</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <?php if (has_role(['gym_owner','admin'])): ?>
+        <li class="nav-item">
+            <a href="<?= base_url('/memberships') ?>" class="nav-link <?= is_active('/memberships') ?>">
+                <i class="bi bi-card-checklist"></i>
+                <span>Memberships</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/checkins') ?>" class="nav-link <?= is_active('/checkins') ?>">
+                <i class="bi bi-door-open-fill"></i>
+                <span>Check-Ins</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/bookings') ?>" class="nav-link <?= is_active('/bookings') ?>">
+                <i class="bi bi-calendar-check-fill"></i>
+                <span>Bookings</span>
+            </a>
+        </li>
+
+        <li class="nav-label">Fitness</li>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/trainers') ?>" class="nav-link <?= is_active('/trainers') ?>">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>Trainers</span>
+            </a>
+        </li>
+
+        <?php if (has_role(['gym_owner','admin','trainer'])): ?>
+        <li class="nav-item">
+            <a href="<?= base_url('/trainers/fitness-plans') ?>" class="nav-link <?= is_active('/trainers/fitness-plans') ?>">
+                <i class="bi bi-clipboard2-pulse-fill"></i>
+                <span>Fitness Plans</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/trainers/nutrition-plans') ?>" class="nav-link <?= is_active('/trainers/nutrition-plans') ?>">
+                <i class="bi bi-egg-fried"></i>
+                <span>Nutrition Plans</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/trainers/progress') ?>" class="nav-link <?= is_active('/trainers/progress') ?>">
+                <i class="bi bi-graph-up-arrow"></i>
+                <span>Progress Tracking</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/diet') ?>" class="nav-link <?= is_active('/diet') ?>">
+                <i class="bi bi-journal-medical"></i>
+                <span>Dietary Log</span>
+            </a>
+        </li>
+
+        <li class="nav-label">Operations</li>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/equipment') ?>" class="nav-link <?= is_active('/equipment') ?>">
+                <i class="bi bi-tools"></i>
+                <span>Equipment</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/maintenance') ?>" class="nav-link <?= is_active('/maintenance') ?>">
+                <i class="bi bi-wrench-adjustable-circle-fill"></i>
+                <span>Maintenance</span>
+            </a>
+        </li>
+
+        <?php if (has_role(['gym_owner','admin'])): ?>
+        <li class="nav-item">
+            <a href="<?= base_url('/attendance') ?>" class="nav-link <?= is_active('/attendance') ?>">
+                <i class="bi bi-clock-history"></i>
+                <span>Attendance</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <?php if (has_role(['gym_owner','admin','marketing'])): ?>
+        <li class="nav-label">Marketing</li>
+        <li class="nav-item">
+            <a href="<?= base_url('/campaigns') ?>" class="nav-link <?= is_active('/campaigns') ?>">
+                <i class="bi bi-megaphone-fill"></i>
+                <span>Campaigns</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <?php if (has_role(['gym_owner'])): ?>
+        <li class="nav-label">Owner Hub</li>
+        <li class="nav-item">
+            <a href="<?= base_url('/owner') ?>" class="nav-link <?= is_active('/owner') ?>">
+                <i class="bi bi-building-fill-gear"></i>
+                <span>Owner Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/owner/documents') ?>" class="nav-link <?= is_active('/owner/documents') ?>">
+                <i class="bi bi-file-earmark-lock2-fill"></i>
+                <span>Legal Documents</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/owner/budgets') ?>" class="nav-link <?= is_active('/owner/budgets') ?>">
+                <i class="bi bi-wallet2"></i>
+                <span>Budget Plans</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/owner/expenses') ?>" class="nav-link <?= is_active('/owner/expenses') ?>">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span>Expenses</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <li class="nav-label">System</li>
+
+        <?php if (has_role(['gym_owner','admin'])): ?>
+        <li class="nav-item">
+            <a href="<?= base_url('/admin/users') ?>" class="nav-link <?= is_active('/admin/users') ?>">
+                <i class="bi bi-person-gear"></i>
+                <span>User Management</span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/notifications') ?>" class="nav-link <?= is_active('/notifications') ?>">
+                <i class="bi bi-bell-fill"></i>
+                <span>Notifications</span>
+                <?php
+                $notifModel = new Notification();
+                $unread = $notifModel->getUnreadCount(auth_id() ?? 0);
+                if ($unread > 0): ?>
+                    <span class="badge bg-danger ms-auto"><?= $unread ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/change-password') ?>" class="nav-link <?= is_active('/change-password') ?>">
+                <i class="bi bi-shield-lock-fill"></i>
+                <span>Change Password</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="<?= base_url('/logout') ?>" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

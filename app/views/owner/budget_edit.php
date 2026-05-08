@@ -1,0 +1,169 @@
+<div class="container-fluid py-4">
+    <div class="page-header mb-4">
+        <div>
+            <h2 class="page-title"><i class="bi bi-pencil me-2"></i>Edit Budget Plan</h2>
+            <p class="page-subtitle"><?= e($plan['title']) ?></p>
+        </div>
+        <div class="page-actions">
+            <a href="<?= base_url('/owner/budgets/' . $plan['id']) ?>" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form method="POST" action="<?= base_url('/owner/budgets/' . $plan['id'] . '/update') ?>" id="budgetForm">
+                        <?= csrf_field() ?>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Budget Title <span class="text-danger">*</span></label>
+                                <input type="text" name="title" class="form-control" required maxlength="255"
+                                       value="<?= e($_POST['title'] ?? $plan['title']) ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Fiscal Year <span class="text-danger">*</span></label>
+                                <input type="number" name="fiscal_year" class="form-control" required
+                                       min="2020" max="2099" value="<?= e($_POST['fiscal_year'] ?? $plan['fiscal_year']) ?>">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Period</label>
+                                <select name="period" class="form-select">
+                                    <?php foreach (['monthly' => 'Monthly', 'quarterly' => 'Quarterly', 'semi_annual' => 'Semi-Annual', 'annual' => 'Annual'] as $val => $label): ?>
+                                    <option value="<?= $val ?>" <?= ($plan['period'] === $val) ? 'selected' : '' ?>><?= $label ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Period Label</label>
+                                <input type="text" name="period_label" class="form-control"
+                                       value="<?= e($_POST['period_label'] ?? $plan['period_label'] ?? '') ?>">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Total Budget</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₱</span>
+                                <input type="number" name="total_budget" class="form-control" step="0.01" min="0"
+                                       value="<?= e($_POST['total_budget'] ?? $plan['total_budget']) ?>" id="totalBudget" readonly>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Notes</label>
+                            <textarea name="notes" class="form-control" rows="2"><?= e($_POST['notes'] ?? $plan['notes'] ?? '') ?></textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Budget Line Items</h5>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addBudgetItem()">
+                                <i class="bi bi-plus-lg me-1"></i>Add Item
+                            </button>
+                        </div>
+
+                        <div id="budgetItems">
+                            <?php if (!empty($plan['items'])): ?>
+                                <?php foreach ($plan['items'] as $item): ?>
+                                <div class="row g-2 mb-2 budget-item">
+                                    <div class="col-md-3">
+                                        <input type="text" name="item_category[]" class="form-control" placeholder="Category" required value="<?= e($item['category']) ?>">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" name="item_description[]" class="form-control" placeholder="Description" required value="<?= e($item['description']) ?>">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="number" name="item_amount[]" class="form-control item-amount" placeholder="Amount" step="0.01" min="0" value="<?= $item['allocated'] ?>" onchange="calculateTotal()">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeItem(this)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                            <div class="row g-2 mb-2 budget-item">
+                                <div class="col-md-3">
+                                    <input type="text" name="item_category[]" class="form-control" placeholder="Category" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="item_description[]" class="form-control" placeholder="Description" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" name="item_amount[]" class="form-control item-amount" placeholder="Amount" step="0.01" min="0" value="0" onchange="calculateTotal()">
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-outline-danger w-100" onclick="removeItem(this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mt-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-1"></i>Save Changes
+                            </button>
+                            <a href="<?= base_url('/owner/budgets/' . $plan['id']) ?>" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function addBudgetItem() {
+    const container = document.getElementById('budgetItems');
+    const item = document.createElement('div');
+    item.className = 'row g-2 mb-2 budget-item';
+    item.innerHTML = `
+        <div class="col-md-3">
+            <input type="text" name="item_category[]" class="form-control" placeholder="Category" required>
+        </div>
+        <div class="col-md-6">
+            <input type="text" name="item_description[]" class="form-control" placeholder="Description" required>
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="item_amount[]" class="form-control item-amount" placeholder="Amount" step="0.01" min="0" value="0" onchange="calculateTotal()">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-outline-danger w-100" onclick="removeItem(this)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    `;
+    container.appendChild(item);
+}
+
+function removeItem(btn) {
+    const items = document.querySelectorAll('.budget-item');
+    if (items.length > 1) {
+        btn.closest('.budget-item').remove();
+        calculateTotal();
+    }
+}
+
+function calculateTotal() {
+    const amounts = document.querySelectorAll('.item-amount');
+    let total = 0;
+    amounts.forEach(input => {
+        total += parseFloat(input.value) || 0;
+    });
+    document.getElementById('totalBudget').value = total.toFixed(2);
+}
+
+// Calculate on load
+document.addEventListener('DOMContentLoaded', calculateTotal);
+</script>
