@@ -47,6 +47,7 @@
                                     'trainer'     => ['icon' => 'person-badge-fill',       'color' => 'success',   'desc' => 'Fitness plans & bookings'],
                                     'maintenance' => ['icon' => 'wrench-adjustable-circle-fill', 'color' => 'warning', 'desc' => 'Equipment & maintenance'],
                                     'member'      => ['icon' => 'person-fill',             'color' => 'secondary', 'desc' => 'Gym member access'],
+                                    'user'        => ['icon' => 'person-dash-fill',        'color' => 'dark',      'desc' => 'Pending role assignment'],
                                 ];
                                 foreach ($roles as $roleKey => $roleInfo):
                                     // Only gym_owner can see the gym_owner option
@@ -175,6 +176,7 @@
                                         'trainer'     => 'Manage fitness plans, nutrition plans, bookings, and progress tracking.',
                                         'maintenance' => 'Report and resolve equipment maintenance issues.',
                                         'member'      => 'View dashboard, check-in, book trainers, log diet, and view own plans.',
+                                        'user'        => 'Newly registered user. Must apply for a role to access features.',
                                     ];
                                     echo $perms[$roleKey];
                                     ?>
@@ -264,6 +266,7 @@ const roleNotes = {
     trainer:     'ℹ️ Trainer can manage fitness/nutrition plans and view assigned members.',
     maintenance: 'ℹ️ Maintenance Supervisor can report and resolve equipment issues.',
     member:      'ℹ️ Member has limited access: dashboard, check-in, bookings, diet log, and own plans.',
+    user:        'ℹ️ User has no role yet. They must apply for a role through the Role Application system.',
 };
 
 document.querySelectorAll('input[name="role"]').forEach(radio => {

@@ -26,7 +26,8 @@ INSERT INTO `roles` (`name`, `label`) VALUES
   ('marketing',   'Marketing Officer'),
   ('trainer',     'Fitness Trainer'),
   ('maintenance', 'Maintenance Supervisor'),
-  ('member',      'Member');
+  ('member',      'Member'),
+  ('user',        'User');
 
 -- ── Users ────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS `users` (
@@ -35,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email`      VARCHAR(150) NOT NULL UNIQUE,
   `username`   VARCHAR(80)  NOT NULL UNIQUE,
   `password`   VARCHAR(255) NOT NULL,
-  `role`       ENUM('gym_owner','admin','marketing','trainer','maintenance','member') NOT NULL DEFAULT 'member',
+  `role`       ENUM('gym_owner','admin','marketing','trainer','maintenance','member','user') NOT NULL DEFAULT 'user',
   `status`     ENUM('active','inactive','suspended') NOT NULL DEFAULT 'active',
   `last_login` DATETIME,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -355,6 +356,24 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
   INDEX `idx_user_id`(`user_id`),
   INDEX `idx_is_read`(`is_read`)
+) ENGINE=InnoDB;
+
+-- ── Role Applications ────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS `role_applications` (
+  `id`             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `user_id`        INT UNSIGNED NOT NULL,
+  `requested_role` ENUM('admin','marketing','trainer','maintenance','member') NOT NULL,
+  `reason`         TEXT,
+  `status`         ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `reviewed_by`    INT UNSIGNED NULL,
+  `reviewed_at`    DATETIME NULL,
+  `review_notes`   TEXT NULL,
+  `created_at`     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`user_id`)     REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`reviewed_by`) REFERENCES `users`(`id`) ON DELETE SET NULL,
+  INDEX `idx_ra_user_id` (`user_id`),
+  INDEX `idx_ra_status`  (`status`)
 ) ENGINE=InnoDB;
 
 SET FOREIGN_KEY_CHECKS = 1;

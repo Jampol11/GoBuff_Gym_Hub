@@ -159,23 +159,12 @@ class AuthController extends Controller
             'email'    => $data['email'],
             'username' => $data['username'],
             'password' => $data['password'],
-            'role'     => 'member',
+            'role'     => 'user',
             'status'   => 'active',
         ]);
 
         if ($userId) {
-            // Create member record
-            $memberModel = new Member();
-            $memberModel->insert([
-                'user_id'       => $userId,
-                'first_name'    => explode(' ', $data['name'])[0],
-                'last_name'     => implode(' ', array_slice(explode(' ', $data['name']), 1)) ?: '',
-                'membership_id' => generate_membership_id(),
-                'status'        => 'active',
-                'created_at'    => date('Y-m-d H:i:s'),
-            ]);
-
-            log_activity('register', 'New member registered', $userId);
+            log_activity('register', 'New user registered', $userId);
 
             // Send OTP to verify email before completing registration login
             $newUser = $this->userModel->findById($userId);
@@ -250,7 +239,7 @@ class AuthController extends Controller
             $this->redirect('/admin/users/create');
         }
 
-        $allowedRoles = ['gym_owner', 'admin', 'marketing', 'trainer', 'maintenance', 'member'];
+        $allowedRoles = ['gym_owner', 'admin', 'marketing', 'trainer', 'maintenance', 'member', 'user'];
         $role         = sanitize($_POST['role'] ?? 'member');
 
         // Only gym_owner can create another gym_owner

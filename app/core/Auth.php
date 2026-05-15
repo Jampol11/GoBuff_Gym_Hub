@@ -51,6 +51,19 @@ class Auth
         self::$session->destroy();
     }
 
+    /**
+     * Refresh the session user data from the database.
+     * Call this after a role change to avoid requiring re-login.
+     */
+    public static function refreshUser(int $userId): void
+    {
+        $userModel = new User();
+        $fresh     = $userModel->findById($userId);
+        if ($fresh) {
+            self::$session->set('user', $fresh);
+        }
+    }
+
     public static function guest(): bool
     {
         return !self::check();

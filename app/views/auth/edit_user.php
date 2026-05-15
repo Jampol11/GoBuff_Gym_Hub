@@ -39,6 +39,7 @@
                                         'trainer'     => ['icon' => 'person-badge-fill',            'color' => 'success'],
                                         'maintenance' => ['icon' => 'wrench-adjustable-circle-fill','color' => 'warning'],
                                         'member'      => ['icon' => 'person-fill',                  'color' => 'secondary'],
+                                        'user'        => ['icon' => 'person-dash-fill',             'color' => 'dark'],
                                     ];
                                     foreach ($roles as $roleKey => $roleInfo):
                                         if ($roleKey === 'gym_owner' && !has_role(['gym_owner'])) continue;

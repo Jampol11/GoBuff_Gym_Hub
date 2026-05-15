@@ -49,12 +49,13 @@ function verify_csrf(): bool
 function role_label(string $role): string
 {
     $labels = [
-        'gym_owner'              => 'Gym Owner',
-        'admin'                  => 'Administrative Officer',
-        'marketing'              => 'Marketing Officer',
-        'trainer'                => 'Fitness Trainer',
-        'maintenance'            => 'Maintenance Supervisor',
-        'member'                 => 'Member',
+        'gym_owner'   => 'Gym Owner',
+        'admin'       => 'Administrative Officer',
+        'marketing'   => 'Marketing Officer',
+        'trainer'     => 'Fitness Trainer',
+        'maintenance' => 'Maintenance Supervisor',
+        'member'      => 'Member',
+        'user'        => 'User',
     ];
     return $labels[$role] ?? ucfirst($role);
 }
@@ -68,6 +69,7 @@ function role_badge(string $role): string
         'trainer'     => 'success',
         'maintenance' => 'warning',
         'member'      => 'secondary',
+        'user'        => 'dark',
     ];
     $color = $colors[$role] ?? 'secondary';
     return '<span class="badge bg-' . $color . '">' . role_label($role) . '</span>';

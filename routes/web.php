@@ -4,6 +4,23 @@
  * $router is injected from App::run()
  */
 
+// ─── Role Applications ───────────────────────────────────────────────────────
+$router->get('/role-application/apply',          'RoleApplicationController@applyForm');
+$router->post('/role-application/apply',         'RoleApplicationController@apply');
+$router->get('/role-applications',               'RoleApplicationController@index',   'role-applications');
+$router->get('/role-applications/{id}',          'RoleApplicationController@show');
+$router->post('/role-applications/{id}/approve', 'RoleApplicationController@approve');
+$router->post('/role-applications/{id}/reject',  'RoleApplicationController@reject');
+
+// ─── Gym Owner Applications ──────────────────────────────────────────────────
+$router->get('/gym-owner-application/apply',                          'GymOwnerApplicationController@applyForm');
+$router->post('/gym-owner-application/apply',                         'GymOwnerApplicationController@apply');
+$router->get('/gym-owner-applications',                               'GymOwnerApplicationController@index',  'gym-owner-applications');
+$router->get('/gym-owner-applications/documents/{docId}/download',    'GymOwnerApplicationController@downloadDocument');
+$router->get('/gym-owner-applications/{id}',                          'GymOwnerApplicationController@show');
+$router->post('/gym-owner-applications/{id}/approve',                 'GymOwnerApplicationController@approve');
+$router->post('/gym-owner-applications/{id}/reject',                  'GymOwnerApplicationController@reject');
+
 // ─── Auth ────────────────────────────────────────────────────────────────────
 $router->get('/login',           'AuthController@loginForm',        'login');
 $router->post('/login',          'AuthController@login');

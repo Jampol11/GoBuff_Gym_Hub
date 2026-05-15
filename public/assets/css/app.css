@@ -377,6 +377,7 @@ body {
 .stat-card-success::before { background: #198754; }
 .stat-card-info::before    { background: #0dcaf0; }
 .stat-card-warning::before { background: #ffc107; }
+.stat-card-danger::before  { background: #dc3545; }
 
 .stat-icon {
   font-size: 1.8rem;
@@ -387,6 +388,7 @@ body {
 .stat-card-success .stat-icon { color: #198754; }
 .stat-card-info .stat-icon    { color: #0dcaf0; }
 .stat-card-warning .stat-icon { color: #ffc107; }
+.stat-card-danger .stat-icon  { color: #dc3545; }
 
 .stat-value {
   font-size: 1.8rem;
