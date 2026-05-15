@@ -104,4 +104,72 @@ class BudgetPlan extends Model
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    /**
+     * Get approved expenses total for a single budget plan.
+     */
+    public function getSpentAmount(int $planId): float
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COALESCE(SUM(amount), 0) as total
+             FROM operational_expenses
+             WHERE budget_plan_id = :id AND status = 'approved'"
+        );
+        $stmt->bindValue(':id', $planId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (float)$stmt->fetchColumn();
+    }
+
+    /**
+     * Get utilization summary for a single plan:
+     * total_budget, spent, remaining, pct, over_budget flag.
+     */
+    public function getUtilization(int $planId, float $totalBudget): array
+    {
+        $spent     = $this->getSpentAmount($planId);
+        $remaining = $totalBudget - $spent;
+        $pct       = $totalBudget > 0 ? ($spent / $totalBudget) * 100 : 0;
+
+        return [
+            'spent'      => $spent,
+            'remaining'  => $remaining,
+            'pct'        => min($pct, 100),          // cap bar at 100%
+            'raw_pct'    => $pct,                    // real % (can exceed 100)
+            'over_budget'=> $remaining < 0,
+        ];
+    }
+
+    /**
+     * Get all plans with pre-computed utilization for the list page.
+     */
+    public function getAllWithUtilization(int $limit = 0, int $offset = 0): array
+    {
+        $plans = $this->getAllWithCreator($limit, $offset);
+        foreach ($plans as &$plan) {
+            $plan['utilization'] = $this->getUtilization((int)$plan['id'], (float)$plan['total_budget']);
+        }
+        return $plans;
+    }
+
+    /**
+     * Get per-category spending for a plan (approved expenses only).
+     */
+    public function getSpentByCategory(int $planId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT category, COALESCE(SUM(amount), 0) as spent
+             FROM operational_expenses
+             WHERE budget_plan_id = :id AND status = 'approved'
+             GROUP BY category"
+        );
+        $stmt->bindValue(':id', $planId, PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
+        // Return as category => spent map
+        $map = [];
+        foreach ($rows as $row) {
+            $map[$row['category']] = (float)$row['spent'];
+        }
+        return $map;
+    }
 }

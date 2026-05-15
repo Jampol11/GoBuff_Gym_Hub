@@ -308,7 +308,7 @@ class OwnerController extends Controller
 
         $this->view('owner.budgets', [
             'title'      => 'Budget Plans',
-            'plans'      => $this->budgetModel->getAllWithCreator($perPage, ($page - 1) * $perPage),
+            'plans'      => $this->budgetModel->getAllWithUtilization($perPage, ($page - 1) * $perPage),
             'pagination' => $this->paginate($total, $page, $perPage),
         ]);
     }
@@ -392,13 +392,19 @@ class OwnerController extends Controller
             $this->redirect('/owner/budgets');
         }
 
-        // Get linked expenses
+        // Get linked expenses (all statuses for full visibility)
         $expenses = $this->expenseModel->findAllBy('budget_plan_id', (int)$id, 'expense_date DESC');
 
+        // Utilization: only approved expenses count against the budget
+        $utilization     = $this->budgetModel->getUtilization((int)$id, (float)$plan['total_budget']);
+        $spentByCategory = $this->budgetModel->getSpentByCategory((int)$id);
+
         $this->view('owner.budget_show', [
-            'title'    => 'Budget Plan Details',
-            'plan'     => $plan,
-            'expenses' => $expenses,
+            'title'          => 'Budget Plan Details',
+            'plan'           => $plan,
+            'expenses'       => $expenses,
+            'utilization'    => $utilization,
+            'spentByCategory'=> $spentByCategory,
         ]);
     }
 
@@ -530,9 +536,20 @@ class OwnerController extends Controller
         AuthMiddleware::handle();
         RoleMiddleware::handle(['gym_owner']);
 
+        $budgetPlans = $this->budgetModel->getActivePlans();
+
+        // Build a map of plan_id => [categories] for JS dynamic switching
+        $planCategories = [];
+        foreach ($budgetPlans as $plan) {
+            $items = $this->budgetModel->getBudgetItems((int)$plan['id']);
+            $cats  = array_values(array_unique(array_column($items, 'category')));
+            $planCategories[$plan['id']] = $cats;
+        }
+
         $this->view('owner.expense_create', [
-            'title'       => 'Record Expense',
-            'budgetPlans' => $this->budgetModel->getActivePlans(),
+            'title'          => 'Record Expense',
+            'budgetPlans'    => $budgetPlans,
+            'planCategories' => $planCategories,
         ]);
     }
 
@@ -549,7 +566,7 @@ class OwnerController extends Controller
         $data = [
             'recorded_by'    => Auth::id(),
             'budget_plan_id' => (int)($_POST['budget_plan_id'] ?? 0) ?: null,
-            'category'       => sanitize($_POST['category'] ?? 'miscellaneous'),
+            'category'       => sanitize($_POST['category'] ?? '') ?: 'miscellaneous',
             'description'    => sanitize($_POST['description'] ?? ''),
             'amount'         => (float)($_POST['amount'] ?? 0),
             'expense_date'   => sanitize($_POST['expense_date'] ?? ''),
@@ -631,10 +648,21 @@ class OwnerController extends Controller
             $this->redirect('/owner/expenses');
         }
 
+        $budgetPlans = $this->budgetModel->getActivePlans();
+
+        // Build a map of plan_id => [categories] for JS dynamic switching
+        $planCategories = [];
+        foreach ($budgetPlans as $plan) {
+            $items = $this->budgetModel->getBudgetItems((int)$plan['id']);
+            $cats  = array_values(array_unique(array_column($items, 'category')));
+            $planCategories[$plan['id']] = $cats;
+        }
+
         $this->view('owner.expense_edit', [
-            'title'       => 'Edit Expense',
-            'expense'     => $expense,
-            'budgetPlans' => $this->budgetModel->getActivePlans(),
+            'title'          => 'Edit Expense',
+            'expense'        => $expense,
+            'budgetPlans'    => $budgetPlans,
+            'planCategories' => $planCategories,
         ]);
     }
 
@@ -656,7 +684,7 @@ class OwnerController extends Controller
 
         $data = [
             'budget_plan_id' => (int)($_POST['budget_plan_id'] ?? 0) ?: null,
-            'category'       => sanitize($_POST['category'] ?? 'miscellaneous'),
+            'category'       => sanitize($_POST['category'] ?? '') ?: 'miscellaneous',
             'description'    => sanitize($_POST['description'] ?? ''),
             'amount'         => (float)($_POST['amount'] ?? 0),
             'expense_date'   => sanitize($_POST['expense_date'] ?? ''),

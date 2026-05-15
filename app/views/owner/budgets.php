@@ -22,6 +22,7 @@
                             <th>Fiscal Year</th>
                             <th>Period</th>
                             <th>Total Budget</th>
+                            <th>Utilization</th>
                             <th>Status</th>
                             <th>Created By</th>
                             <th>Created</th>
@@ -31,13 +32,18 @@
                     <tbody>
                         <?php if (empty($plans)): ?>
                             <tr>
-                                <td colspan="9" class="text-center py-5 text-muted">
+                                <td colspan="10" class="text-center py-5 text-muted">
                                     <i class="bi bi-wallet2 fs-1 d-block mb-2"></i>
                                     No budget plans yet
                                 </td>
                             </tr>
                         <?php else: ?>
-                            <?php foreach ($plans as $i => $plan): ?>
+                            <?php foreach ($plans as $i => $plan):
+                                $u        = $plan['utilization'];
+                                $barColor = $u['over_budget'] ? 'bg-danger'
+                                          : ($u['raw_pct'] >= 90 ? 'bg-warning'
+                                          : ($u['raw_pct'] >= 70 ? 'bg-info' : 'bg-success'));
+                            ?>
                             <tr>
                                 <td><?= $pagination['offset'] + $i + 1 ?></td>
                                 <td>
@@ -51,6 +57,20 @@
                                 <td><?= e($plan['fiscal_year']) ?></td>
                                 <td><span class="badge bg-info text-dark"><?= ucfirst(str_replace('_', '-', $plan['period'])) ?></span></td>
                                 <td class="fw-semibold text-success">₱<?= number_format($plan['total_budget'], 2) ?></td>
+                                <td style="min-width: 140px;">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <small class="text-muted">₱<?= number_format($u['spent'], 2) ?></small>
+                                        <small class="<?= $u['over_budget'] ? 'text-danger fw-semibold' : 'text-muted' ?>">
+                                            <?= number_format($u['raw_pct'], 0) ?>%
+                                            <?= $u['over_budget'] ? ' ⚠' : '' ?>
+                                        </small>
+                                    </div>
+                                    <div class="progress" style="height: 7px;"
+                                         title="Spent: ₱<?= number_format($u['spent'], 2) ?> / ₱<?= number_format($plan['total_budget'], 2) ?>">
+                                        <div class="progress-bar <?= $barColor ?>"
+                                             style="width: <?= $u['pct'] ?>%"></div>
+                                    </div>
+                                </td>
                                 <td>
                                     <?php
                                     $badge = match($plan['status']) {

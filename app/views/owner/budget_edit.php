@@ -75,7 +75,7 @@
                                 <?php foreach ($plan['items'] as $item): ?>
                                 <div class="row g-2 mb-2 budget-item">
                                     <div class="col-md-3">
-                                        <input type="text" name="item_category[]" class="form-control" placeholder="Category" required value="<?= e($item['category']) ?>">
+                                        <?= budgetCategorySelectEdit(e($item['category'])) ?>
                                     </div>
                                     <div class="col-md-6">
                                         <input type="text" name="item_description[]" class="form-control" placeholder="Description" required value="<?= e($item['description']) ?>">
@@ -93,7 +93,7 @@
                             <?php else: ?>
                             <div class="row g-2 mb-2 budget-item">
                                 <div class="col-md-3">
-                                    <input type="text" name="item_category[]" class="form-control" placeholder="Category" required>
+                                    <?= budgetCategorySelectEdit() ?>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" name="item_description[]" class="form-control" placeholder="Description" required>
@@ -123,14 +123,70 @@
     </div>
 </div>
 
+<?php
+function budgetCategorySelectEdit(string $selected = ''): string {
+    $cats = [
+        'Rent','Utilities','Salaries','Equipment Purchase','Equipment Repair',
+        'Supplies','Essentials','Membership','Marketing','Insurance','Taxes','Miscellaneous'
+    ];
+    $isCustom = $selected !== '' && !in_array($selected, $cats);
+    $html  = '<select name="item_category[]" class="form-select category-select" onchange="handleCategoryChange(this)" required>';
+    $html .= '<option value="">— Select —</option>';
+    foreach ($cats as $cat) {
+        $sel   = ($selected === $cat) ? ' selected' : '';
+        $html .= "<option value=\"{$cat}\"{$sel}>{$cat}</option>";
+    }
+    $html .= '<option value="__custom__"' . ($isCustom ? ' selected' : '') . '>Other (custom)...</option>';
+    $html .= '</select>';
+    $customVal = $isCustom ? htmlspecialchars($selected, ENT_QUOTES) : '';
+    $display   = $isCustom ? '' : 'display:none;';
+    $html .= "<input type=\"text\" class=\"form-control mt-1 custom-category\" placeholder=\"Enter custom category\" style=\"{$display}\" value=\"{$customVal}\">";
+    return $html;
+}
+?>
+
 <script>
+const BUDGET_CATEGORIES = [
+    'Rent','Utilities','Salaries','Equipment Purchase','Equipment Repair',
+    'Supplies','Essentials','Membership','Marketing','Insurance','Taxes','Miscellaneous'
+];
+
+function buildCategorySelect(selectedValue = '') {
+    const isCustom = selectedValue !== '' && !BUDGET_CATEGORIES.includes(selectedValue);
+    let html = '<select name="item_category[]" class="form-select category-select" onchange="handleCategoryChange(this)" required>';
+    html += '<option value="">— Select —</option>';
+    BUDGET_CATEGORIES.forEach(cat => {
+        const sel = (cat === selectedValue) ? ' selected' : '';
+        html += `<option value="${cat}"${sel}>${cat}</option>`;
+    });
+    html += `<option value="__custom__"${isCustom ? ' selected' : ''}>Other (custom)...</option>`;
+    html += '</select>';
+    const customDisplay = isCustom ? '' : 'display:none;';
+    const customVal     = isCustom ? selectedValue : '';
+    html += `<input type="text" class="form-control mt-1 custom-category" placeholder="Enter custom category" style="${customDisplay}" value="${customVal}">`;
+    return html;
+}
+
+function handleCategoryChange(select) {
+    const customInput = select.nextElementSibling;
+    if (select.value === '__custom__') {
+        customInput.style.display = '';
+        customInput.required = true;
+        customInput.focus();
+    } else {
+        customInput.style.display = 'none';
+        customInput.required = false;
+        customInput.value = '';
+    }
+}
+
 function addBudgetItem() {
     const container = document.getElementById('budgetItems');
     const item = document.createElement('div');
     item.className = 'row g-2 mb-2 budget-item';
     item.innerHTML = `
         <div class="col-md-3">
-            <input type="text" name="item_category[]" class="form-control" placeholder="Category" required>
+            ${buildCategorySelect()}
         </div>
         <div class="col-md-6">
             <input type="text" name="item_description[]" class="form-control" placeholder="Description" required>
@@ -158,12 +214,25 @@ function removeItem(btn) {
 function calculateTotal() {
     const amounts = document.querySelectorAll('.item-amount');
     let total = 0;
-    amounts.forEach(input => {
-        total += parseFloat(input.value) || 0;
-    });
+    amounts.forEach(input => { total += parseFloat(input.value) || 0; });
     document.getElementById('totalBudget').value = total.toFixed(2);
 }
 
-// Calculate on load
+// Before submit: replace __custom__ selects with hidden inputs containing the typed value
+document.getElementById('budgetForm').addEventListener('submit', function () {
+    document.querySelectorAll('.budget-item').forEach(row => {
+        const select      = row.querySelector('.category-select');
+        const customInput = row.querySelector('.custom-category');
+        if (select && select.value === '__custom__' && customInput && customInput.value.trim()) {
+            select.removeAttribute('name');
+            const hidden = document.createElement('input');
+            hidden.type  = 'hidden';
+            hidden.name  = 'item_category[]';
+            hidden.value = customInput.value.trim();
+            row.appendChild(hidden);
+        }
+    });
+});
+
 document.addEventListener('DOMContentLoaded', calculateTotal);
 </script>

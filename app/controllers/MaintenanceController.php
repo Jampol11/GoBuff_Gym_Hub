@@ -43,27 +43,32 @@ class MaintenanceController extends Controller
         AuthMiddleware::handle();
 
         if (!verify_csrf()) {
-            $this->flash('error', 'Invalid security token.');
+            $this->flash('error', 'Invalid security token. Please try again.');
             $this->redirect('/maintenance/create');
         }
 
         $employeeModel = new Employee();
         $reporter = $employeeModel->getByUserId(Auth::id());
 
+        $equipmentId = (int)($_POST['equipment_id'] ?? 0);
+
+        if ($equipmentId <= 0) {
+            $this->flash('error', 'Please select a valid equipment.');
+            $this->redirect('/maintenance/create');
+        }
+
         $data = [
-            'equipment_id'  => (int)($_POST['equipment_id'] ?? 0),
+            'equipment_id'  => $equipmentId,
             'reported_by'   => $reporter ? $reporter['id'] : null,
             'issue_type'    => sanitize($_POST['issue_type'] ?? ''),
             'description'   => sanitize($_POST['description'] ?? ''),
             'priority'      => sanitize($_POST['priority'] ?? 'medium'),
             'status'        => 'pending',
-            'created_at'    => date('Y-m-d H:i:s'),
         ];
 
         $v = Validator::make($data, [
-            'equipment_id' => 'required|integer',
-            'issue_type'   => 'required',
-            'description'  => 'required|min:10',
+            'issue_type'  => 'required',
+            'description' => 'required|min:10',
         ]);
 
         if ($v->fails()) {
@@ -75,12 +80,13 @@ class MaintenanceController extends Controller
         $equipmentModel = new Equipment();
         $equipmentModel->update($data['equipment_id'], ['condition_status' => 'needs_repair']);
 
-        if ($this->model->insert($data)) {
+        $newId = $this->model->insert($data);
+        if ($newId) {
             log_activity('maintenance_report', "Maintenance reported for equipment ID: {$data['equipment_id']}");
             $this->flash('success', 'Maintenance report submitted.');
             $this->redirect('/maintenance');
         } else {
-            $this->flash('error', 'Failed to submit report.');
+            $this->flash('error', 'Failed to submit report. Please try again.');
             $this->redirect('/maintenance/create');
         }
     }

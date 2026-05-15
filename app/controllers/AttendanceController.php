@@ -15,17 +15,63 @@ class AttendanceController extends Controller
     public function index(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        // All staff roles can access this page to clock in/out.
+        // Full records are only shown to gym_owner and admin (controlled in the view).
+        RoleMiddleware::handle(['gym_owner', 'admin', 'trainer', 'maintenance', 'marketing']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $perPage = RECORDS_PER_PAGE;
-        $total   = $this->model->count();
+
+        $scheduleModel = new WorkSchedule();
+        $todaySchedule = $scheduleModel->getByDate(date('Y-m-d'));
+
+        // Build a lookup: employee_id => schedule row
+        $scheduleMap = [];
+        foreach ($todaySchedule as $row) {
+            $scheduleMap[$row['employee_id']] = $row;
+        }
+
+        // For staff (non-owner/admin), only load their own attendance record
+        $isManager = has_role(['gym_owner', 'admin']);
+
+        $records    = [];
+        $total      = 0;
+        $pagination = $this->paginate(0, 1, $perPage);
+
+        if ($isManager) {
+            $total      = $this->model->count();
+            $records    = $this->model->getAllWithEmployee($perPage, ($page - 1) * $perPage);
+            $pagination = $this->paginate($total, $page, $perPage);
+        }
+
+        // Find the current user's employee record for the clock-in/out form
+        $employeeModel  = new Employee();
+        $myEmployee     = $employeeModel->getByUserId(Auth::id());
+        $myAttendance   = null;
+        $myUpcoming     = [];
+        $myHistory      = [];
+        if ($myEmployee) {
+            $myAttendance = $this->model->query(
+                "SELECT * FROM attendance WHERE employee_id = ? AND date = CURDATE() LIMIT 1",
+                [$myEmployee['id']]
+            )->fetch();
+            // Upcoming schedule so employee knows their shifts
+            $myUpcoming = $scheduleModel->getUpcomingForEmployee((int)$myEmployee['id'], 7);
+            // Recent attendance history with schedule comparison (late detection display)
+            $myHistory  = $this->model->getByEmployeeWithSchedule((int)$myEmployee['id'], 14);
+        }
 
         $this->view('attendance.index', [
-            'title'      => 'Staff Attendance',
-            'records'    => $this->model->getAllWithEmployee($perPage, ($page - 1) * $perPage),
-            'today'      => $this->model->getTodayAttendance(),
-            'pagination' => $this->paginate($total, $page, $perPage),
+            'title'        => 'Staff Attendance',
+            'records'      => $records,
+            'today'        => $this->model->getTodayAttendance(),
+            'pagination'   => $pagination,
+            'scheduleMap'  => $scheduleMap,
+            'isManager'    => $isManager,
+            'myEmployee'   => $myEmployee,
+            'myAttendance' => $myAttendance,
+            'myUpcoming'   => $myUpcoming,
+            'myHistory'    => $myHistory,
         ]);
     }
 
@@ -57,8 +103,36 @@ class AttendanceController extends Controller
             $this->redirect('/attendance');
         }
 
-        $this->model->clockIn($employee['id']);
-        $this->flash('success', 'Clock-in recorded successfully.');
+        // ── Late detection ────────────────────────────────────────────────
+        // Check if a schedule exists for today and compare clock-in time.
+        // Grace period: 15 minutes after scheduled time_in = still "present".
+        $status        = 'present';
+        $lateMessage   = '';
+        $scheduleModel = new WorkSchedule();
+        $todaySched    = $scheduleModel->getTodayForEmployee((int)$employee['id']);
+
+        if ($todaySched) {
+            $gracePeriodMinutes = 15;
+            $scheduledIn  = strtotime($todaySched['time_in']);
+            $cutoff       = $scheduledIn + ($gracePeriodMinutes * 60);
+            $now          = time();
+
+            if ($now > $cutoff) {
+                $status      = 'late';
+                $minsLate    = (int)round(($now - $scheduledIn) / 60);
+                $lateMessage = "You clocked in {$minsLate} minute" . ($minsLate !== 1 ? 's' : '') . " late (scheduled: " . date('h:i A', $scheduledIn) . ").";
+            }
+        }
+        // ─────────────────────────────────────────────────────────────────
+
+        $this->model->clockIn((int)$employee['id'], $status);
+
+        if ($status === 'late') {
+            $this->flash('warning', 'Clock-in recorded. ' . $lateMessage);
+        } else {
+            $this->flash('success', 'Clock-in recorded successfully.');
+        }
+
         $this->redirect('/attendance');
     }
 

@@ -28,9 +28,9 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
-                                <select name="category" class="form-select" required>
+                                <select name="category" id="categorySelect" class="form-select" required>
                                     <?php
-                                    $categories = [
+                                    $defaultCategories = [
                                         'rent'               => 'Rent',
                                         'utilities'          => 'Utilities',
                                         'salaries'           => 'Salaries',
@@ -43,13 +43,14 @@
                                         'miscellaneous'      => 'Miscellaneous',
                                     ];
                                     $current = $_POST['category'] ?? 'miscellaneous';
-                                    foreach ($categories as $val => $label):
+                                    foreach ($defaultCategories as $val => $label):
                                     ?>
                                     <option value="<?= $val ?>" <?= $current === $val ? 'selected' : '' ?>>
                                         <?= $label ?>
                                     </option>
                                     <?php endforeach; ?>
                                 </select>
+                                <div class="form-text" id="categoryHint"></div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Amount <span class="text-danger">*</span></label>
@@ -101,7 +102,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Link to Budget Plan</label>
-                                <select name="budget_plan_id" class="form-select">
+                                <select name="budget_plan_id" id="budgetPlanSelect" class="form-select">
                                     <option value="">— None —</option>
                                     <?php foreach ($budgetPlans as $plan): ?>
                                     <option value="<?= $plan['id'] ?>"
@@ -140,3 +141,68 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    const planCategories = <?= json_encode($planCategories) ?>;
+    const defaultCategories = {
+        'rent':               'Rent',
+        'utilities':          'Utilities',
+        'salaries':           'Salaries',
+        'equipment_purchase': 'Equipment Purchase',
+        'equipment_repair':   'Equipment Repair',
+        'supplies':           'Supplies',
+        'marketing':          'Marketing',
+        'insurance':          'Insurance',
+        'taxes':              'Taxes',
+        'miscellaneous':      'Miscellaneous',
+    };
+
+    const planSelect     = document.getElementById('budgetPlanSelect');
+    const categorySelect = document.getElementById('categorySelect');
+    const categoryHint   = document.getElementById('categoryHint');
+
+    function rebuildCategories(planId, selectedValue) {
+        categorySelect.innerHTML = '';
+
+        if (planId && planCategories[planId] && planCategories[planId].length > 0) {
+            // Use budget plan line item categories
+            planCategories[planId].forEach(function (cat) {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                if (cat === selectedValue) opt.selected = true;
+                categorySelect.appendChild(opt);
+            });
+            // Also append default categories as fallback options
+            Object.entries(defaultCategories).forEach(function ([val, label]) {
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = label + ' (general)';
+                if (val === selectedValue) opt.selected = true;
+                categorySelect.appendChild(opt);
+            });
+            categoryHint.textContent = 'Plan categories shown first — select one to track against the budget line item.';
+            categoryHint.className = 'form-text text-primary';
+        } else {
+            // Use default categories
+            Object.entries(defaultCategories).forEach(function ([val, label]) {
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = label;
+                if (val === selectedValue) opt.selected = true;
+                categorySelect.appendChild(opt);
+            });
+            categoryHint.textContent = '';
+        }
+    }
+
+    // Init on page load
+    rebuildCategories(planSelect.value, <?= json_encode($_POST['category'] ?? 'miscellaneous') ?>);
+
+    // Update on plan change
+    planSelect.addEventListener('change', function () {
+        rebuildCategories(this.value, null);
+    });
+})();
+</script>

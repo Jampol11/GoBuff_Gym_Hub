@@ -46,8 +46,8 @@
         </li>
         <?php endif; ?>
 
-        <?php if (!has_role(['gym_owner'])): ?>
-        <!-- Any non-owner: Apply as Gym Owner -->
+        <?php if (has_role(['user'])): ?>
+        <!-- Only users without a role can apply as Gym Owner -->
         <li class="nav-item">
             <a href="<?= base_url('/gym-owner-application/apply') ?>" class="nav-link <?= is_active('/gym-owner-application') ?>">
                 <i class="bi bi-building-fill-gear"></i>
@@ -58,6 +58,12 @@
 
         <?php if (has_role(['admin'])): ?>
         <!-- Admin Officer Features -->
+        <li class="nav-item">
+            <a href="<?= base_url('/my-profile') ?>" class="nav-link <?= is_active('/my-profile') ?>">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>My Profile</span>
+            </a>
+        </li>
         <li class="nav-item">
             <a href="<?= base_url('/attendance') ?>" class="nav-link <?= is_active('/attendance') ?>">
                 <i class="bi bi-clock-history"></i>
@@ -100,6 +106,18 @@
         <!-- Trainer Features -->
         <li class="nav-label">Fitness</li>
         <li class="nav-item">
+            <a href="<?= base_url('/my-profile') ?>" class="nav-link <?= is_active('/my-profile') ?>">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>My Profile</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/attendance') ?>" class="nav-link <?= is_active('/attendance') ?>">
+                <i class="bi bi-clock-history"></i>
+                <span>Attendance (Time In/Out)</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="<?= base_url('/members') ?>" class="nav-link <?= is_active('/members') ?>">
                 <i class="bi bi-people-fill"></i>
                 <span>Members</span>
@@ -135,6 +153,18 @@
         <!-- Maintenance Supervisor Features -->
         <li class="nav-label">Operations</li>
         <li class="nav-item">
+            <a href="<?= base_url('/my-profile') ?>" class="nav-link <?= is_active('/my-profile') ?>">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>My Profile</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/attendance') ?>" class="nav-link <?= is_active('/attendance') ?>">
+                <i class="bi bi-clock-history"></i>
+                <span>Attendance (Time In/Out)</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="<?= base_url('/equipment') ?>" class="nav-link <?= is_active('/equipment') ?>">
                 <i class="bi bi-tools"></i>
                 <span>Equipment</span>
@@ -151,6 +181,18 @@
         <?php if (has_role(['marketing'])): ?>
         <!-- Marketing Officer Features -->
         <li class="nav-label">Marketing</li>
+        <li class="nav-item">
+            <a href="<?= base_url('/my-profile') ?>" class="nav-link <?= is_active('/my-profile') ?>">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>My Profile</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/attendance') ?>" class="nav-link <?= is_active('/attendance') ?>">
+                <i class="bi bi-clock-history"></i>
+                <span>Attendance (Time In/Out)</span>
+            </a>
+        </li>
         <li class="nav-item">
             <a href="<?= base_url('/campaigns') ?>" class="nav-link <?= is_active('/campaigns') ?>">
                 <i class="bi bi-megaphone-fill"></i>
@@ -303,6 +345,20 @@
             <a href="<?= base_url('/owner/expenses') ?>" class="nav-link <?= is_active('/owner/expenses') ?>">
                 <i class="bi bi-receipt-cutoff"></i>
                 <span>Expenses</span>
+            </a>
+        </li>
+
+        <li class="nav-label">Staff Management</li>
+        <li class="nav-item">
+            <a href="<?= base_url('/employees') ?>" class="nav-link <?= is_active('/employees') ?>">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>Employee Profiles</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/employees/schedule') ?>" class="nav-link <?= is_active('/employees/schedule') ?>">
+                <i class="bi bi-calendar2-week-fill"></i>
+                <span>Work Schedule Sheet</span>
             </a>
         </li>
 

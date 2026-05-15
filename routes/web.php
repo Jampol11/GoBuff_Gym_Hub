@@ -112,6 +112,16 @@ $router->post('/maintenance',                 'MaintenanceController@store');
 $router->post('/maintenance/{id}/verify',     'MaintenanceController@verify');
 $router->post('/maintenance/{id}/complete',   'MaintenanceController@complete');
 
+// ─── Employees (Process 6: Assigning Job Role) ───────────────────────────────
+$router->get('/employees',                          'EmployeeController@index',           'employees');
+$router->get('/my-profile',                         'EmployeeController@myProfile',       'my-profile');
+$router->get('/employees/schedule',                 'EmployeeController@scheduleSheet',   'employees.schedule');
+$router->post('/employees/schedule/save',           'EmployeeController@saveScheduleSheet');
+$router->post('/employees/schedule/{id}/delete',    'EmployeeController@deleteSchedule');
+$router->get('/employees/{id}',                     'EmployeeController@show');
+$router->get('/employees/{id}/edit',                'EmployeeController@edit');
+$router->post('/employees/{id}/update',             'EmployeeController@update');
+
 // ─── Attendance ──────────────────────────────────────────────────────────────
 $router->get('/attendance',              'AttendanceController@index',   'attendance');
 $router->post('/attendance/clock-in',    'AttendanceController@clockIn');
