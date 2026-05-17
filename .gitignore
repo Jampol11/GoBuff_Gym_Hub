@@ -1,6 +1,7 @@
 # Credentials — never commit these
 config/mail.php
 config/database.php
+.env
 
 # Composer
 /vendor/

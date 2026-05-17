@@ -34,6 +34,39 @@ define('BCRYPT_COST', 12);
 // Timezone
 date_default_timezone_set('Asia/Manila');
 
+/**
+ * Read a value from $_ENV / getenv(), falling back to $default.
+ */
+if (!function_exists('env')) {
+    function env(string $key, mixed $default = null): mixed {
+        $val = $_ENV[$key] ?? getenv($key);
+        return ($val !== false && $val !== null && $val !== '') ? $val : $default;
+    }
+}
+
+// Load .env file if present (simple key=value parser)
+$envFile = APP_ROOT . '/.env';
+if (file_exists($envFile)) {
+    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) continue;
+        if (str_contains($line, '=')) {
+            [$key, $val] = explode('=', $line, 2);
+            $key = trim($key); $val = trim($val);
+            if (!isset($_ENV[$key])) {
+                $_ENV[$key] = $val;
+                putenv("{$key}={$val}");
+            }
+        }
+    }
+}
+
+// PayMongo
+define('PAYMONGO_SECRET_KEY',     env('PAYMONGO_SECRET_KEY',     'sk_test_REPLACE_ME'));
+define('PAYMONGO_PUBLIC_KEY',     env('PAYMONGO_PUBLIC_KEY',     'pk_test_REPLACE_ME'));
+define('PAYMONGO_WEBHOOK_SECRET', env('PAYMONGO_WEBHOOK_SECRET', ''));
+define('PAYMONGO_API_URL',        'https://api.paymongo.com/v1');
+
 // Error reporting
 if (APP_ENV === 'development') {
     error_reporting(E_ALL);

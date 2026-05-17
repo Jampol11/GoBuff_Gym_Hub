@@ -4,13 +4,19 @@
  * $router is injected from App::run()
  */
 
-// ─── Role Applications ───────────────────────────────────────────────────────
+// ─── Role Applications (Employee roles — reviewed by Gym Owner) ──────────────
 $router->get('/role-application/apply',          'RoleApplicationController@applyForm');
 $router->post('/role-application/apply',         'RoleApplicationController@apply');
 $router->get('/role-applications',               'RoleApplicationController@index',   'role-applications');
 $router->get('/role-applications/{id}',          'RoleApplicationController@show');
 $router->post('/role-applications/{id}/approve', 'RoleApplicationController@approve');
 $router->post('/role-applications/{id}/reject',  'RoleApplicationController@reject');
+
+// ─── Membership Applications (Member role — reviewed by Admin Officer) ────────
+$router->get('/member-applications',               'RoleApplicationController@memberApplications', 'member-applications');
+$router->get('/member-applications/{id}',          'RoleApplicationController@memberApplicationShow');
+$router->post('/member-applications/{id}/approve', 'RoleApplicationController@memberApprove');
+$router->post('/member-applications/{id}/reject',  'RoleApplicationController@memberReject');
 
 // ─── Gym Owner Applications ──────────────────────────────────────────────────
 $router->get('/gym-owner-application/apply',                          'GymOwnerApplicationController@applyForm');
@@ -69,6 +75,14 @@ $router->get('/memberships/{id}',             'MembershipController@show');
 $router->post('/memberships/{id}/approve',    'MembershipController@approve');
 $router->post('/memberships/{id}/reject',     'MembershipController@reject');
 $router->post('/memberships/{id}/delete',     'MembershipController@destroy');
+
+// ─── Member: My Membership & PayMongo Checkout ───────────────────────────────
+$router->get('/my-membership',                    'MembershipController@myMembership');
+$router->post('/my-membership/checkout',          'MembershipController@checkout');
+$router->get('/my-membership/payment/success',    'MembershipController@paymentSuccess');
+$router->get('/my-membership/payment/cancel',     'MembershipController@paymentCancel');
+$router->post('/my-membership/payment',           'MembershipController@submitPayment'); // legacy fallback
+$router->post('/webhooks/paymongo',               'MembershipController@webhook');
 
 // ─── Check-Ins ───────────────────────────────────────────────────────────────
 $router->get('/checkins',              'CheckinController@index',   'checkins');

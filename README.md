@@ -1,6 +1,37 @@
 # GoBuff: Gym Hub
 
-A complete, production-ready **Gym Management and Fitness Monitoring System** built with PHP 8+, MySQL, Bootstrap 5, and a clean MVC architecture.
+## Overview
+
+GoBuff: Gym Hub is a gym management and fitness platform designed to improve gym operations and support individuals in achieving healthier lifestyles. The system provides features for workout scheduling, membership management, attendance monitoring, fitness coaching, and nutrition awareness. It aims to create a more accessible and organized fitness environment for gym coaches, workout enthusiasts, and health-conscious individuals.
+
+---
+
+## Problem Statement
+
+- **Limited availability of time and resources** for workout engagement among individuals whose responsibilities are divided across family and personal commitments.
+- **Low prioritization of workout-related spending** among individuals who perceive exercise as a leisure activity.
+- **Low level of nutrition knowledge** among individuals, limiting their ability to make informed dietary decisions.
+
+---
+
+## Objectives
+
+1. Maximize workout frequency among time-constrained individuals to achieve an **Activity Resumption Index of not more than 5.74 out of 25**.
+2. Secure increased wallet share by converting **30% of "leisure-only" users into "health-investors"** through value-based messaging.
+3. Increase the consistency of healthy dietary practices among individuals to at least **81% adherence** to recommended daily nutrition guidelines.
+
+---
+
+## Target Users / Personas
+
+### 1. Gym Coach / Fitness Coach
+Professionals who manage workout programs, monitor member progress, provide fitness guidance, and assist users in achieving their health goals.
+
+### 2. Workout Enthusiast
+Individuals who actively participate in physical fitness activities and seek convenient tools for workout scheduling, gym attendance tracking, and performance monitoring.
+
+### 3. Health-Conscious Individual
+People who aim to maintain a healthy lifestyle by improving their physical activity, nutrition habits, and overall wellness through guided fitness support.
 
 ---
 

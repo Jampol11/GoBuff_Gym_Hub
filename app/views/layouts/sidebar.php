@@ -44,6 +44,22 @@
                 <span>Apply for Role</span>
             </a>
         </li>
+        <?php
+        // Show "My Membership" link if user has an approved member application
+        $raCheck = new RoleApplication();
+        $approvedMemberApp = $raCheck->query(
+            "SELECT id FROM role_applications WHERE user_id = ? AND requested_role = 'member' AND status = 'approved' LIMIT 1",
+            [auth_id()]
+        )->fetch();
+        if ($approvedMemberApp):
+        ?>
+        <li class="nav-item">
+            <a href="<?= base_url('/my-membership') ?>" class="nav-link <?= is_active('/my-membership') ?>">
+                <i class="bi bi-credit-card-2-front-fill text-primary"></i>
+                <span class="fw-semibold text-primary">Pay Membership</span>
+            </a>
+        </li>
+        <?php endif; ?>
         <?php endif; ?>
 
         <?php if (has_role(['user'])): ?>
@@ -71,6 +87,18 @@
             </a>
         </li>
         <li class="nav-item">
+            <a href="<?= base_url('/member-applications') ?>" class="nav-link <?= is_active('/member-applications') ?>">
+                <i class="bi bi-card-checklist"></i>
+                <span>Membership Applications</span>
+                <?php
+                $maModel = new RoleApplication();
+                $pendingMa = $maModel->countByStatusAndRole('pending', ['member']);
+                if ($pendingMa > 0): ?>
+                    <span class="badge bg-danger ms-auto"><?= $pendingMa ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="<?= base_url('/memberships') ?>" class="nav-link <?= is_active('/memberships') ?>">
                 <i class="bi bi-card-checklist"></i>
                 <span>Verify Memberships</span>
@@ -79,7 +107,7 @@
         <li class="nav-item">
             <a href="<?= base_url('/members') ?>" class="nav-link <?= is_active('/members') ?>">
                 <i class="bi bi-people-fill"></i>
-                <span>Generate Membership ID</span>
+                <span>Members</span>
             </a>
         </li>
         <li class="nav-item">
@@ -203,6 +231,12 @@
 
         <?php if (has_role(['member'])): ?>
         <!-- Member Features -->
+        <li class="nav-item">
+            <a href="<?= base_url('/my-membership') ?>" class="nav-link <?= is_active('/my-membership') ?>">
+                <i class="bi bi-card-checklist"></i>
+                <span>My Membership</span>
+            </a>
+        </li>
         <li class="nav-item">
             <a href="<?= base_url('/checkins') ?>" class="nav-link <?= is_active('/checkins') ?>">
                 <i class="bi bi-door-open-fill"></i>
@@ -366,10 +400,10 @@
         <li class="nav-item">
             <a href="<?= base_url('/role-applications') ?>" class="nav-link <?= is_active('/role-applications') ?>">
                 <i class="bi bi-person-badge-fill"></i>
-                <span>Role Applications</span>
+                <span>Staff Role Applications</span>
                 <?php
                 $raModel = new RoleApplication();
-                $pendingRa = $raModel->countByStatus('pending');
+                $pendingRa = $raModel->countByStatusAndRole('pending', ['trainer','marketing','maintenance','admin']);
                 if ($pendingRa > 0): ?>
                     <span class="badge bg-warning text-dark ms-auto"><?= $pendingRa ?></span>
                 <?php endif; ?>

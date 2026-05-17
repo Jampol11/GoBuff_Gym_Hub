@@ -2,17 +2,40 @@
 
     <?php if (has_role(['user'])): ?>
     <!-- ── User: No Role Yet ─────────────────────────────────────────── -->
+    <?php
+    // Check if user has an approved member application awaiting payment
+    $raCheck = new RoleApplication();
+    $approvedMemberApp = $raCheck->query(
+        "SELECT id FROM role_applications WHERE user_id = ? AND requested_role = 'member' AND status = 'approved' LIMIT 1",
+        [auth_id()]
+    )->fetch();
+    ?>
+    <?php if ($approvedMemberApp): ?>
+    <div class="alert alert-success alert-dismissible d-flex align-items-start gap-3 mb-4 shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill fs-4 mt-1 text-success"></i>
+        <div class="flex-grow-1">
+            <strong>Membership Application Approved!</strong>
+            Your application has been approved by the Administrative Office.
+            Please complete your payment to activate your membership and access all gym features.
+        </div>
+        <a href="<?= base_url('/my-membership') ?>" class="btn btn-success btn-sm text-nowrap">
+            <i class="bi bi-credit-card-2-front me-1"></i>Pay Now
+        </a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <?php else: ?>
     <div class="alert alert-warning alert-dismissible d-flex align-items-start gap-3 mb-4 shadow-sm" role="alert">
         <i class="bi bi-person-badge-fill fs-4 mt-1 text-warning"></i>
         <div class="flex-grow-1">
             <strong>Welcome to GoBuff!</strong> Your account is active but you don't have a role yet.
-            To access gym features, please apply for a role. The Gym Owner will review and assign your role.
+            To access gym features, please apply for a role.
         </div>
         <a href="<?= base_url('/role-application/apply') ?>" class="btn btn-warning btn-sm text-nowrap">
             <i class="bi bi-send me-1"></i>Apply for a Role
         </a>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+    <?php endif; ?>
     <?php endif; ?>
 
     <!-- Page Header -->
@@ -886,14 +909,38 @@
     ══════════════════════════════════════════════════════════════════ -->
 
     <?php if (!$active_membership): ?>
+    <?php
+    // Check if member has a pending membership (payment submitted, awaiting admin)
+    $memberModel = new Member();
+    $memberRecord = $memberModel->getMemberByUserId(auth_id());
+    $membershipModel = new Membership();
+    $hasPendingPayment = false;
+    if ($memberRecord) {
+        foreach ($membershipModel->getByMemberId((int)$memberRecord['id']) as $ms) {
+            if ($ms['status'] === 'pending') { $hasPendingPayment = true; break; }
+        }
+    }
+    ?>
+    <?php if ($hasPendingPayment): ?>
     <div class="alert alert-warning d-flex align-items-start gap-3 mb-4">
-        <i class="bi bi-exclamation-triangle-fill fs-5 mt-1"></i>
+        <i class="bi bi-hourglass-split fs-5 mt-1 text-warning"></i>
         <div class="flex-grow-1">
-            <strong>No Active Membership</strong> — You don't have an active membership plan.
-            Contact the front desk or apply for a membership to access all gym features.
+            <strong>Payment Under Review</strong> — Your payment has been submitted and is awaiting verification by the Administrative Office.
+            You will be notified once your membership is activated.
         </div>
-        <a href="<?= base_url('/memberships') ?>" class="btn btn-sm btn-warning text-nowrap">View Plans</a>
+        <a href="<?= base_url('/my-membership') ?>" class="btn btn-sm btn-warning text-nowrap">View Status</a>
     </div>
+    <?php else: ?>
+    <div class="alert alert-info d-flex align-items-start gap-3 mb-4">
+        <i class="bi bi-cash-coin fs-5 mt-1"></i>
+        <div class="flex-grow-1">
+            <strong>Payment Required</strong> — Your membership application was approved! Please submit your payment to activate your membership.
+        </div>
+        <a href="<?= base_url('/my-membership') ?>" class="btn btn-sm btn-primary text-nowrap">
+            <i class="bi bi-send me-1"></i>Submit Payment
+        </a>
+    </div>
+    <?php endif; ?>
     <?php endif; ?>
 
     <!-- Stat Cards -->

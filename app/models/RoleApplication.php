@@ -26,6 +26,29 @@ class RoleApplication extends Model
     }
 
     /**
+     * Get applications filtered by a set of roles, with user info.
+     */
+    public function getByRolesWithUser(array $roles, int $limit = 50, int $offset = 0): array
+    {
+        if (empty($roles)) return [];
+        $placeholders = implode(',', array_fill(0, count($roles), '?'));
+        $params = array_merge($roles, [$limit, $offset]);
+        return $this->query(
+            "SELECT ra.*, u.name AS user_name, u.email AS user_email, u.username,
+                    r.label AS role_label,
+                    rv.name AS reviewer_name
+             FROM role_applications ra
+             JOIN users u  ON u.id  = ra.user_id
+             LEFT JOIN users rv ON rv.id = ra.reviewed_by
+             LEFT JOIN roles r  ON r.name = ra.requested_role
+             WHERE ra.requested_role IN ({$placeholders})
+             ORDER BY ra.created_at DESC
+             LIMIT ? OFFSET ?",
+            $params
+        )->fetchAll();
+    }
+
+    /**
      * Count applications, optionally filtered by status.
      */
     public function countByStatus(string $status = ''): int
@@ -37,6 +60,26 @@ class RoleApplication extends Model
             )->fetchColumn();
         }
         return $this->count();
+    }
+
+    /**
+     * Count applications filtered by status and a set of roles.
+     */
+    public function countByStatusAndRole(string $status, array $roles): int
+    {
+        if (empty($roles)) return 0;
+        $placeholders = implode(',', array_fill(0, count($roles), '?'));
+        if ($status) {
+            $params = array_merge([$status], $roles);
+            return (int)$this->query(
+                "SELECT COUNT(*) FROM role_applications WHERE status = ? AND requested_role IN ({$placeholders})",
+                $params
+            )->fetchColumn();
+        }
+        return (int)$this->query(
+            "SELECT COUNT(*) FROM role_applications WHERE requested_role IN ({$placeholders})",
+            $roles
+        )->fetchColumn();
     }
 
     /**
@@ -94,7 +137,15 @@ class RoleApplication extends Model
     }
 
     /**
-     * Approve an application and update the user's role.
+     * Approve an application.
+     *
+     * For STAFF roles (trainer/maintenance/marketing/admin):
+     *   - Updates user role immediately + creates employee record.
+     *
+     * For MEMBER role:
+     *   - Only marks the application as approved.
+     *   - Role assignment + member record creation happens in
+     *     MembershipController::activateMembership() after payment is confirmed.
      */
     public function approve(int $id, int $reviewerId, string $notes = ''): bool
     {
@@ -110,38 +161,25 @@ class RoleApplication extends Model
             'updated_at'   => date('Y-m-d H:i:s'),
         ]);
 
-        // Update user's role
+        // Member role: do NOT assign role or create member record yet.
+        // That happens after PayMongo payment is confirmed.
+        if ($app['requested_role'] === 'member') {
+            return true;
+        }
+
+        // Staff roles: assign role + create employee record immediately.
         $userModel = new User();
         $userModel->update($app['user_id'], [
             'role'       => $app['requested_role'],
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
-        // If role is 'member', create a member record if one doesn't exist
-        if ($app['requested_role'] === 'member') {
-            $memberModel = new Member();
-            $existing = $memberModel->findBy('user_id', $app['user_id']);
-            if (!$existing) {
-                $user = $userModel->findById($app['user_id']);
-                $nameParts = explode(' ', $user['name'] ?? '');
-                $memberModel->insert([
-                    'user_id'       => $app['user_id'],
-                    'first_name'    => $nameParts[0],
-                    'last_name'     => implode(' ', array_slice($nameParts, 1)) ?: '',
-                    'membership_id' => generate_membership_id(),
-                    'status'        => 'active',
-                    'created_at'    => date('Y-m-d H:i:s'),
-                ]);
-            }
-        }
-
-        // If role is a staff role, create an employee record if one doesn't exist
         $staffRoles = ['trainer', 'maintenance', 'marketing', 'admin'];
         if (in_array($app['requested_role'], $staffRoles)) {
             $employeeModel = new Employee();
             $existing = $employeeModel->findBy('user_id', $app['user_id']);
             if (!$existing) {
-                $user = $userModel->findById($app['user_id']);
+                $user      = $userModel->findById($app['user_id']);
                 $nameParts = explode(' ', $user['name'] ?? '');
                 $employeeModel->insert([
                     'user_id'    => $app['user_id'],

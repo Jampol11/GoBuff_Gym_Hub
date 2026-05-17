@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 15, 2026 at 11:32 AM
+-- Generation Time: May 17, 2026 at 04:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -126,7 +126,27 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `description`, `ip_addre
 (83, 13, 'expense_update', 'Updated expense: Energy Drinks', '::1', '2026-05-15 08:28:57'),
 (84, 13, 'budget_delete', 'Deleted budget plan ID: 2', '::1', '2026-05-15 08:45:57'),
 (85, 5, 'login', 'User logged in (OTP verified)', '::1', '2026-05-15 09:18:56'),
-(86, 13, 'schedule_save', 'Saved work schedule sheet for date: 2026-05-15, 2 entries', '::1', '2026-05-15 09:23:05');
+(86, 13, 'schedule_save', 'Saved work schedule sheet for date: 2026-05-15, 2 entries', '::1', '2026-05-15 09:23:05'),
+(87, 14, 'register', 'New user registered', '::1', '2026-05-17 10:16:30'),
+(88, 14, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 10:16:45'),
+(89, 14, 'role_application', 'User applied for role: member', '::1', '2026-05-17 10:17:05'),
+(90, 2, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 10:17:41'),
+(91, 13, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 11:19:13'),
+(92, 14, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 11:19:36'),
+(93, 13, 'logout', 'User logged out', '::1', '2026-05-17 11:19:48'),
+(94, 2, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 11:20:06'),
+(95, 14, 'role_application', 'User applied for role: member', '::1', '2026-05-17 11:21:41'),
+(96, 14, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 13:45:32'),
+(97, 14, 'logout', 'User logged out', '::1', '2026-05-17 13:46:22'),
+(98, 15, 'register', 'New user registered', '::1', '2026-05-17 13:46:53'),
+(99, 15, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 13:47:02'),
+(100, 2, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 13:47:14'),
+(101, 15, 'role_application', 'User applied for role: member', '::1', '2026-05-17 13:48:12'),
+(102, 2, 'member_app_approve', 'Admin approved membership application ID: 3', '::1', '2026-05-17 13:48:37'),
+(103, 15, 'membership_checkout', 'User 15 initiated PayMongo checkout for membership ID: 2', '::1', '2026-05-17 13:55:40'),
+(104, 0, 'membership_activated', 'Membership ID 2 activated via PayMongo.', '::1', '2026-05-17 13:56:17'),
+(105, 15, 'logout', 'User logged out', '::1', '2026-05-17 13:59:32'),
+(106, 15, 'login', 'User logged in (OTP verified)', '::1', '2026-05-17 14:00:04');
 
 -- --------------------------------------------------------
 
@@ -497,7 +517,27 @@ INSERT INTO `login_logs` (`id`, `email`, `success`, `ip_address`, `attempted_at`
 (51, 'anzed333@gmail.com', 1, '::1', '2026-05-15 08:27:16'),
 (52, 'anzed333@gmail.com', 1, '::1', '2026-05-15 08:27:27'),
 (53, 'maintenance@gobuff.com', 1, '::1', '2026-05-15 09:18:47'),
-(54, 'maintenance@gobuff.com', 1, '::1', '2026-05-15 09:18:56');
+(54, 'maintenance@gobuff.com', 1, '::1', '2026-05-15 09:18:56'),
+(55, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 10:16:45'),
+(56, 'admin@gobuff.com', 1, '::1', '2026-05-17 10:17:32'),
+(57, 'admin@gobuff.com', 1, '::1', '2026-05-17 10:17:41'),
+(58, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 11:18:50'),
+(59, 'anzed333@gmail.com', 1, '::1', '2026-05-17 11:19:04'),
+(60, 'anzed333@gmail.com', 1, '::1', '2026-05-17 11:19:13'),
+(61, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 11:19:23'),
+(62, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 11:19:36'),
+(63, 'admin@gobuff.com', 1, '::1', '2026-05-17 11:19:59'),
+(64, 'admin@gobuff.com', 1, '::1', '2026-05-17 11:20:06'),
+(65, 'admin@gobuff.com', 1, '::1', '2026-05-17 13:45:06'),
+(66, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 13:45:23'),
+(67, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 13:45:32'),
+(68, 'admin@gobuff.com', 1, '::1', '2026-05-17 13:45:34'),
+(69, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 13:47:02'),
+(70, 'admin@gobuff.com', 1, '::1', '2026-05-17 13:47:06'),
+(71, 'admin@gobuff.com', 1, '::1', '2026-05-17 13:47:14'),
+(72, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 13:59:40'),
+(73, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 13:59:55'),
+(74, 'jpogs565@gmail.com', 1, '::1', '2026-05-17 14:00:04');
 
 -- --------------------------------------------------------
 
@@ -555,7 +595,8 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `user_id`, `membership_id`, `first_name`, `last_name`, `phone`, `address`, `date_of_birth`, `gender`, `emergency_contact`, `photo`, `status`, `created_at`, `updated_at`) VALUES
-(1, 6, '7749', 'Juan', 'dela Cruz', '09171234567', NULL, NULL, 'male', NULL, NULL, 'active', '2026-05-08 08:54:48', '2026-05-08 09:21:25');
+(1, 6, '7749', 'Juan', 'dela Cruz', '09171234567', NULL, NULL, 'male', NULL, NULL, 'active', '2026-05-08 08:54:48', '2026-05-08 09:21:25'),
+(8, 15, '9103', 'John Paul', 'Manulat', '09774233211', 'Davao City', '2004-08-11', 'male', 'Niga man (09094773126) - Homie', NULL, 'active', '2026-05-17 13:48:37', '2026-05-17 13:48:37');
 
 -- --------------------------------------------------------
 
@@ -581,7 +622,8 @@ CREATE TABLE `memberships` (
 --
 
 INSERT INTO `memberships` (`id`, `member_id`, `plan_name`, `plan_type`, `start_date`, `expiry_date`, `amount`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Monthly Basic', 'monthly', '2026-05-08', '2026-06-08', 999.00, 'active', '2026-05-08 08:54:48', '2026-05-08 08:54:48');
+(1, 1, 'Monthly Basic', 'monthly', '2026-05-08', '2026-06-08', 999.00, 'active', '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
+(2, 8, 'Monthly Basic', 'monthly', '2026-05-17', '2026-06-17', 999.00, 'active', '2026-05-17 13:55:39', '2026-05-17 13:56:17');
 
 -- --------------------------------------------------------
 
@@ -601,6 +643,13 @@ CREATE TABLE `membership_payments` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `membership_payments`
+--
+
+INSERT INTO `membership_payments` (`id`, `membership_id`, `member_id`, `amount`, `payment_date`, `payment_method`, `reference_no`, `status`, `created_at`) VALUES
+(1, 2, 8, 999.00, '2026-05-17', 'paymongo', 'link_0bc5129db108e73ba1bbe813', 'paid', '2026-05-17 13:55:40');
+
 -- --------------------------------------------------------
 
 --
@@ -616,6 +665,17 @@ CREATE TABLE `notifications` (
   `is_read` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `is_read`, `created_at`) VALUES
+(5, 13, 'system', 'New Role Application', 'Member pol has applied for the role: Member', 0, '2026-05-17 10:17:05'),
+(7, 2, 'system', 'New Membership Application', 'John Doe has submitted a membership application and is awaiting your review.', 0, '2026-05-17 13:48:12'),
+(8, 15, 'membership', 'Membership Application Approved', 'Your membership application has been approved by the Administrative Office! Please go to \"My Membership\" to submit your payment and activate your membership.', 0, '2026-05-17 13:48:37'),
+(9, 15, 'membership', 'Membership Activated', 'Your Monthly Basic membership is now active! Your Membership ID is: 9103. Valid until June 17, 2026. Please log out and log back in to access all member features.', 0, '2026-05-17 13:56:17'),
+(10, 2, 'membership', 'Payment Confirmed', 'Payment for John Paul Manulat\'s Monthly Basic membership has been confirmed via PayMongo.', 0, '2026-05-17 13:56:17');
 
 -- --------------------------------------------------------
 
@@ -707,7 +767,16 @@ INSERT INTO `otp_tokens` (`id`, `user_id`, `token`, `purpose`, `attempts`, `expi
 (26, 5, '496228', 'login', 0, '2026-05-15 15:33:45', '2026-05-15 15:23:57', '2026-05-15 07:23:45'),
 (27, 13, '704396', 'login', 0, '2026-05-15 15:36:52', '2026-05-15 15:27:03', '2026-05-15 07:26:52'),
 (28, 13, '944080', 'login', 0, '2026-05-15 16:37:16', '2026-05-15 16:27:27', '2026-05-15 08:27:16'),
-(29, 5, '090805', 'login', 0, '2026-05-15 17:28:47', '2026-05-15 17:18:56', '2026-05-15 09:18:47');
+(29, 5, '090805', 'login', 0, '2026-05-15 17:28:47', '2026-05-15 17:18:56', '2026-05-15 09:18:47'),
+(31, 2, '709245', 'login', 0, '2026-05-17 18:27:32', '2026-05-17 18:17:41', '2026-05-17 10:17:32'),
+(33, 13, '010286', 'login', 0, '2026-05-17 19:29:04', '2026-05-17 19:19:13', '2026-05-17 11:19:04'),
+(35, 2, '725601', 'login', 0, '2026-05-17 19:29:59', '2026-05-17 19:20:06', '2026-05-17 11:19:59'),
+(36, 2, '143409', 'login', 0, '2026-05-17 21:55:06', '2026-05-17 21:45:35', '2026-05-17 13:45:06'),
+(38, 2, '952296', 'login', 0, '2026-05-17 21:55:35', '2026-05-17 21:47:06', '2026-05-17 13:45:35'),
+(39, 15, '363214', 'register', 0, '2026-05-17 21:56:53', '2026-05-17 21:47:02', '2026-05-17 13:46:53'),
+(40, 2, '029831', 'login', 0, '2026-05-17 21:57:06', '2026-05-17 21:47:14', '2026-05-17 13:47:06'),
+(41, 15, '654082', 'login', 0, '2026-05-17 22:09:40', '2026-05-17 21:59:55', '2026-05-17 13:59:40'),
+(42, 15, '925762', 'login', 0, '2026-05-17 22:09:55', '2026-05-17 22:00:03', '2026-05-17 13:59:55');
 
 -- --------------------------------------------------------
 
@@ -764,6 +833,7 @@ CREATE TABLE `role_applications` (
   `user_id` int(10) UNSIGNED NOT NULL,
   `requested_role` enum('admin','marketing','trainer','maintenance','member') NOT NULL,
   `reason` text DEFAULT NULL,
+  `membership_form_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`membership_form_data`)),
   `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
   `reviewed_by` int(10) UNSIGNED DEFAULT NULL,
   `reviewed_at` datetime DEFAULT NULL,
@@ -771,6 +841,13 @@ CREATE TABLE `role_applications` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `role_applications`
+--
+
+INSERT INTO `role_applications` (`id`, `user_id`, `requested_role`, `reason`, `membership_form_data`, `status`, `reviewed_by`, `reviewed_at`, `review_notes`, `created_at`, `updated_at`) VALUES
+(3, 15, 'member', 'Membership application submitted via membership form.', '{\"first_name\":\"John Paul\",\"last_name\":\"Manulat\",\"date_of_birth\":\"2004-08-11\",\"gender\":\"male\",\"phone\":\"09774233211\",\"address\":\"Davao City\",\"emergency_name\":\"Niga man\",\"emergency_phone\":\"09094773126\",\"emergency_relation\":\"Homie\",\"plan_preference\":\"monthly\",\"health_conditions\":\"\",\"fitness_goals\":\"Build Masil\"}', 'approved', 2, '2026-05-17 21:48:37', 'Whats up my nigga', '2026-05-17 13:48:12', '2026-05-17 13:48:37');
 
 -- --------------------------------------------------------
 
@@ -832,12 +909,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `username`, `google_id`, `avatar_url`, `auth_provider`, `password`, `role`, `status`, `last_login`, `created_at`, `updated_at`) VALUES
-(2, 'Admin Officer', 'admin@gobuff.com', 'admin', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'admin', 'active', '2026-05-13 14:08:07', '2026-05-08 08:54:48', '2026-05-13 06:08:07'),
+(2, 'Admin Officer', 'admin@gobuff.com', 'admin', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'admin', 'active', '2026-05-17 21:47:14', '2026-05-08 08:54:48', '2026-05-17 13:47:14'),
 (3, 'Marketing Staff', 'marketing@gobuff.com', 'marketing', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'marketing', 'active', '2026-05-13 14:38:00', '2026-05-08 08:54:48', '2026-05-13 06:38:00'),
 (4, 'John Trainer', 'trainer@gobuff.com', 'trainer1', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'trainer', 'active', '2026-05-13 14:39:44', '2026-05-08 08:54:48', '2026-05-13 06:39:44'),
 (5, 'Maintenance Head', 'maintenance@gobuff.com', 'maintenance', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'maintenance', 'active', '2026-05-15 17:18:56', '2026-05-08 08:54:48', '2026-05-15 09:18:56'),
 (6, 'Juan dela Cruz', 'member@gobuff.com', 'member1', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'member', 'active', NULL, '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
-(13, 'Mr. Owner', 'anzed333@gmail.com', 'Mr. Owner Pogi', NULL, NULL, 'local', '$2y$12$guYohzPan2wIbA5MojRF6era3DkHvDp9MgKJDM7ODMX1oq0jOH5Hm', 'gym_owner', 'active', '2026-05-15 16:27:27', '2026-05-13 07:35:07', '2026-05-15 08:27:27');
+(13, 'Mr. Owner', 'anzed333@gmail.com', 'Mr. Owner Pogi', NULL, NULL, 'local', '$2y$12$guYohzPan2wIbA5MojRF6era3DkHvDp9MgKJDM7ODMX1oq0jOH5Hm', 'gym_owner', 'active', '2026-05-17 19:19:13', '2026-05-13 07:35:07', '2026-05-17 11:19:13'),
+(15, 'John Doe', 'jpogs565@gmail.com', 'jando', NULL, NULL, 'local', '$2y$12$97x03aGZgswRwcYWD726quPT28zRdlF8lw8GDeLuPUf/ho1HkOhIm', 'member', 'active', '2026-05-17 22:00:03', '2026-05-17 13:46:53', '2026-05-17 14:00:03');
 
 -- --------------------------------------------------------
 
@@ -1149,7 +1227,7 @@ ALTER TABLE `work_schedules`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 
 --
 -- AUTO_INCREMENT for table `attendance`
@@ -1227,7 +1305,7 @@ ALTER TABLE `legal_documents`
 -- AUTO_INCREMENT for table `login_logs`
 --
 ALTER TABLE `login_logs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT for table `maintenance_reports`
@@ -1239,25 +1317,25 @@ ALTER TABLE `maintenance_reports`
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `memberships`
 --
 ALTER TABLE `memberships`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `membership_payments`
 --
 ALTER TABLE `membership_payments`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `nutrition_plans`
@@ -1275,7 +1353,7 @@ ALTER TABLE `operational_expenses`
 -- AUTO_INCREMENT for table `otp_tokens`
 --
 ALTER TABLE `otp_tokens`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `progress_tracking`
@@ -1293,7 +1371,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `role_applications`
 --
 ALTER TABLE `role_applications`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `schedules`
@@ -1311,7 +1389,7 @@ ALTER TABLE `trainer_bookings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `workout_activities`

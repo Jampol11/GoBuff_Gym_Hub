@@ -1,6 +1,7 @@
 <?php
 /**
  * Role Application Form — for users with role='user'
+ * Member role shows a full membership form; other roles show a reason textarea.
  */
 ?>
 <div class="container-fluid py-4">
@@ -16,7 +17,7 @@
                 </div>
                 <div>
                     <h4 class="mb-0 fw-bold">Apply for a Role</h4>
-                    <p class="text-muted mb-0 small">Submit your role application to the Gym Owner for review.</p>
+                    <p class="text-muted mb-0 small">Submit your role application for review.</p>
                 </div>
             </div>
 
@@ -27,7 +28,7 @@
                 <div>
                     <strong>Application Pending</strong><br>
                     You have a pending application for <strong><?= role_label($hasPending['requested_role']) ?></strong>.
-                    Please wait for the Gym Owner to review it before submitting a new one.
+                    Please wait for it to be reviewed before submitting a new one.
                 </div>
             </div>
             <?php else: ?>
@@ -37,30 +38,178 @@
                     <h6 class="mb-0 fw-semibold"><i class="bi bi-send-fill me-2 text-primary"></i>New Application</h6>
                 </div>
                 <div class="card-body p-4">
-                    <form method="POST" action="<?= base_url('/role-application/apply') ?>">
+                    <form method="POST" action="<?= base_url('/role-application/apply') ?>" id="roleApplicationForm">
                         <?= csrf_field() ?>
 
+                        <!-- Role Selector -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Requested Role <span class="text-danger">*</span></label>
-                            <select name="requested_role" class="form-select" required>
+                            <select name="requested_role" id="requestedRole" class="form-select" required>
                                 <option value="">— Select a role —</option>
                                 <?php foreach ($availableRoles as $value => $label): ?>
                                 <option value="<?= e($value) ?>"><?= e($label) ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <div class="form-text">
-                                Choose the role that best describes your purpose at GoBuff.
+                            <div class="form-text">Choose the role that best describes your purpose at GoBuff.</div>
+                        </div>
+
+                        <!-- ══════════════════════════════════════════════════════ -->
+                        <!-- MEMBERSHIP FORM (shown only when "member" is selected) -->
+                        <!-- ══════════════════════════════════════════════════════ -->
+                        <div id="membershipFormSection" style="display:none;">
+
+                            <div class="alert alert-info d-flex align-items-start gap-2 mb-4 py-2">
+                                <i class="bi bi-info-circle-fill mt-1"></i>
+                                <div class="small">
+                                    Membership applications are reviewed by the <strong>Administrative Office</strong>.
+                                    Please fill in all required fields accurately.
+                                </div>
+                            </div>
+
+                            <!-- Personal Information -->
+                            <div class="card border-0 bg-light rounded-3 mb-4">
+                                <div class="card-body p-3">
+                                    <h6 class="fw-semibold mb-3 text-primary">
+                                        <i class="bi bi-person-fill me-2"></i>Personal Information
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label small fw-semibold">First Name <span class="text-danger">*</span></label>
+                                            <input type="text" name="first_name" class="form-control form-control-sm"
+                                                   placeholder="e.g. Juan">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label small fw-semibold">Last Name <span class="text-danger">*</span></label>
+                                            <input type="text" name="last_name" class="form-control form-control-sm"
+                                                   placeholder="e.g. dela Cruz">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label small fw-semibold">Date of Birth <span class="text-danger">*</span></label>
+                                            <input type="date" name="date_of_birth" class="form-control form-control-sm"
+                                                   max="<?= date('Y-m-d', strtotime('-16 years')) ?>">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label small fw-semibold">Gender <span class="text-danger">*</span></label>
+                                            <select name="gender" class="form-select form-select-sm">
+                                                <option value="">— Select —</option>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                                <option value="other">Other / Prefer not to say</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label small fw-semibold">Phone Number <span class="text-danger">*</span></label>
+                                            <input type="tel" name="phone" class="form-control form-control-sm"
+                                                   placeholder="e.g. 09XX-XXX-XXXX">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small fw-semibold">Home Address <span class="text-danger">*</span></label>
+                                            <textarea name="address" class="form-control form-control-sm" rows="2"
+                                                      placeholder="Street, Barangay, City, Province"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Contact -->
+                            <div class="card border-0 bg-light rounded-3 mb-4">
+                                <div class="card-body p-3">
+                                    <h6 class="fw-semibold mb-3 text-danger">
+                                        <i class="bi bi-telephone-fill me-2"></i>Emergency Contact
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label small fw-semibold">Contact Name <span class="text-danger">*</span></label>
+                                            <input type="text" name="emergency_name" class="form-control form-control-sm"
+                                                   placeholder="Full name">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label small fw-semibold">Contact Phone <span class="text-danger">*</span></label>
+                                            <input type="tel" name="emergency_phone" class="form-control form-control-sm"
+                                                   placeholder="e.g. 09XX-XXX-XXXX">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label small fw-semibold">Relationship <span class="text-danger">*</span></label>
+                                            <input type="text" name="emergency_relation" class="form-control form-control-sm"
+                                                   placeholder="e.g. Parent, Spouse, Sibling">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Health & Fitness -->
+                            <div class="card border-0 bg-light rounded-3 mb-4">
+                                <div class="card-body p-3">
+                                    <h6 class="fw-semibold mb-3 text-success">
+                                        <i class="bi bi-heart-pulse-fill me-2"></i>Health & Fitness
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label small fw-semibold">Known Health Conditions</label>
+                                            <textarea name="health_conditions" class="form-control form-control-sm" rows="2"
+                                                      placeholder="e.g. asthma, hypertension, diabetes — or leave blank if none"></textarea>
+                                            <div class="form-text">Optional. This helps our trainers provide safe guidance.</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small fw-semibold">Fitness Goals</label>
+                                            <textarea name="fitness_goals" class="form-control form-control-sm" rows="2"
+                                                      placeholder="e.g. lose weight, build muscle, improve endurance"></textarea>
+                                            <div class="form-text">Optional. Tell us what you want to achieve.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Membership Plan Preference -->
+                            <div class="card border-0 bg-light rounded-3 mb-4">
+                                <div class="card-body p-3">
+                                    <h6 class="fw-semibold mb-3 text-warning">
+                                        <i class="bi bi-card-checklist me-2"></i>Membership Plan Preference
+                                    </h6>
+                                    <div class="row g-3">
+                                        <?php
+                                        $plans = [
+                                            'monthly'     => ['Monthly',      '1 Month',   'bi-calendar-month',    'primary'],
+                                            'quarterly'   => ['Quarterly',    '3 Months',  'bi-calendar3',         'success'],
+                                            'semi_annual' => ['Semi-Annual',  '6 Months',  'bi-calendar-range',    'warning'],
+                                            'annual'      => ['Annual',       '12 Months', 'bi-calendar-check',    'danger'],
+                                        ];
+                                        foreach ($plans as $val => [$label, $duration, $icon, $color]):
+                                        ?>
+                                        <div class="col-sm-6 col-lg-3">
+                                            <label class="plan-card d-block cursor-pointer">
+                                                <input type="radio" name="plan_preference" value="<?= $val ?>"
+                                                       class="d-none plan-radio">
+                                                <div class="card border-2 text-center p-3 h-100 plan-option">
+                                                    <i class="bi <?= $icon ?> fs-3 text-<?= $color ?> mb-2"></i>
+                                                    <div class="fw-semibold"><?= $label ?></div>
+                                                    <div class="text-muted small"><?= $duration ?></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Final pricing and start date will be confirmed by the Administrative Office upon approval.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- END MEMBERSHIP FORM SECTION -->
+
+                        <!-- REASON FIELD (shown for non-member roles) -->
+                        <div id="reasonSection" style="display:none;">
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Reason / Background <span class="text-danger">*</span></label>
+                                <textarea name="reason" id="reasonField" class="form-control" rows="5" minlength="10"
+                                    placeholder="Briefly explain why you are applying for this role (e.g. I am a certified fitness trainer with 3 years of experience...)"></textarea>
+                                <div class="form-text">Minimum 10 characters.</div>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">Reason / Background <span class="text-danger">*</span></label>
-                            <textarea name="reason" class="form-control" rows="5" required minlength="10"
-                                placeholder="Briefly explain why you are applying for this role (e.g. I am a gym enthusiast who wants to enroll as a member, or I am a certified fitness trainer...)"></textarea>
-                            <div class="form-text">Minimum 10 characters.</div>
-                        </div>
-
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2" id="submitSection" style="display:none !important;">
                             <button type="submit" class="btn btn-primary px-4">
                                 <i class="bi bi-send me-2"></i>Submit Application
                             </button>
@@ -116,3 +265,86 @@
         </div>
     </div>
 </div>
+
+<style>
+.plan-option {
+    border-color: #dee2e6 !important;
+    transition: border-color .15s, box-shadow .15s;
+    cursor: pointer;
+}
+.plan-radio:checked + .plan-option {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 3px rgba(13,110,253,.15);
+    background: rgba(13,110,253,.04);
+}
+.plan-option:hover {
+    border-color: #86b7fe !important;
+}
+</style>
+
+<script>
+(function () {
+    const roleSelect       = document.getElementById('requestedRole');
+    const memberSection    = document.getElementById('membershipFormSection');
+    const reasonSection    = document.getElementById('reasonSection');
+    const submitSection    = document.getElementById('submitSection');
+    const reasonField      = document.getElementById('reasonField');
+
+    function toggleSections() {
+        const val = roleSelect.value;
+        if (!val) {
+            memberSection.style.display = 'none';
+            reasonSection.style.display = 'none';
+            submitSection.style.display = 'none';
+            return;
+        }
+
+        submitSection.style.display = '';
+
+        if (val === 'member') {
+            memberSection.style.display = '';
+            reasonSection.style.display = 'none';
+            // Remove required from reason when hidden
+            reasonField.removeAttribute('required');
+            // Add required to membership fields
+            setMembershipRequired(true);
+        } else {
+            memberSection.style.display = 'none';
+            reasonSection.style.display = '';
+            reasonField.setAttribute('required', 'required');
+            setMembershipRequired(false);
+        }
+    }
+
+    function setMembershipRequired(required) {
+        const fields = ['first_name','last_name','date_of_birth','gender','phone','address',
+                        'emergency_name','emergency_phone','emergency_relation'];
+        fields.forEach(name => {
+            const el = document.querySelector('[name="' + name + '"]');
+            if (el) {
+                if (required) el.setAttribute('required', 'required');
+                else el.removeAttribute('required');
+            }
+        });
+        // Plan preference radio group
+        const planRadios = document.querySelectorAll('.plan-radio');
+        planRadios.forEach(r => {
+            if (required) r.setAttribute('required', 'required');
+            else r.removeAttribute('required');
+        });
+    }
+
+    // Plan card visual selection
+    document.querySelectorAll('.plan-radio').forEach(radio => {
+        radio.addEventListener('change', function () {
+            document.querySelectorAll('.plan-option').forEach(c => c.classList.remove('selected'));
+            if (this.checked) {
+                this.nextElementSibling.classList.add('selected');
+            }
+        });
+    });
+
+    roleSelect.addEventListener('change', toggleSections);
+    toggleSections(); // run on load in case of browser back-fill
+})();
+</script>
