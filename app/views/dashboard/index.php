@@ -1,6 +1,103 @@
 <div class="container-fluid py-4">
 
-    <?php if (has_role(['user'])): ?>
+    <?php if (!Auth::check()): ?>
+    <!-- ══════════════════════════════════════════════════════════════════
+         GUEST DASHBOARD — Not logged in
+    ══════════════════════════════════════════════════════════════════ -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                 style="width:80px;height:80px">
+                <i class="bi bi-lightning-charge-fill text-primary fs-1"></i>
+            </div>
+            <h2 class="fw-bold mb-2">Welcome to GoBuff Gym Hub</h2>
+            <p class="text-muted mb-4 fs-5">Your all-in-one gym management platform. Check out our current promotions below, then sign up to start your fitness journey!</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="<?= base_url('/register') ?>" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-person-plus-fill me-2"></i>Create Account
+                </a>
+                <a href="<?= base_url('/login') ?>" class="btn btn-outline-primary btn-lg px-5">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Campaigns for Guests -->
+    <?php if (!empty($active_campaigns)): ?>
+    <div class="mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 class="fw-bold mb-0"><i class="bi bi-megaphone-fill me-2 text-success"></i>Current Promotions &amp; Offers</h4>
+            <span class="badge bg-success fs-6"><?= count($active_campaigns) ?> Active</span>
+        </div>
+        <div class="row g-4">
+            <?php foreach ($active_campaigns as $campaign): ?>
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm campaign-card border-success border-opacity-25">
+                    <?php if (!empty($campaign['banner_image'])): ?>
+                    <img src="<?= asset('uploads/campaigns/' . $campaign['banner_image']) ?>"
+                         class="card-img-top" style="height:160px;object-fit:cover"
+                         alt="<?= e($campaign['title']) ?>">
+                    <?php else: ?>
+                    <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10"
+                         style="height:120px">
+                        <i class="bi bi-megaphone-fill text-success" style="font-size:3rem;opacity:.5"></i>
+                    </div>
+                    <?php endif; ?>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="fw-bold mb-0"><?= e($campaign['title']) ?></h6>
+                            <?php if ($campaign['discount_pct'] > 0): ?>
+                            <span class="badge bg-danger ms-2 text-nowrap"><?= number_format($campaign['discount_pct'], 0) ?>% OFF</span>
+                            <?php endif; ?>
+                        </div>
+                        <?php if (!empty($campaign['description'])): ?>
+                        <p class="text-muted small mb-2"><?= e(mb_strimwidth($campaign['description'], 0, 100, '…')) ?></p>
+                        <?php endif; ?>
+                        <div class="text-muted small mb-3">
+                            <i class="bi bi-calendar-range me-1"></i>
+                            <?= format_date($campaign['start_date']) ?> &ndash; <?= format_date($campaign['end_date']) ?>
+                        </div>
+                        <!-- Platform icons -->
+                        <div class="d-flex gap-2 mb-3">
+                            <?php if ($campaign['platform_website'] ?? 1): ?>
+                            <i class="bi bi-globe2 text-primary" title="Website" style="font-size:1.1rem"></i>
+                            <?php endif; ?>
+                            <?php if (!empty($campaign['platform_facebook'])): ?>
+                            <i class="bi bi-facebook" title="Facebook" style="font-size:1.1rem;color:#1877F2"></i>
+                            <?php endif; ?>
+                            <?php if (!empty($campaign['platform_instagram'])): ?>
+                            <i class="bi bi-instagram" title="Instagram" style="font-size:1.1rem;color:#E1306C"></i>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex gap-2">
+                        <a href="<?= base_url('/campaigns/' . $campaign['id']) ?>" class="btn btn-outline-success btn-sm flex-fill">
+                            <i class="bi bi-eye me-1"></i>View Offer
+                        </a>
+                        <a href="<?= base_url('/register') ?>" class="btn btn-success btn-sm flex-fill">
+                            <i class="bi bi-person-plus me-1"></i>Join Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php else: ?>
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5 text-muted">
+            <i class="bi bi-megaphone fs-1 d-block mb-3 text-secondary"></i>
+            <h5>No active promotions right now</h5>
+            <p class="mb-4">Check back soon for exciting offers and membership deals!</p>
+            <a href="<?= base_url('/register') ?>" class="btn btn-primary">
+                <i class="bi bi-person-plus-fill me-1"></i>Create Account
+            </a>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?php elseif (has_role(['user'])): ?>
     <!-- ── User: No Role Yet ─────────────────────────────────────────── -->
     <?php
     // Check if user has an approved member application awaiting payment
@@ -36,6 +133,61 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     <?php endif; ?>
+    <?php endif; ?>
+
+    <!-- Campaigns for logged-in users without a role -->
+    <?php if (has_role(['user']) && !empty($active_campaigns)): ?>
+    <div class="mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h5 class="fw-bold mb-0"><i class="bi bi-megaphone-fill me-2 text-success"></i>Current Promotions &amp; Offers</h5>
+            <span class="badge bg-success"><?= count($active_campaigns) ?> Active</span>
+        </div>
+        <div class="row g-3">
+            <?php foreach ($active_campaigns as $campaign): ?>
+            <div class="col-md-6 col-lg-4">
+                <a href="<?= base_url('/campaigns/' . $campaign['id']) ?>" class="text-decoration-none">
+                    <div class="card h-100 border-success border-opacity-25 campaign-card shadow-sm">
+                        <?php if (!empty($campaign['banner_image'])): ?>
+                        <img src="<?= asset('uploads/campaigns/' . $campaign['banner_image']) ?>"
+                             class="card-img-top" style="height:130px;object-fit:cover"
+                             alt="<?= e($campaign['title']) ?>">
+                        <?php else: ?>
+                        <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10" style="height:90px">
+                            <i class="bi bi-megaphone-fill text-success" style="font-size:2.5rem;opacity:.5"></i>
+                        </div>
+                        <?php endif; ?>
+                        <div class="card-body py-3">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h6 class="fw-bold mb-0 text-body"><?= e($campaign['title']) ?></h6>
+                                <?php if ($campaign['discount_pct'] > 0): ?>
+                                <span class="badge bg-danger ms-2"><?= number_format($campaign['discount_pct'], 0) ?>% OFF</span>
+                                <?php endif; ?>
+                            </div>
+                            <?php if (!empty($campaign['description'])): ?>
+                            <p class="text-muted small mb-1"><?= e(mb_strimwidth($campaign['description'], 0, 80, '…')) ?></p>
+                            <?php endif; ?>
+                            <div class="text-muted small">
+                                <i class="bi bi-calendar-range me-1"></i>
+                                <?= format_date($campaign['start_date']) ?> &ndash; <?= format_date($campaign['end_date']) ?>
+                            </div>
+                            <div class="d-flex gap-2 mt-2">
+                                <?php if ($campaign['platform_website'] ?? 1): ?>
+                                <i class="bi bi-globe2 text-primary" title="Website"></i>
+                                <?php endif; ?>
+                                <?php if (!empty($campaign['platform_facebook'])): ?>
+                                <i class="bi bi-facebook" title="Facebook" style="color:#1877F2"></i>
+                                <?php endif; ?>
+                                <?php if (!empty($campaign['platform_instagram'])): ?>
+                                <i class="bi bi-instagram" title="Instagram" style="color:#E1306C"></i>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
     <?php endif; ?>
 
     <!-- Page Header -->
@@ -1208,6 +1360,51 @@
             </div>
         </div>
     </div>
+
+    <!-- Active Campaigns / Promotions -->
+    <?php if (!empty($active_campaigns)): ?>
+    <style>
+        .campaign-card { transition: transform .15s ease, box-shadow .15s ease; cursor: pointer; }
+        .campaign-card:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important; border-color: #198754 !important; }
+    </style>
+    <div class="row g-4 mt-0">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-semibold"><i class="bi bi-megaphone-fill me-2 text-success"></i>Active Promotions &amp; Campaigns</h6>
+                    <span class="badge bg-success"><?= count($active_campaigns) ?> Active</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <?php foreach ($active_campaigns as $campaign): ?>
+                        <div class="col-sm-6 col-lg-4">
+                            <a href="<?= base_url('/campaigns/' . $campaign['id']) ?>" class="text-decoration-none">
+                                <div class="card h-100 border-success border-opacity-25 campaign-card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="fw-bold mb-0 text-body"><?= e($campaign['title']) ?></h6>
+                                            <?php if (!empty($campaign['discount_percent']) && $campaign['discount_percent'] > 0): ?>
+                                            <span class="badge bg-danger ms-2 text-nowrap"><?= number_format($campaign['discount_percent'], 2) ?>% OFF</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php if (!empty($campaign['description'])): ?>
+                                        <p class="text-muted small mb-2"><?= e($campaign['description']) ?></p>
+                                        <?php endif; ?>
+                                        <div class="text-muted small">
+                                            <i class="bi bi-calendar-range me-1"></i>
+                                            <?= format_date($campaign['start_date']) ?> &ndash; <?= format_date($campaign['end_date']) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
     <?php endif; ?>
 
 </div>

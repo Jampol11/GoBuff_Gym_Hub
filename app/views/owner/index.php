@@ -76,6 +76,53 @@
         </div>
     </div>
 
+    <!-- Process 8: Services & Rates Quick Panel -->
+    <?php
+    $svcModel = new GymService();
+    $totalSvc = $svcModel->count();
+    $pendingSvc = $svcModel->count('submitted_to_marketing = 0 AND is_active = 1');
+    $submittedSvc = $svcModel->count('submitted_to_marketing = 1 AND is_active = 1');
+    ?>
+    <div class="card border-0 shadow-sm border-start border-primary border-4 mb-4">
+        <div class="card-header bg-transparent d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-tags-fill text-primary fs-5"></i>
+                <strong>Services &amp; Membership Rates</strong>
+                <span class="badge bg-primary"><?= $totalSvc ?> total</span>
+            </div>
+            <a href="<?= base_url('/owner/services') ?>" class="btn btn-sm btn-primary">
+                <i class="bi bi-tags-fill me-1"></i>Manage Services
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+                <div class="col-sm-4 text-center">
+                    <div class="fs-1 fw-bold text-primary"><?= $totalSvc ?></div>
+                    <div class="text-muted small">Total Services</div>
+                </div>
+                <div class="col-sm-4 text-center">
+                    <div class="fs-1 fw-bold text-warning"><?= $pendingSvc ?></div>
+                    <div class="text-muted small">Pending Submission</div>
+                </div>
+                <div class="col-sm-4 text-center">
+                    <div class="fs-1 fw-bold text-success"><?= $submittedSvc ?></div>
+                    <div class="text-muted small">Submitted to Marketing</div>
+                </div>
+            </div>
+            <?php if ($pendingSvc > 0): ?>
+            <div class="alert alert-warning d-flex align-items-center gap-3 mt-3 mb-0 py-2">
+                <i class="bi bi-send-fill text-warning fs-5"></i>
+                <div class="flex-grow-1 small">
+                    <strong><?= $pendingSvc ?> service(s)</strong> are ready to be submitted to the Marketing Officer for campaign creation.
+                </div>
+                <a href="<?= base_url('/owner/services') ?>" class="btn btn-warning btn-sm text-nowrap">
+                    Submit Now
+                </a>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <div class="row g-4">
 
         <!-- Expiring Documents -->

@@ -222,6 +222,18 @@
             </a>
         </li>
         <li class="nav-item">
+            <a href="<?= base_url('/marketing/services') ?>" class="nav-link <?= is_active('/marketing/services') ?>">
+                <i class="bi bi-tags-fill"></i>
+                <span>Services from Owner</span>
+                <?php
+                $mktSvcModel = new GymService();
+                $newSvc = $mktSvcModel->count('submitted_to_marketing = 1 AND is_active = 1');
+                if ($newSvc > 0): ?>
+                    <span class="badge bg-info text-dark ms-auto"><?= $newSvc ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="<?= base_url('/campaigns') ?>" class="nav-link <?= is_active('/campaigns') ?>">
                 <i class="bi bi-megaphone-fill"></i>
                 <span>Campaigns</span>
@@ -265,6 +277,12 @@
             <a href="<?= base_url('/equipment') ?>" class="nav-link <?= is_active('/equipment') ?>">
                 <i class="bi bi-tools"></i>
                 <span>Equipment</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/my-campaigns') ?>" class="nav-link <?= is_active('/my-campaigns') ?>">
+                <i class="bi bi-megaphone-fill"></i>
+                <span>Campaigns</span>
             </a>
         </li>
         <?php endif; ?>
@@ -350,6 +368,12 @@
 
         <li class="nav-label">Marketing</li>
         <li class="nav-item">
+            <a href="<?= base_url('/owner/services') ?>" class="nav-link <?= is_active('/owner/services') ?>">
+                <i class="bi bi-tags-fill"></i>
+                <span>Services &amp; Rates</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="<?= base_url('/campaigns') ?>" class="nav-link <?= is_active('/campaigns') ?>">
                 <i class="bi bi-megaphone-fill"></i>
                 <span>Campaigns</span>
@@ -361,6 +385,18 @@
             <a href="<?= base_url('/owner') ?>" class="nav-link <?= is_active('/owner') ?>">
                 <i class="bi bi-building-fill-gear"></i>
                 <span>Owner Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/owner/services') ?>" class="nav-link <?= is_active('/owner/services') ?>">
+                <i class="bi bi-tags-fill"></i>
+                <span>Services &amp; Rates</span>
+                <?php
+                $svcModel = new GymService();
+                $pendingSvc = $svcModel->count('submitted_to_marketing = 0 AND is_active = 1');
+                if ($pendingSvc > 0): ?>
+                    <span class="badge bg-warning text-dark ms-auto"><?= $pendingSvc ?></span>
+                <?php endif; ?>
             </a>
         </li>
         <li class="nav-item">

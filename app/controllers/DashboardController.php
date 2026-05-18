@@ -6,16 +6,15 @@ class DashboardController extends Controller
 {
     public function index(): void
     {
-        AuthMiddleware::handle();
-
-        $role       = Auth::role();
+        // Allow guests to see the dashboard (with campaigns only)
+        $role       = Auth::check() ? Auth::role() : null;
         $userId     = Auth::id();
         $notifModel = new Notification();
 
         // Base data for everyone
         $data = [
             'title'        => 'Dashboard',
-            'unread_notifs'=> $notifModel->getUnreadCount($userId),
+            'unread_notifs'=> $userId ? $notifModel->getUnreadCount($userId) : 0,
         ];
 
         // ── Gym Owner & Admin ────────────────────────────────────────────
@@ -173,6 +172,7 @@ class DashboardController extends Controller
             $fitnessPlanModel   = new FitnessPlan();
             $nutritionPlanModel = new NutritionPlan();
             $dietModel          = new DietaryLog();
+            $campaignModel      = new Campaign();
 
             $member = $memberModel->getMemberByUserId($userId);
             $memberId = $member['id'] ?? null;
@@ -202,16 +202,29 @@ class DashboardController extends Controller
                 'active_nutrition_plan'=> $activeNutritionPlan,
                 'today_diet'           => $todayDiet,
                 'today_calories'       => $todayCalories,
+                'active_campaigns'     => $campaignModel->getActiveCampaigns(),
             ];
         }
 
         // ── User (no role yet) ───────────────────────────────────────────
         if ($role === 'user') {
             $raModel = new RoleApplication();
+            $campaignModel = new Campaign();
             $data += [
-                'my_applications' => $raModel->getForUser($userId),
-                'pending_app'     => $raModel->getPendingForUser($userId),
+                'my_applications'  => $raModel->getForUser($userId),
+                'pending_app'      => $raModel->getPendingForUser($userId),
+                'active_campaigns' => $campaignModel->getActiveCampaigns(),
             ];
+        }
+
+        // ── Guest (not logged in) ────────────────────────────────────────
+        if (!Auth::check()) {
+            $campaignModel = new Campaign();
+            $data += [
+                'active_campaigns' => $campaignModel->getActiveCampaigns(),
+            ];
+            $this->view('dashboard.index', $data, 'public');
+            return;
         }
 
         $this->view('dashboard.index', $data);

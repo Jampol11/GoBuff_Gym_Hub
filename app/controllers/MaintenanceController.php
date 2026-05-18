@@ -28,6 +28,37 @@ class MaintenanceController extends Controller
         ]);
     }
 
+    public function show(string $id): void
+    {
+        AuthMiddleware::handle();
+
+        $report = $this->model->findById((int)$id);
+        if (!$report) {
+            $this->flash('error', 'Maintenance report not found.');
+            $this->redirect('/maintenance');
+        }
+
+        // Enrich with equipment and reporter names
+        $equipmentModel = new Equipment();
+        $equipment      = $equipmentModel->findById($report['equipment_id']);
+
+        $reporterName = 'N/A';
+        if (!empty($report['reported_by'])) {
+            $employeeModel = new Employee();
+            $reporter      = $employeeModel->findById($report['reported_by']);
+            if ($reporter) {
+                $reporterName = trim($reporter['first_name'] . ' ' . $reporter['last_name']);
+            }
+        }
+
+        $this->view('maintenance.show', [
+            'title'         => 'Maintenance Report Details',
+            'report'        => $report,
+            'equipment'     => $equipment,
+            'reporter_name' => $reporterName,
+        ]);
+    }
+
     public function create(): void
     {
         AuthMiddleware::handle();
@@ -83,6 +114,30 @@ class MaintenanceController extends Controller
         $newId = $this->model->insert($data);
         if ($newId) {
             log_activity('maintenance_report', "Maintenance reported for equipment ID: {$data['equipment_id']}");
+
+            // Notify all gym owners about the new maintenance report
+            $equipmentModel2 = new Equipment();
+            $equipment       = $equipmentModel2->findById($data['equipment_id']);
+            $equipmentName   = $equipment ? $equipment['name'] : "Equipment #{$data['equipment_id']}";
+            $reporterName    = 'N/A';
+            if ($reporter) {
+                $reporterName = trim(($reporter['first_name'] ?? '') . ' ' . ($reporter['last_name'] ?? ''));
+            }
+
+            $notifModel = new Notification();
+            $userModel  = new User();
+            $owners     = $userModel->getUsersByRole('gym_owner');
+            foreach ($owners as $owner) {
+                $notifModel->createNotification(
+                    (int)$owner['id'],
+                    'maintenance',
+                    'New Maintenance Report',
+                    "A new maintenance report was submitted for \"{$equipmentName}\" "
+                        . "(Priority: {$data['priority']}, Issue: {$data['issue_type']}) "
+                        . "by {$reporterName}. Please review and verify."
+                );
+            }
+
             $this->flash('success', 'Maintenance report submitted.');
             $this->redirect('/maintenance');
         } else {
@@ -94,24 +149,42 @@ class MaintenanceController extends Controller
     public function verify(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin', 'maintenance']);
+        RoleMiddleware::handle(['gym_owner', 'admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
         }
 
         $report = $this->model->findById((int)$id);
-        if ($report) {
+        if ($report && $report['status'] === 'pending') {
             $this->model->update((int)$id, [
                 'status'      => 'in_progress',
                 'verified_at' => date('Y-m-d H:i:s'),
             ]);
+
             // Update equipment status
             $equipmentModel = new Equipment();
+            $equipment      = $equipmentModel->findById($report['equipment_id']);
             $equipmentModel->update($report['equipment_id'], ['condition_status' => 'under_maintenance']);
+
+            // Notify the reporter that their report has been verified
+            if (!empty($report['reported_by'])) {
+                $employeeModel = new Employee();
+                $reporter      = $employeeModel->findById($report['reported_by']);
+                if ($reporter && !empty($reporter['user_id'])) {
+                    $equipmentName = $equipment ? $equipment['name'] : "Equipment #{$report['equipment_id']}";
+                    $notifModel    = new Notification();
+                    $notifModel->createNotification(
+                        (int)$reporter['user_id'],
+                        'maintenance',
+                        'Maintenance Report Verified',
+                        "Your maintenance report for \"{$equipmentName}\" has been verified by the owner. Please proceed with the repair work and mark it complete when done."
+                    );
+                }
+            }
         }
 
-        $this->flash('success', 'Maintenance report verified and in progress.');
+        $this->flash('success', 'Maintenance report verified. Staff has been notified to proceed.');
         $this->redirect('/maintenance');
     }
 
@@ -125,21 +198,77 @@ class MaintenanceController extends Controller
         }
 
         $report = $this->model->findById((int)$id);
-        if ($report) {
+        if ($report && $report['status'] === 'in_progress') {
             $this->model->update((int)$id, [
                 'status'       => 'completed',
                 'completed_at' => date('Y-m-d H:i:s'),
-                'resolution'   => sanitize($_POST['resolution'] ?? 'Maintenance completed'),
+                'resolution'   => sanitize($_POST['resolution'] ?? 'Maintenance work completed.'),
             ]);
-            // Restore equipment status
+
+            // Notify all owners that work is done and awaiting their approval
             $equipmentModel = new Equipment();
+            $equipment      = $equipmentModel->findById($report['equipment_id']);
+            $equipmentName  = $equipment ? $equipment['name'] : "Equipment #{$report['equipment_id']}";
+
+            $notifModel = new Notification();
+            $userModel  = new User();
+            $owners     = $userModel->getUsersByRole('gym_owner');
+            foreach ($owners as $owner) {
+                $notifModel->createNotification(
+                    (int)$owner['id'],
+                    'maintenance',
+                    'Maintenance Work Completed — Awaiting Approval',
+                    "The maintenance work for \"{$equipmentName}\" has been completed by staff. Please review and give final approval."
+                );
+            }
+        }
+
+        $this->flash('success', 'Maintenance marked as completed. Awaiting owner approval.');
+        $this->redirect('/maintenance');
+    }
+
+    public function approve(string $id): void
+    {
+        AuthMiddleware::handle();
+        RoleMiddleware::handle(['gym_owner', 'admin']);
+
+        if (!verify_csrf()) {
+            $this->json(['error' => 'Invalid token'], 403);
+        }
+
+        $report = $this->model->findById((int)$id);
+        if ($report && $report['status'] === 'completed') {
+            $this->model->update((int)$id, [
+                'status'      => 'approved',
+                'approved_at' => date('Y-m-d H:i:s'),
+            ]);
+
+            // Restore equipment to good condition
+            $equipmentModel = new Equipment();
+            $equipment      = $equipmentModel->findById($report['equipment_id']);
             $equipmentModel->update($report['equipment_id'], [
                 'condition_status'      => 'good',
                 'last_maintenance_date' => date('Y-m-d'),
             ]);
+
+            // Notify the reporter of final approval
+            if (!empty($report['reported_by'])) {
+                $employeeModel = new Employee();
+                $reporter      = $employeeModel->findById($report['reported_by']);
+                if ($reporter && !empty($reporter['user_id'])) {
+                    $equipmentName = $equipment ? $equipment['name'] : "Equipment #{$report['equipment_id']}";
+                    $notifModel    = new Notification();
+                    $notifModel->createNotification(
+                        (int)$reporter['user_id'],
+                        'maintenance',
+                        'Maintenance Report Approved',
+                        "The maintenance report for \"{$equipmentName}\" has been reviewed and approved by the owner. The equipment is back in service."
+                    );
+                }
+            }
         }
 
-        $this->flash('success', 'Maintenance marked as completed.');
+        $this->flash('success', 'Maintenance report approved. Equipment restored to service.');
         $this->redirect('/maintenance');
     }
 }

@@ -37,8 +37,11 @@ $user = auth_user();
                 <div class="dropdown-header d-flex justify-content-between align-items-center">
                     <span class="fw-semibold">Notifications</span>
                     <?php if ($unreadCount > 0): ?>
-                        <a href="<?= base_url('/notifications/read-all') ?>" class="text-primary small"
-                           onclick="return confirm('Mark all as read?')">Mark all read</a>
+                        <form method="POST" action="<?= base_url('/notifications/read-all') ?>" class="d-inline">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn btn-link text-primary small p-0 border-0"
+                                    onclick="return confirm('Mark all as read?')">Mark all read</button>
+                        </form>
                     <?php endif; ?>
                 </div>
                 <?php if (empty($notifications)): ?>
@@ -48,17 +51,19 @@ $user = auth_user();
                     </div>
                 <?php else: ?>
                     <?php foreach ($notifications as $notif): ?>
-                        <a href="<?= base_url('/notifications/' . $notif['id'] . '/read') ?>"
-                           class="dropdown-item notif-item <?= $notif['is_read'] ? '' : 'unread' ?>">
-                            <div class="notif-icon bg-<?= $notif['type'] === 'membership' ? 'primary' : 'info' ?>">
-                                <i class="bi bi-<?= $notif['type'] === 'membership' ? 'card-checklist' : 'bell' ?>"></i>
-                            </div>
-                            <div class="notif-content">
-                                <div class="notif-title"><?= e($notif['title']) ?></div>
-                                <div class="notif-text"><?= e(substr($notif['message'], 0, 60)) ?>...</div>
-                                <div class="notif-time"><?= format_datetime($notif['created_at']) ?></div>
-                            </div>
-                        </a>
+                        <form method="POST" action="<?= base_url('/notifications/' . $notif['id'] . '/read') ?>">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="dropdown-item notif-item <?= $notif['is_read'] ? '' : 'unread' ?>" style="text-align:left;width:100%;background:none;border:none;padding:0;">
+                                <div class="notif-icon bg-<?= $notif['type'] === 'membership' ? 'primary' : 'info' ?>">
+                                    <i class="bi bi-<?= $notif['type'] === 'membership' ? 'card-checklist' : 'bell' ?>"></i>
+                                </div>
+                                <div class="notif-content">
+                                    <div class="notif-title"><?= e($notif['title']) ?></div>
+                                    <div class="notif-text"><?= e(substr($notif['message'], 0, 60)) ?>...</div>
+                                    <div class="notif-time"><?= format_datetime($notif['created_at']) ?></div>
+                                </div>
+                            </button>
+                        </form>
                     <?php endforeach; ?>
                 <?php endif; ?>
                 <div class="dropdown-footer">

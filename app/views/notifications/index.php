@@ -42,8 +42,10 @@
                                 <p class="mb-2 <?= $n['is_read'] ? 'text-muted' : '' ?>"><?= e($n['message']) ?></p>
                                 <div class="d-flex gap-2">
                                     <?php if (!$n['is_read']): ?>
-                                        <a href="<?= base_url('/notifications/' . $n['id'] . '/read') ?>"
-                                           class="btn btn-sm btn-outline-primary">Mark as Read</a>
+                                        <form method="POST" action="<?= base_url('/notifications/' . $n['id'] . '/read') ?>" class="d-inline">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">Mark as Read</button>
+                                        </form>
                                     <?php else: ?>
                                         <span class="badge bg-light text-muted border">Read</span>
                                     <?php endif; ?>

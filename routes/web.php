@@ -123,8 +123,10 @@ $router->post('/equipment/{id}/delete', 'EquipmentController@destroy');
 $router->get('/maintenance',                  'MaintenanceController@index',   'maintenance');
 $router->get('/maintenance/create',           'MaintenanceController@create');
 $router->post('/maintenance',                 'MaintenanceController@store');
+$router->get('/maintenance/{id}',             'MaintenanceController@show');
 $router->post('/maintenance/{id}/verify',     'MaintenanceController@verify');
 $router->post('/maintenance/{id}/complete',   'MaintenanceController@complete');
+$router->post('/maintenance/{id}/approve',    'MaintenanceController@approve');
 
 // ─── Employees (Process 6: Assigning Job Role) ───────────────────────────────
 $router->get('/employees',                          'EmployeeController@index',           'employees');
@@ -150,6 +152,8 @@ $router->get('/campaigns/{id}',         'CampaignController@show');
 $router->get('/campaigns/{id}/edit',    'CampaignController@edit');
 $router->post('/campaigns/{id}/update', 'CampaignController@update');
 $router->post('/campaigns/{id}/delete', 'CampaignController@destroy');
+$router->post('/campaigns/{id}/join',   'CampaignController@join');
+$router->get('/my-campaigns',           'CampaignController@myCampaigns');
 
 // ─── Notifications ───────────────────────────────────────────────────────────
 $router->get('/notifications',              'NotificationController@index',      'notifications');
@@ -167,6 +171,18 @@ $router->post('/diet/{id}/delete', 'DietController@destroy');
 
 // ─── Owner Hub ───────────────────────────────────────────────────────────────
 $router->get('/owner',                              'OwnerController@index',          'owner');
+
+// Services & Rates (Process 8: Managing Gym Operations)
+$router->get('/owner/services',                     'ServiceController@index',        'owner.services');
+$router->get('/owner/services/create',              'ServiceController@create');
+$router->post('/owner/services',                    'ServiceController@store');
+$router->get('/owner/services/{id}/edit',           'ServiceController@edit');
+$router->post('/owner/services/{id}/update',        'ServiceController@update');
+$router->post('/owner/services/{id}/delete',        'ServiceController@destroy');
+$router->post('/owner/services/submit-to-marketing','ServiceController@submitToMarketing');
+
+// Marketing Officer: view submitted services
+$router->get('/marketing/services',                 'ServiceController@marketingView', 'marketing.services');
 
 // Legal Documents
 $router->get('/owner/documents',                    'OwnerController@documents',      'owner.documents');

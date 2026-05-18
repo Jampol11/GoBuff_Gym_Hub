@@ -33,22 +33,28 @@
                                     <td><?= status_badge($r['status']) ?></td>
                                     <td><?= format_date($r['created_at']) ?></td>
                                     <td>
-                                        <?php if (has_role(['gym_owner','admin','maintenance'])): ?>
                                         <div class="btn-group btn-group-sm">
-                                            <?php if ($r['status'] === 'pending'): ?>
-                                                <form method="POST" action="<?= base_url('/maintenance/' . $r['id'] . '/verify') ?>">
-                                                    <?= csrf_field() ?>
-                                                    <button class="btn btn-outline-info" title="Verify"><i class="bi bi-check-circle"></i></button>
-                                                </form>
+                                            <a href="<?= base_url('/maintenance/' . $r['id']) ?>" class="btn btn-outline-secondary" title="View"><i class="bi bi-eye"></i></a>
+                                            <?php if (has_role(['gym_owner','admin'])): ?>
+                                                <?php if ($r['status'] === 'pending'): ?>
+                                                    <form method="POST" action="<?= base_url('/maintenance/' . $r['id'] . '/verify') ?>">
+                                                        <?= csrf_field() ?>
+                                                        <button class="btn btn-outline-info" title="Verify — assign to staff"><i class="bi bi-check-circle"></i></button>
+                                                    </form>
+                                                <?php endif; ?>
+                                                <?php if ($r['status'] === 'completed'): ?>
+                                                    <form method="POST" action="<?= base_url('/maintenance/' . $r['id'] . '/approve') ?>">
+                                                        <?= csrf_field() ?>
+                                                        <button class="btn btn-outline-success" title="Approve & close"><i class="bi bi-patch-check"></i></button>
+                                                    </form>
+                                                <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if (in_array($r['status'], ['pending','in_progress'])): ?>
-                                                <form method="POST" action="<?= base_url('/maintenance/' . $r['id'] . '/complete') ?>">
-                                                    <?= csrf_field() ?>
-                                                    <button class="btn btn-outline-success" title="Complete"><i class="bi bi-check-lg"></i></button>
-                                                </form>
+                                            <?php if (has_role(['gym_owner','admin','maintenance']) && $r['status'] === 'in_progress'): ?>
+                                                <a href="<?= base_url('/maintenance/' . $r['id']) ?>" class="btn btn-outline-warning" title="Mark Complete">
+                                                    <i class="bi bi-wrench"></i>
+                                                </a>
                                             <?php endif; ?>
                                         </div>
-                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

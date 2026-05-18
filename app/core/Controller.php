@@ -31,6 +31,8 @@ abstract class Controller
         // Render layout
         if ($layout === 'auth') {
             require VIEWS_PATH . '/layouts/auth_layout.php';
+        } elseif ($layout === 'public') {
+            require VIEWS_PATH . '/layouts/public_layout.php';
         } else {
             require VIEWS_PATH . '/layouts/main_layout.php';
         }
