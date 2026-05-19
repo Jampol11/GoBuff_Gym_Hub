@@ -42,14 +42,14 @@ class MemberController extends Controller
     public function create(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
         $this->view('members.create', ['title' => 'Add Member']);
     }
 
     public function store(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -161,7 +161,7 @@ class MemberController extends Controller
     public function edit(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
         $member = $this->model->findById((int)$id);
         if (!$member) {
             $this->flash('error', 'Member not found.');
@@ -173,7 +173,7 @@ class MemberController extends Controller
     public function update(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -212,7 +212,7 @@ class MemberController extends Controller
     public function destroy(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -230,7 +230,7 @@ class MemberController extends Controller
     public function export(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         $members = $this->model->getAllWithUser();
         header('Content-Type: text/csv');

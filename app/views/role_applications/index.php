@@ -65,6 +65,8 @@
                             <th>#</th>
                             <th>Applicant</th>
                             <th>Requested Role</th>
+                            <th>Gym</th>
+                            <th>Docs</th>
                             <th>Status</th>
                             <th>Submitted</th>
                             <th>Reviewed By</th>
@@ -83,6 +85,22 @@
                                 <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1">
                                     <?= e($app['role_label'] ?? role_label($app['requested_role'])) ?>
                                 </span>
+                            </td>
+                            <td class="text-muted small">
+                                <?php if (!empty($app['gym_name'])): ?>
+                                <i class="bi bi-building me-1"></i><?= e($app['gym_name']) ?>
+                                <?php else: ?>
+                                <span class="text-muted">—</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if (($app['doc_count'] ?? 0) > 0): ?>
+                                <span class="badge bg-info text-dark">
+                                    <i class="bi bi-paperclip me-1"></i><?= $app['doc_count'] ?>
+                                </span>
+                                <?php else: ?>
+                                <span class="text-muted small">—</span>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <?php

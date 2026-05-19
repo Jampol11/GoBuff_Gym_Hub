@@ -33,6 +33,7 @@
                                 <div class="row g-2">
                                     <?php
                                     $roles = [
+                                        'super_admin' => ['icon' => 'shield-fill-check',            'color' => 'dark'],
                                         'gym_owner'   => ['icon' => 'building-fill',                'color' => 'danger'],
                                         'admin'       => ['icon' => 'shield-fill-check',            'color' => 'primary'],
                                         'marketing'   => ['icon' => 'megaphone-fill',               'color' => 'info'],
@@ -42,7 +43,8 @@
                                         'user'        => ['icon' => 'person-dash-fill',             'color' => 'dark'],
                                     ];
                                     foreach ($roles as $roleKey => $roleInfo):
-                                        if ($roleKey === 'gym_owner' && !has_role(['gym_owner'])) continue;
+                                        if ($roleKey === 'super_admin' && !has_role(['super_admin'])) continue;
+                                        if ($roleKey === 'gym_owner' && !has_role(['gym_owner', 'super_admin'])) continue;
                                     ?>
                                         <div class="col-6 col-md-4">
                                             <input type="radio" class="btn-check" name="role"

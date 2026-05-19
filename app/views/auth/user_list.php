@@ -15,7 +15,7 @@
             <div class="d-flex flex-wrap gap-2 align-items-center">
                 <span class="text-muted small fw-semibold me-1">Roles:</span>
                 <?php
-                $roles = ['gym_owner','admin','marketing','trainer','maintenance','member'];
+                $roles = ['super_admin','gym_owner','admin','marketing','trainer','maintenance','member'];
                 foreach ($roles as $r): ?>
                     <?= role_badge($r) ?>
                 <?php endforeach; ?>
@@ -75,11 +75,20 @@
                             </tr>
                         <?php else: ?>
                             <?php foreach ($users as $i => $u): ?>
+                                <?php
+                                // Never show super_admin rows to non-super_admin viewers
+                                // (controller already filters them out, this is a defence-in-depth guard)
+                                if ($u['role'] === 'super_admin' && auth_role() !== 'super_admin') continue;
+                                $canEditRow   = !($u['role'] === 'super_admin' && auth_role() !== 'super_admin');
+                                $canDeleteRow = $u['id'] != auth_id()
+                                             && has_role(['gym_owner', 'super_admin'])
+                                             && !($u['role'] === 'super_admin' && auth_role() !== 'super_admin');
+                                ?>
                                 <tr <?= $u['id'] == auth_id() ? 'class="table-primary"' : '' ?>>
                                     <td><?= $pagination['offset'] + $i + 1 ?></td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <div class="avatar-sm bg-<?= $u['role'] === 'gym_owner' ? 'danger' : ($u['role'] === 'admin' ? 'primary' : 'secondary') ?> text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">
+                                            <div class="avatar-sm bg-<?= $u['role'] === 'super_admin' ? 'dark' : ($u['role'] === 'gym_owner' ? 'danger' : ($u['role'] === 'admin' ? 'primary' : 'secondary')) ?> text-white rounded-circle d-flex align-items-center justify-content-center fw-bold">
                                                 <?= strtoupper(substr($u['name'], 0, 1)) ?>
                                             </div>
                                             <div>
@@ -102,11 +111,13 @@
                                     <td><small><?= format_date($u['created_at']) ?></small></td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
+                                            <?php if ($canEditRow): ?>
                                             <a href="<?= base_url('/admin/users/' . $u['id'] . '/edit') ?>"
                                                class="btn btn-outline-warning" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <?php if ($u['id'] != auth_id() && has_role(['gym_owner'])): ?>
+                                            <?php endif; ?>
+                                            <?php if ($canDeleteRow): ?>
                                                 <form method="POST"
                                                       action="<?= base_url('/admin/users/' . $u['id'] . '/delete') ?>"
                                                       class="d-inline"

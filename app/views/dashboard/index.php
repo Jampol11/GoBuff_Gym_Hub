@@ -203,6 +203,53 @@
         </div>
     </div>
 
+    <?php if (has_role(['user']) && !empty($registered_gym)): ?>
+    <!-- ── Registered Gym Info Card ──────────────────────────────────── -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-bottom py-3 d-flex align-items-center justify-content-between">
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="bi bi-building-fill me-2 text-primary"></i>Registered Gym
+                    </h6>
+                    <span class="badge bg-success">Active</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <div class="bg-primary bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center"
+                                 style="width:64px;height:64px">
+                                <i class="bi bi-building-fill text-primary fs-2"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h5 class="fw-bold mb-1"><?= e($registered_gym['business_name']) ?></h5>
+                            <?php if (!empty($registered_gym['address'])): ?>
+                            <div class="text-muted small mb-1">
+                                <i class="bi bi-geo-alt-fill me-1 text-danger"></i><?= e($registered_gym['address']) ?>
+                            </div>
+                            <?php endif; ?>
+                            <?php if (!empty($registered_gym['contact_number'])): ?>
+                            <div class="text-muted small mb-1">
+                                <i class="bi bi-telephone-fill me-1 text-success"></i><?= e($registered_gym['contact_number']) ?>
+                            </div>
+                            <?php endif; ?>
+                            <div class="text-muted small">
+                                <i class="bi bi-person-fill me-1 text-info"></i>Owner: <?= e($registered_gym['owner_name']) ?>
+                            </div>
+                        </div>
+                        <div class="col-auto d-flex flex-column gap-2">
+                            <a href="<?= base_url('/role-application/apply') ?>" class="btn btn-primary btn-sm">
+                                <i class="bi bi-send me-1"></i>Apply for a Role
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <?php if (has_role(['gym_owner', 'admin'])): ?>
     <!-- ══════════════════════════════════════════════════════════════════
          GYM OWNER & ADMIN DASHBOARD

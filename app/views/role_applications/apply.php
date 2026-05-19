@@ -38,7 +38,7 @@
                     <h6 class="mb-0 fw-semibold"><i class="bi bi-send-fill me-2 text-primary"></i>New Application</h6>
                 </div>
                 <div class="card-body p-4">
-                    <form method="POST" action="<?= base_url('/role-application/apply') ?>" id="roleApplicationForm">
+                    <form method="POST" action="<?= base_url('/role-application/apply') ?>" id="roleApplicationForm" enctype="multipart/form-data">
                         <?= csrf_field() ?>
 
                         <!-- Role Selector -->
@@ -51,6 +51,33 @@
                                 <?php endforeach; ?>
                             </select>
                             <div class="form-text">Choose the role that best describes your purpose at GoBuff.</div>
+                        </div>
+
+                        <!-- GYM SELECTOR (shown only for employee roles) -->
+                        <div id="gymSelectorSection" style="display:none;">
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Select Gym <span class="text-danger">*</span></label>
+                                <?php if (!empty($approvedGyms)): ?>
+                                <select name="gym_id" id="gymSelect" class="form-select">
+                                    <option value="">— Select a gym —</option>
+                                    <?php foreach ($approvedGyms as $gym): ?>
+                                    <option value="<?= e($gym['id']) ?>">
+                                        <?= e($gym['business_name']) ?>
+                                        <?php if (!empty($gym['address'])): ?> — <?= e($gym['address']) ?><?php endif; ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Choose the gym you are applying to work at.
+                                </div>
+                                <?php else: ?>
+                                <div class="alert alert-warning py-2 mb-0">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    No registered gyms are available at this time. Please check back later.
+                                </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
 
                         <!-- ══════════════════════════════════════════════════════ -->
@@ -207,6 +234,53 @@
                                     placeholder="Briefly explain why you are applying for this role (e.g. I am a certified fitness trainer with 3 years of experience...)"></textarea>
                                 <div class="form-text">Minimum 10 characters.</div>
                             </div>
+
+                            <!-- DOCUMENT UPLOADS -->
+                            <div class="card border-0 bg-light rounded-3 mb-4">
+                                <div class="card-body p-3">
+                                    <h6 class="fw-semibold mb-1 text-primary">
+                                        <i class="bi bi-paperclip me-2"></i>Supporting Documents
+                                        <span class="text-danger">*</span>
+                                    </h6>
+                                    <p class="text-muted small mb-3">
+                                        Upload at least one document. Accepted: PDF, DOC, DOCX, JPG, PNG, WEBP (max 10 MB each).
+                                    </p>
+
+                                    <div id="docRows">
+                                        <!-- Row 1 — required -->
+                                        <div class="doc-row row g-2 align-items-end mb-3">
+                                            <div class="col-sm-5">
+                                                <label class="form-label small fw-semibold">Document Type <span class="text-danger">*</span></label>
+                                                <select name="document_type[]" class="form-select form-select-sm doc-type-select" required>
+                                                    <option value="">— Select type —</option>
+                                                    <option value="resume">Resume / CV</option>
+                                                    <option value="biodata">Biodata (Philippine Format)</option>
+                                                    <option value="birth_certificate">Birth Certificate (PSA)</option>
+                                                    <option value="government_id">Government-Issued ID</option>
+                                                    <option value="certificate">Certificate / Diploma</option>
+                                                    <option value="other">Other Supporting Document</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label small fw-semibold">File <span class="text-danger">*</span></label>
+                                                <input type="file" name="documents[]" class="form-control form-control-sm doc-file-input"
+                                                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp" required>
+                                            </div>
+                                            <div class="col-sm-1 d-flex align-items-end justify-content-end">
+                                                <!-- placeholder for remove button alignment -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" id="addDocBtn" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-plus-circle me-1"></i>Add Another Document
+                                    </button>
+                                    <div class="form-text mt-2">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Philippine applicants: a <strong>Biodata</strong> or <strong>PSA Birth Certificate</strong> is commonly required.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="d-flex gap-2" id="submitSection" style="display:none !important;">
@@ -232,6 +306,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Role Applied</th>
+                                    <th>Gym</th>
                                     <th>Status</th>
                                     <th>Submitted</th>
                                     <th>Review Notes</th>
@@ -241,6 +316,13 @@
                                 <?php foreach ($myApplications as $app): ?>
                                 <tr>
                                     <td class="fw-semibold"><?= e($app['role_label'] ?? role_label($app['requested_role'])) ?></td>
+                                    <td class="text-muted small">
+                                        <?php if (!empty($app['gym_name'])): ?>
+                                        <i class="bi bi-building me-1"></i><?= e($app['gym_name']) ?>
+                                        <?php else: ?>
+                                        <span class="text-muted">—</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td>
                                         <?php
                                         $badgeClass = match($app['status']) {
@@ -286,6 +368,8 @@
 (function () {
     const roleSelect       = document.getElementById('requestedRole');
     const memberSection    = document.getElementById('membershipFormSection');
+    const gymSection       = document.getElementById('gymSelectorSection');
+    const gymSelect        = document.getElementById('gymSelect');
     const reasonSection    = document.getElementById('reasonSection');
     const submitSection    = document.getElementById('submitSection');
     const reasonField      = document.getElementById('reasonField');
@@ -294,8 +378,11 @@
         const val = roleSelect.value;
         if (!val) {
             memberSection.style.display = 'none';
+            gymSection.style.display    = 'none';
             reasonSection.style.display = 'none';
             submitSection.style.display = 'none';
+            if (gymSelect) gymSelect.removeAttribute('required');
+            setDocRequired(false);
             return;
         }
 
@@ -303,16 +390,33 @@
 
         if (val === 'member') {
             memberSection.style.display = '';
+            gymSection.style.display    = 'none';
             reasonSection.style.display = 'none';
-            // Remove required from reason when hidden
             reasonField.removeAttribute('required');
-            // Add required to membership fields
+            if (gymSelect) gymSelect.removeAttribute('required');
             setMembershipRequired(true);
+            setDocRequired(false);
         } else {
             memberSection.style.display = 'none';
+            gymSection.style.display    = '';
             reasonSection.style.display = '';
             reasonField.setAttribute('required', 'required');
+            if (gymSelect) gymSelect.setAttribute('required', 'required');
             setMembershipRequired(false);
+            setDocRequired(true);
+        }
+    }
+
+    function setDocRequired(required) {
+        const firstType = document.querySelector('.doc-type-select');
+        const firstFile = document.querySelector('.doc-file-input');
+        if (firstType) {
+            if (required) firstType.setAttribute('required', 'required');
+            else firstType.removeAttribute('required');
+        }
+        if (firstFile) {
+            if (required) firstFile.setAttribute('required', 'required');
+            else firstFile.removeAttribute('required');
         }
     }
 
@@ -326,7 +430,6 @@
                 else el.removeAttribute('required');
             }
         });
-        // Plan preference radio group
         const planRadios = document.querySelectorAll('.plan-radio');
         planRadios.forEach(r => {
             if (required) r.setAttribute('required', 'required');
@@ -344,7 +447,42 @@
         });
     });
 
+    // Add another document row
+    document.getElementById('addDocBtn')?.addEventListener('click', function () {
+        const container = document.getElementById('docRows');
+        const row = document.createElement('div');
+        row.className = 'doc-row row g-2 align-items-end mb-3';
+        row.innerHTML = `
+            <div class="col-sm-5">
+                <label class="form-label small fw-semibold">Document Type</label>
+                <select name="document_type[]" class="form-select form-select-sm">
+                    <option value="">— Select type —</option>
+                    <option value="resume">Resume / CV</option>
+                    <option value="biodata">Biodata (Philippine Format)</option>
+                    <option value="birth_certificate">Birth Certificate (PSA)</option>
+                    <option value="government_id">Government-Issued ID</option>
+                    <option value="certificate">Certificate / Diploma</option>
+                    <option value="other">Other Supporting Document</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <label class="form-label small fw-semibold">File</label>
+                <input type="file" name="documents[]" class="form-control form-control-sm"
+                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp">
+            </div>
+            <div class="col-sm-1 d-flex align-items-end">
+                <button type="button" class="btn btn-sm btn-outline-danger remove-doc-btn" title="Remove">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>`;
+        container.appendChild(row);
+
+        row.querySelector('.remove-doc-btn').addEventListener('click', function () {
+            row.remove();
+        });
+    });
+
     roleSelect.addEventListener('change', toggleSections);
-    toggleSections(); // run on load in case of browser back-fill
+    toggleSections();
 })();
 </script>

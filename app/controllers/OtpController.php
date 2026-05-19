@@ -114,16 +114,12 @@ class OtpController extends Controller
         }
 
         $purpose = $this->session->get('otp_purpose', 'login');
-        $otp     = $this->otpService->sendOtp(
+        $this->otpService->sendOtp(
             $pending['id'],
             $pending['email'],
             $pending['name'],
             $purpose
         );
-
-        if (APP_ENV === 'development') {
-            $this->session->set('otp_dev_code', $otp);
-        }
 
         $this->flash('success', 'A new verification code has been sent to ' . $pending['email']);
 

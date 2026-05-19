@@ -18,7 +18,7 @@ class ServiceController extends Controller
     public function index(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $perPage = RECORDS_PER_PAGE;
@@ -35,14 +35,14 @@ class ServiceController extends Controller
     public function create(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
         $this->view('services.create', ['title' => 'Add Service / Rate']);
     }
 
     public function store(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -84,7 +84,7 @@ class ServiceController extends Controller
     public function edit(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $service = $this->model->findById((int)$id);
         if (!$service) {
@@ -98,7 +98,7 @@ class ServiceController extends Controller
     public function update(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -128,7 +128,7 @@ class ServiceController extends Controller
     public function destroy(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -147,7 +147,7 @@ class ServiceController extends Controller
     public function submitToMarketing(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');

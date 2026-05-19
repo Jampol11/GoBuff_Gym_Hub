@@ -4,13 +4,36 @@
  * $router is injected from App::run()
  */
 
+// ─── Super Admin ─────────────────────────────────────────────────────────────
+$router->get('/super-admin',                                                    'SuperAdminController@dashboard',                'super-admin.dashboard');
+$router->get('/super-admin/owner-applications',                                 'SuperAdminController@ownerApplications',        'super-admin.owner-applications');
+$router->get('/super-admin/owner-applications/documents/{docId}/download',      'SuperAdminController@downloadApplicationDocument');
+$router->get('/super-admin/owner-applications/{id}',                            'SuperAdminController@showOwnerApplication');
+$router->post('/super-admin/owner-applications/{id}/approve',                   'SuperAdminController@approveOwnerApplication');
+$router->post('/super-admin/owner-applications/{id}/reject',                    'SuperAdminController@rejectOwnerApplication');
+$router->get('/super-admin/gym-owners',                                         'SuperAdminController@gymOwners',                'super-admin.gym-owners');
+$router->get('/super-admin/gym-owners/create',                                  'SuperAdminController@createGymOwnerForm');
+$router->post('/super-admin/gym-owners',                                        'SuperAdminController@createGymOwner');
+$router->post('/super-admin/gym-owners/{id}/toggle-status',                     'SuperAdminController@toggleGymOwnerStatus');
+$router->get('/super-admin/gyms',                                               'SuperAdminController@gyms',                     'super-admin.gyms');
+$router->get('/super-admin/gyms/create',                                        'SuperAdminController@createGymForm');
+$router->post('/super-admin/gyms',                                              'SuperAdminController@createGym');
+$router->get('/super-admin/gyms/{id}',                                          'SuperAdminController@showGym');
+$router->get('/super-admin/gyms/{id}/edit',                                     'SuperAdminController@editGymForm');
+$router->post('/super-admin/gyms/{id}/update',                                  'SuperAdminController@updateGym');
+$router->get('/super-admin/users',                                              'SuperAdminController@users',                    'super-admin.users');
+$router->post('/super-admin/users/{id}/toggle-status',                          'SuperAdminController@toggleUserStatus');
+$router->get('/super-admin/create-super-admin',                                 'SuperAdminController@createSuperAdminForm',     'super-admin.create-sa');
+$router->post('/super-admin/create-super-admin',                                'SuperAdminController@createSuperAdmin');
+
 // ─── Role Applications (Employee roles — reviewed by Gym Owner) ──────────────
-$router->get('/role-application/apply',          'RoleApplicationController@applyForm');
-$router->post('/role-application/apply',         'RoleApplicationController@apply');
-$router->get('/role-applications',               'RoleApplicationController@index',   'role-applications');
-$router->get('/role-applications/{id}',          'RoleApplicationController@show');
-$router->post('/role-applications/{id}/approve', 'RoleApplicationController@approve');
-$router->post('/role-applications/{id}/reject',  'RoleApplicationController@reject');
+$router->get('/role-application/apply',                          'RoleApplicationController@applyForm');
+$router->post('/role-application/apply',                         'RoleApplicationController@apply');
+$router->get('/role-applications',                               'RoleApplicationController@index',   'role-applications');
+$router->get('/role-applications/documents/{docId}/download',    'RoleApplicationController@downloadDocument');
+$router->get('/role-applications/{id}',                          'RoleApplicationController@show');
+$router->post('/role-applications/{id}/approve',                 'RoleApplicationController@approve');
+$router->post('/role-applications/{id}/reject',                  'RoleApplicationController@reject');
 
 // ─── Membership Applications (Member role — reviewed by Admin Officer) ────────
 $router->get('/member-applications',               'RoleApplicationController@memberApplications', 'member-applications');

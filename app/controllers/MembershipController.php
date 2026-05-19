@@ -15,7 +15,7 @@ class MembershipController extends Controller
     public function index(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $perPage = RECORDS_PER_PAGE;
@@ -32,7 +32,7 @@ class MembershipController extends Controller
     public function create(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
         $memberModel = new Member();
         $this->view('memberships.create', [
             'title'   => 'New Membership',
@@ -43,7 +43,7 @@ class MembershipController extends Controller
     public function store(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -88,7 +88,7 @@ class MembershipController extends Controller
     public function approve(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -128,7 +128,7 @@ class MembershipController extends Controller
     public function reject(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
         $this->model->update((int)$id, ['status' => 'rejected']);
         log_activity('membership_reject', "Rejected membership ID: {$id}");
         $this->flash('success', 'Membership rejected.');
@@ -149,7 +149,7 @@ class MembershipController extends Controller
     public function destroy(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
         }

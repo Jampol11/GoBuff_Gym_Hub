@@ -43,26 +43,20 @@ class GymOwnerApplicationController extends Controller
     {
         AuthMiddleware::handle();
 
-        // Gym owners don't need to apply
-        if (has_role(['gym_owner'])) {
-            $this->flash('info', 'You are already the Gym Owner.');
+        // Gym owners and super admins don't need to apply
+        if (has_role(['gym_owner', 'super_admin'])) {
+            $this->flash('info', has_role(['super_admin']) ? 'Super Admins manage Gym Owners directly.' : 'You are already the Gym Owner.');
             $this->redirect('/dashboard');
         }
 
         $myApplications = $this->model->getForUser(Auth::id());
         $hasPending     = $this->model->getPendingForUser(Auth::id());
 
-        // Check if there is currently no gym owner — application will auto-approve
-        $userModel    = new User();
-        $currentOwners = $userModel->getUsersByRole('gym_owner');
-        $noOwnerExists = empty($currentOwners);
-
         $this->view('gym_owner_applications.apply', [
             'title'          => 'Apply as Gym Owner',
             'documentTypes'  => self::DOCUMENT_TYPES,
             'myApplications' => $myApplications,
             'hasPending'     => $hasPending,
-            'noOwnerExists'  => $noOwnerExists,
         ]);
     }
 
@@ -70,8 +64,8 @@ class GymOwnerApplicationController extends Controller
     {
         AuthMiddleware::handle();
 
-        if (has_role(['gym_owner'])) {
-            $this->flash('info', 'You are already the Gym Owner.');
+        if (has_role(['gym_owner', 'super_admin'])) {
+            $this->flash('info', has_role(['super_admin']) ? 'Super Admins manage Gym Owners directly.' : 'You are already the Gym Owner.');
             $this->redirect('/dashboard');
         }
 
@@ -183,12 +177,28 @@ class GymOwnerApplicationController extends Controller
         $owners     = $userModel->getUsersByRole('gym_owner');
         $applicant  = Auth::user();
 
-        // ── Auto-approve if there is no gym owner in the system ──────────
+        // ── Auto-approve if there is no gym owner AND no super_admin in the system ──
         if (empty($owners)) {
-            $this->model->approve($appId, Auth::id(), 'Auto-approved: no existing Gym Owner.');
-            // Refresh the session immediately so the role takes effect without re-login
+            $superAdmins = $userModel->getUsersByRole('super_admin');
+            if (!empty($superAdmins)) {
+                // Super Admin exists — notify them instead of auto-approving
+                foreach ($superAdmins as $sa) {
+                    $notifModel->createNotification(
+                        $sa['id'],
+                        'system',
+                        'New Gym Owner Application Pending',
+                        "{$applicant['name']} has submitted an application to become Gym Owner and requires your approval."
+                    );
+                }
+                log_activity('gym_owner_application', "User applied to become Gym Owner (application #{$appId}) — pending Super Admin review");
+                $this->flash('success', 'Your application has been submitted. The Super Admin will review it.');
+                $this->redirect('/gym-owner-application/apply');
+            }
+
+            // No super_admin and no gym_owner — auto-approve
+            $this->model->approve($appId, Auth::id(), 'Auto-approved: no existing Gym Owner or Super Admin.');
             Auth::refreshUser(Auth::id());
-            log_activity('gym_owner_auto_approve', "Auto-approved Gym Owner application #{$appId} (no existing owner)");
+            log_activity('gym_owner_auto_approve', "Auto-approved Gym Owner application #{$appId} (no existing owner or super admin)");
             $this->flash('success', 'No existing Gym Owner was found. You have been automatically granted Gym Owner access.');
             $this->redirect('/dashboard');
         }
@@ -214,7 +224,7 @@ class GymOwnerApplicationController extends Controller
     public function index(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $status  = sanitize($_GET['status'] ?? '');
@@ -245,7 +255,7 @@ class GymOwnerApplicationController extends Controller
     public function show(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $application = $this->model->getWithDetails((int)$id);
         if (!$application) {
@@ -267,7 +277,7 @@ class GymOwnerApplicationController extends Controller
     public function approve(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -318,7 +328,7 @@ class GymOwnerApplicationController extends Controller
     public function reject(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -360,7 +370,7 @@ class GymOwnerApplicationController extends Controller
     public function downloadDocument(string $docId): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $doc = $this->model->query(
             "SELECT * FROM gym_owner_application_documents WHERE id = ?",

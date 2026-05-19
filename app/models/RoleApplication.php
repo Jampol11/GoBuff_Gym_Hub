@@ -36,11 +36,14 @@ class RoleApplication extends Model
         return $this->query(
             "SELECT ra.*, u.name AS user_name, u.email AS user_email, u.username,
                     r.label AS role_label,
-                    rv.name AS reviewer_name
+                    rv.name AS reviewer_name,
+                    goa.business_name AS gym_name,
+                    (SELECT COUNT(*) FROM role_application_documents rad WHERE rad.application_id = ra.id) AS doc_count
              FROM role_applications ra
              JOIN users u  ON u.id  = ra.user_id
              LEFT JOIN users rv ON rv.id = ra.reviewed_by
              LEFT JOIN roles r  ON r.name = ra.requested_role
+             LEFT JOIN gym_owner_applications goa ON goa.id = ra.gym_id
              WHERE ra.requested_role IN ({$placeholders})
              ORDER BY ra.created_at DESC
              LIMIT ? OFFSET ?",
@@ -89,10 +92,13 @@ class RoleApplication extends Model
     {
         return $this->query(
             "SELECT ra.*, u.name AS user_name, u.email AS user_email, u.username,
-                    r.label AS role_label
+                    r.label AS role_label,
+                    goa.business_name AS gym_name,
+                    goa.address AS gym_address
              FROM role_applications ra
              JOIN users u ON u.id = ra.user_id
              LEFT JOIN roles r ON r.name = ra.requested_role
+             LEFT JOIN gym_owner_applications goa ON goa.id = ra.gym_id
              WHERE ra.id = ?",
             [$id]
         )->fetch();
@@ -127,9 +133,11 @@ class RoleApplication extends Model
     public function getForUser(int $userId): array
     {
         return $this->query(
-            "SELECT ra.*, r.label AS role_label
+            "SELECT ra.*, r.label AS role_label,
+                    goa.business_name AS gym_name
              FROM role_applications ra
              LEFT JOIN roles r ON r.name = ra.requested_role
+             LEFT JOIN gym_owner_applications goa ON goa.id = ra.gym_id
              WHERE ra.user_id = ?
              ORDER BY ra.created_at DESC",
             [$userId]

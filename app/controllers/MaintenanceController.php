@@ -149,7 +149,7 @@ class MaintenanceController extends Controller
     public function verify(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -230,7 +230,7 @@ class MaintenanceController extends Controller
     public function approve(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);

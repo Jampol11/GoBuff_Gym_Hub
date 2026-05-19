@@ -49,6 +49,7 @@ function verify_csrf(): bool
 function role_label(string $role): string
 {
     $labels = [
+        'super_admin' => 'Super Admin',
         'gym_owner'   => 'Gym Owner',
         'admin'       => 'Administrative Officer',
         'marketing'   => 'Marketing Officer',
@@ -63,6 +64,7 @@ function role_label(string $role): string
 function role_badge(string $role): string
 {
     $colors = [
+        'super_admin' => 'dark',
         'gym_owner'   => 'danger',
         'admin'       => 'primary',
         'marketing'   => 'info',
@@ -73,4 +75,12 @@ function role_badge(string $role): string
     ];
     $color = $colors[$role] ?? 'secondary';
     return '<span class="badge bg-' . $color . '">' . role_label($role) . '</span>';
+}
+
+/**
+ * Check if the current user is a Super Admin.
+ */
+function is_super_admin(): bool
+{
+    return Auth::hasRole(['super_admin']);
 }

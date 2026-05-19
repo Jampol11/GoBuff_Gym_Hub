@@ -71,12 +71,7 @@ class AuthController extends Controller
         $this->session->set('otp_purpose', 'login');
 
         $otpService = new OtpService();
-        $otp  = $otpService->sendOtp($user['id'], $user['email'], $user['name'], 'login');
-
-        // In dev mode, store OTP in session so it can be shown on the verify page
-        if (APP_ENV === 'development') {
-            $this->session->set('otp_dev_code', $otp);
-        }
+        $otpService->sendOtp($user['id'], $user['email'], $user['name'], 'login');
 
         $this->flash('info', 'A verification code has been sent to ' . e($user['email']));
         $this->redirect('/otp/verify');
@@ -176,11 +171,7 @@ class AuthController extends Controller
             $this->session->set('otp_purpose', 'register');
 
             $otpService = new OtpService();
-            $otp  = $otpService->sendOtp($userId, $newUser['email'], $newUser['name'], 'register');
-
-            if (APP_ENV === 'development') {
-                $this->session->set('otp_dev_code', $otp);
-            }
+            $otpService->sendOtp($userId, $newUser['email'], $newUser['name'], 'register');
 
             $this->flash('info', 'Account created! A verification code has been sent to ' . e($newUser['email']));
             $this->redirect('/otp/verify');
@@ -200,18 +191,33 @@ class AuthController extends Controller
     public function userList(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $search  = sanitize($_GET['search'] ?? '');
         $perPage = RECORDS_PER_PAGE;
 
+        // Non-super_admin callers must never see super_admin accounts
+        $isSuperAdmin = Auth::role() === 'super_admin';
+
         if ($search) {
             $users = $this->userModel->searchUsers($search);
+            if (!$isSuperAdmin) {
+                $users = array_values(array_filter($users, fn($u) => $u['role'] !== 'super_admin'));
+            }
             $total = count($users);
         } else {
-            $total = $this->userModel->count();
-            $users = $this->userModel->findAll('created_at DESC', $perPage, ($page - 1) * $perPage);
+            if ($isSuperAdmin) {
+                $total = $this->userModel->count();
+                $users = $this->userModel->findAll('created_at DESC', $perPage, ($page - 1) * $perPage);
+            } else {
+                // Exclude super_admin rows from count and listing
+                $total = $this->userModel->count("role != 'super_admin'");
+                $users = $this->userModel->query(
+                    "SELECT * FROM users WHERE role != 'super_admin' ORDER BY created_at DESC LIMIT ? OFFSET ?",
+                    [$perPage, ($page - 1) * $perPage]
+                )->fetchAll();
+            }
         }
 
         $this->view('auth.user_list', [
@@ -225,31 +231,36 @@ class AuthController extends Controller
     public function createUserForm(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
         $this->view('auth.create_user', ['title' => 'Create User Account']);
     }
 
     public function createUser(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
             $this->redirect('/admin/users/create');
         }
 
-        $allowedRoles = ['gym_owner', 'admin', 'marketing', 'trainer', 'maintenance', 'member', 'user'];
+        $allowedRoles = ['super_admin', 'gym_owner', 'admin', 'marketing', 'trainer', 'maintenance', 'member', 'user'];
         $role         = sanitize($_POST['role'] ?? 'member');
 
-        // Only gym_owner can create another gym_owner
-        if ($role === 'gym_owner' && Auth::role() !== 'gym_owner') {
-            $this->flash('error', 'Only the Gym Owner can create another Gym Owner account.');
-            $this->redirect('/admin/users/create');
+        // Strip super_admin from allowed list unless the caller IS super_admin
+        if (Auth::role() !== 'super_admin') {
+            $allowedRoles = array_diff($allowedRoles, ['super_admin']);
         }
 
+        // Strip gym_owner from allowed list unless caller is gym_owner or super_admin
+        if (!Auth::hasRole(['gym_owner', 'super_admin'])) {
+            $allowedRoles = array_diff($allowedRoles, ['gym_owner']);
+        }
+
+        // Validate role is in the caller-specific allowed list
         if (!in_array($role, $allowedRoles)) {
-            $this->flash('error', 'Invalid role selected.');
+            $this->flash('error', 'You do not have permission to assign that role.');
             $this->redirect('/admin/users/create');
         }
 
@@ -333,31 +344,57 @@ class AuthController extends Controller
     public function editUserForm(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         $user = $this->userModel->findById((int)$id);
         if (!$user) {
             $this->flash('error', 'User not found.');
             $this->redirect('/admin/users');
         }
+
+        // Only super_admin can edit another super_admin account
+        if ($user['role'] === 'super_admin' && Auth::role() !== 'super_admin') {
+            $this->flash('error', 'You do not have permission to edit a Super Admin account.');
+            $this->redirect('/admin/users');
+        }
+
         $this->view('auth.edit_user', ['title' => 'Edit User', 'user' => $user]);
     }
 
     public function updateUser(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
             $this->redirect('/admin/users/' . $id . '/edit');
         }
 
+        // Fetch the target user first — block editing super_admin by non-super_admin
+        $targetUser = $this->userModel->findById((int)$id);
+        if (!$targetUser) {
+            $this->flash('error', 'User not found.');
+            $this->redirect('/admin/users');
+        }
+        if ($targetUser['role'] === 'super_admin' && Auth::role() !== 'super_admin') {
+            $this->flash('error', 'You do not have permission to edit a Super Admin account.');
+            $this->redirect('/admin/users');
+        }
+
         $role = sanitize($_POST['role'] ?? 'member');
 
-        // Only gym_owner can assign gym_owner role
-        if ($role === 'gym_owner' && Auth::role() !== 'gym_owner') {
-            $this->flash('error', 'Only the Gym Owner can assign the Gym Owner role.');
+        // Build caller-specific allowed roles — prevents privilege escalation via POST
+        $allowedRoles = ['gym_owner', 'admin', 'marketing', 'trainer', 'maintenance', 'member', 'user'];
+        if (Auth::role() === 'super_admin') {
+            $allowedRoles[] = 'super_admin';
+        }
+        if (!Auth::hasRole(['gym_owner', 'super_admin'])) {
+            $allowedRoles = array_diff($allowedRoles, ['gym_owner']);
+        }
+
+        if (!in_array($role, $allowedRoles)) {
+            $this->flash('error', 'You do not have permission to assign that role.');
             $this->redirect('/admin/users/' . $id . '/edit');
         }
 
@@ -395,7 +432,7 @@ class AuthController extends Controller
     public function deleteUser(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -404,6 +441,13 @@ class AuthController extends Controller
         // Prevent self-deletion
         if ((int)$id === Auth::id()) {
             $this->flash('error', 'You cannot delete your own account.');
+            $this->redirect('/admin/users');
+        }
+
+        // Only super_admin can delete another super_admin
+        $targetUser = $this->userModel->findById((int)$id);
+        if ($targetUser && $targetUser['role'] === 'super_admin' && Auth::role() !== 'super_admin') {
+            $this->flash('error', 'You do not have permission to delete a Super Admin account.');
             $this->redirect('/admin/users');
         }
 

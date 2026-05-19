@@ -14,6 +14,16 @@ class RoleApplicationController extends Controller
     // Roles reviewed by the admin officer (membership)
     private const ADMIN_ROLES = ['member'];
 
+    /** Allowed MIME types for uploaded supporting documents */
+    private const ALLOWED_DOC_TYPES = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+    ];
+
     public function __construct()
     {
         parent::__construct();
@@ -45,11 +55,22 @@ class RoleApplicationController extends Controller
             'admin'       => 'Administrative Officer',
         ];
 
+        // Fetch approved gyms for the gym selector (employee roles)
+        $gymAppModel  = new GymOwnerApplication();
+        $approvedGyms = $gymAppModel->query(
+            "SELECT goa.id, goa.business_name, goa.address, u.name AS owner_name
+             FROM gym_owner_applications goa
+             JOIN users u ON u.id = goa.user_id
+             WHERE goa.status = 'approved'
+             ORDER BY goa.business_name ASC"
+        )->fetchAll();
+
         $this->view('role_applications.apply', [
             'title'          => 'Apply for a Role',
             'availableRoles' => $availableRoles,
             'myApplications' => $myApplications,
             'hasPending'     => $hasPending,
+            'approvedGyms'   => $approvedGyms,
         ]);
     }
 
@@ -91,10 +112,45 @@ class RoleApplicationController extends Controller
             }
             $reason = 'Membership application submitted via membership form.';
         } else {
-            // Employee roles: require a reason text
+            // Employee roles: require a reason text and a gym selection
             $reason = sanitize($_POST['reason'] ?? '');
             if (empty($reason) || strlen($reason) < 10) {
                 $this->flash('error', 'Please provide a reason (at least 10 characters).');
+                $this->redirect('/role-application/apply');
+            }
+
+            // Validate gym selection
+            $gymId = (int)($_POST['gym_id'] ?? 0);
+            if ($gymId <= 0) {
+                $this->flash('error', 'Please select a gym to apply to.');
+                $this->redirect('/role-application/apply');
+            }
+
+            // Verify the gym exists and is approved
+            $gymAppModel = new GymOwnerApplication();
+            $selectedGym = $gymAppModel->query(
+                "SELECT id FROM gym_owner_applications WHERE id = ? AND status = 'approved'",
+                [$gymId]
+            )->fetch();
+
+            if (!$selectedGym) {
+                $this->flash('error', 'Invalid gym selected. Please choose a valid gym.');
+                $this->redirect('/role-application/apply');
+            }
+
+            // Require at least one uploaded document
+            $files   = $_FILES['documents'] ?? [];
+            $hasFile = false;
+            if (!empty($files['name']) && is_array($files['name'])) {
+                foreach ($files['name'] as $i => $name) {
+                    if (!empty($name) && ($files['error'][$i] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
+                        $hasFile = true;
+                        break;
+                    }
+                }
+            }
+            if (!$hasFile) {
+                $this->flash('error', 'Please upload at least one supporting document (e.g. Resume, Biodata, or Birth Certificate).');
                 $this->redirect('/role-application/apply');
             }
         }
@@ -107,6 +163,11 @@ class RoleApplicationController extends Controller
             'created_at'     => date('Y-m-d H:i:s'),
         ];
 
+        // Store gym_id for employee role applications
+        if ($requestedRole !== 'member' && !empty($gymId)) {
+            $insertData['gym_id'] = $gymId;
+        }
+
         // Store membership form data as JSON if present
         if ($membershipData !== null) {
             $insertData['membership_form_data'] = json_encode($membershipData);
@@ -115,6 +176,52 @@ class RoleApplicationController extends Controller
         $id = $this->model->insert($insertData);
 
         if ($id) {
+            // ── Process uploaded documents (employee roles only) ──────────
+            if ($requestedRole !== 'member') {
+                $docModel  = new RoleApplicationDocument();
+                $uploadDir = UPLOAD_PATH . '/role_application_docs';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+
+                $files    = $_FILES['documents'] ?? [];
+                $docTypes = $_POST['document_type'] ?? [];
+
+                if (!empty($files['name']) && is_array($files['name'])) {
+                    foreach ($files['name'] as $i => $originalName) {
+                        if (empty($originalName) || $files['error'][$i] !== UPLOAD_ERR_OK) {
+                            continue;
+                        }
+
+                        $fileEntry = [
+                            'name'     => $originalName,
+                            'tmp_name' => $files['tmp_name'][$i],
+                            'error'    => $files['error'][$i],
+                            'size'     => $files['size'][$i],
+                            'type'     => $files['type'][$i],
+                        ];
+
+                        $errors = validate_upload($fileEntry, self::ALLOWED_DOC_TYPES, RoleApplicationDocument::MAX_SIZE);
+                        if (!empty($errors)) {
+                            continue; // skip invalid files
+                        }
+
+                        $fileName = move_upload($fileEntry, $uploadDir);
+                        if ($fileName) {
+                            $docType = sanitize($docTypes[$i] ?? 'other');
+                            $docModel->attach(
+                                $id,
+                                $docType,
+                                $fileName,
+                                $originalName,
+                                (int)$files['size'][$i],
+                                $files['type'][$i]
+                            );
+                        }
+                    }
+                }
+            }
+
             $notifModel = new Notification();
             $userModel  = new User();
             $applicant  = Auth::user();
@@ -346,7 +453,7 @@ class RoleApplicationController extends Controller
     public function index(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $status  = sanitize($_GET['status'] ?? '');
@@ -373,7 +480,7 @@ class RoleApplicationController extends Controller
     public function show(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $application = $this->model->getWithUser((int)$id);
         if (!$application || !in_array($application['requested_role'], self::OWNER_ROLES)) {
@@ -381,16 +488,21 @@ class RoleApplicationController extends Controller
             $this->redirect('/role-applications');
         }
 
+        $docModel  = new RoleApplicationDocument();
+        $documents = $docModel->getByApplication((int)$id);
+
         $this->view('role_applications.show', [
             'title'       => 'Review Application',
             'application' => $application,
+            'documents'   => $documents,
+            'docTypes'    => RoleApplicationDocument::TYPES,
         ]);
     }
 
     public function approve(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -432,7 +544,7 @@ class RoleApplicationController extends Controller
     public function reject(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -465,5 +577,36 @@ class RoleApplicationController extends Controller
         log_activity('role_reject', "Rejected role application ID: {$id}");
         $this->flash('success', 'Application rejected.');
         $this->redirect('/role-applications');
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Download a supporting document                                     */
+    /* ------------------------------------------------------------------ */
+
+    public function downloadDocument(string $docId): void
+    {
+        AuthMiddleware::handle();
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
+
+        $docModel = new RoleApplicationDocument();
+        $doc      = $docModel->findById((int)$docId);
+
+        if (!$doc) {
+            $this->flash('error', 'Document not found.');
+            $this->redirect('/role-applications');
+        }
+
+        $filePath = UPLOAD_PATH . '/role_application_docs/' . $doc['file_name'];
+        if (!file_exists($filePath)) {
+            $this->flash('error', 'File not found on server.');
+            $this->redirect('/role-applications');
+        }
+
+        header('Content-Type: ' . $doc['file_type']);
+        header('Content-Disposition: attachment; filename="' . $doc['file_original'] . '"');
+        header('Content-Length: ' . filesize($filePath));
+        header('Cache-Control: private, no-cache');
+        readfile($filePath);
+        exit;
     }
 }

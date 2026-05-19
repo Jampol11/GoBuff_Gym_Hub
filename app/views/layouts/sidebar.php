@@ -17,7 +17,11 @@
     <!-- User Info -->
     <div class="sidebar-user">
         <div class="user-avatar">
-            <i class="bi bi-person-circle"></i>
+            <?php if (has_role(['super_admin'])): ?>
+                <i class="bi bi-shield-fill-check text-warning"></i>
+            <?php else: ?>
+                <i class="bi bi-person-circle"></i>
+            <?php endif; ?>
         </div>
         <div class="user-info">
             <span class="user-name"><?= e($user['name'] ?? 'User') ?></span>
@@ -35,6 +39,60 @@
                 <span>Dashboard</span>
             </a>
         </li>
+
+        <?php if (has_role(['super_admin'])): ?>
+        <!-- Super Admin: Full Platform Authority -->
+        <li class="nav-label">Platform Control</li>
+        <li class="nav-item">
+            <a href="<?= base_url('/super-admin') ?>" class="nav-link <?= is_active('/super-admin') ?>">
+                <i class="bi bi-shield-fill-check"></i>
+                <span>SA Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/super-admin/owner-applications') ?>" class="nav-link <?= is_active('/super-admin/owner-applications') ?>">
+                <i class="bi bi-building-fill-gear"></i>
+                <span>Owner Applications</span>
+                <?php
+                $goaModel = new GymOwnerApplication();
+                $pendingGoa = $goaModel->countByStatus('pending');
+                if ($pendingGoa > 0): ?>
+                    <span class="badge bg-danger ms-auto"><?= $pendingGoa ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/super-admin/gym-owners') ?>" class="nav-link <?= is_active('/super-admin/gym-owners') ?>">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>Gym Owners</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/super-admin/gyms') ?>" class="nav-link <?= is_active('/super-admin/gyms') ?>">
+                <i class="bi bi-building"></i>
+                <span>Gyms</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/super-admin/users') ?>" class="nav-link <?= is_active('/super-admin/users') ?>">
+                <i class="bi bi-people-fill"></i>
+                <span>All Users</span>
+            </a>
+        </li>
+        <li class="nav-label">System</li>
+        <li class="nav-item">
+            <a href="<?= base_url('/admin/users') ?>" class="nav-link <?= is_active('/admin/users') ?>">
+                <i class="bi bi-person-gear"></i>
+                <span>User Management</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="<?= base_url('/super-admin/create-super-admin') ?>" class="nav-link <?= is_active('/super-admin/create-super-admin') ?>">
+                <i class="bi bi-shield-plus"></i>
+                <span>Add Super Admin</span>
+            </a>
+        </li>
+        <?php endif; ?>
 
         <?php if (has_role(['user'])): ?>
         <!-- User: Apply for Role -->

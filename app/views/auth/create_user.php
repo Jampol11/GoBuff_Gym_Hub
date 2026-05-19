@@ -41,17 +41,18 @@
                             <div class="row g-2" id="roleCards">
                                 <?php
                                 $roles = [
-                                    'gym_owner'   => ['icon' => 'building-fill',          'color' => 'danger',    'desc' => 'Full system access'],
-                                    'admin'       => ['icon' => 'shield-fill-check',       'color' => 'primary',   'desc' => 'Manage members & operations'],
-                                    'marketing'   => ['icon' => 'megaphone-fill',          'color' => 'info',      'desc' => 'Campaigns & promotions'],
-                                    'trainer'     => ['icon' => 'person-badge-fill',       'color' => 'success',   'desc' => 'Fitness plans & bookings'],
-                                    'maintenance' => ['icon' => 'wrench-adjustable-circle-fill', 'color' => 'warning', 'desc' => 'Equipment & maintenance'],
-                                    'member'      => ['icon' => 'person-fill',             'color' => 'secondary', 'desc' => 'Gym member access'],
-                                    'user'        => ['icon' => 'person-dash-fill',        'color' => 'dark',      'desc' => 'Pending role assignment'],
+                                    'super_admin' => ['icon' => 'shield-fill-check',            'color' => 'dark',      'desc' => 'Full platform authority'],
+                                    'gym_owner'   => ['icon' => 'building-fill',                'color' => 'danger',    'desc' => 'Full system access'],
+                                    'admin'       => ['icon' => 'shield-fill-check',            'color' => 'primary',   'desc' => 'Manage members & operations'],
+                                    'marketing'   => ['icon' => 'megaphone-fill',               'color' => 'info',      'desc' => 'Campaigns & promotions'],
+                                    'trainer'     => ['icon' => 'person-badge-fill',            'color' => 'success',   'desc' => 'Fitness plans & bookings'],
+                                    'maintenance' => ['icon' => 'wrench-adjustable-circle-fill','color' => 'warning',   'desc' => 'Equipment & maintenance'],
+                                    'member'      => ['icon' => 'person-fill',                  'color' => 'secondary', 'desc' => 'Gym member access'],
+                                    'user'        => ['icon' => 'person-dash-fill',             'color' => 'dark',      'desc' => 'Pending role assignment'],
                                 ];
                                 foreach ($roles as $roleKey => $roleInfo):
-                                    // Only gym_owner can see the gym_owner option
-                                    if ($roleKey === 'gym_owner' && !has_role(['gym_owner'])) continue;
+                                    if ($roleKey === 'super_admin' && !has_role(['super_admin'])) continue;
+                                    if ($roleKey === 'gym_owner' && !has_role(['gym_owner', 'super_admin'])) continue;
                                 ?>
                                     <div class="col-6 col-md-4">
                                         <input type="radio" class="btn-check" name="role"
@@ -160,7 +161,8 @@
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
                         <?php foreach ($roles as $roleKey => $roleInfo):
-                            if ($roleKey === 'gym_owner' && !has_role(['gym_owner'])) continue;
+                            if ($roleKey === 'super_admin' && !has_role(['super_admin'])) continue;
+                            if ($roleKey === 'gym_owner' && !has_role(['gym_owner', 'super_admin'])) continue;
                         ?>
                             <div class="list-group-item">
                                 <div class="d-flex align-items-center gap-2 mb-1">
@@ -170,6 +172,7 @@
                                 <small class="text-muted">
                                     <?php
                                     $perms = [
+                                        'super_admin' => 'Full platform authority: manage gyms, approve Gym Owners, and oversee all system activity.',
                                         'gym_owner'   => 'Full access to all modules, settings, and user management.',
                                         'admin'       => 'Manage members, memberships, staff, attendance, and notifications.',
                                         'marketing'   => 'Create and manage campaigns and promotions.',
@@ -260,6 +263,7 @@ cuConfirm.addEventListener('input', cuCheckMatch);
 
 // Show role-specific notes
 const roleNotes = {
+    super_admin: '🔒 Super Admin has full platform authority including managing gyms, approving Gym Owners, and overriding all roles.',
     gym_owner:   '⚠️ Gym Owner has unrestricted access to the entire system including user deletion.',
     admin:       'ℹ️ Admin can manage most operations but cannot delete users or assign the Gym Owner role.',
     marketing:   'ℹ️ Marketing Officer can only access campaigns and promotions.',

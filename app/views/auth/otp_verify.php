@@ -9,26 +9,6 @@
     </p>
 </div>
 
-<?php
-// ── DEV MODE: show OTP on screen ──────────────────────────────
-$devCode = (new Session())->get('otp_dev_code');
-if (APP_ENV === 'development' && $devCode):
-    (new Session())->remove('otp_dev_code'); // show once
-?>
-<div class="alert alert-warning border-warning d-flex gap-2 align-items-start mb-3"
-     style="font-size:0.85rem;border-left:4px solid #ffc107!important">
-    <i class="bi bi-bug-fill flex-shrink-0 mt-1 text-warning"></i>
-    <div>
-        <strong>Dev Mode — OTP Code:</strong>
-        <span class="badge bg-dark fs-5 ms-2 font-monospace letter-spacing-2"
-              style="letter-spacing:6px"><?= e($devCode) ?></span>
-        <div class="text-muted mt-1" style="font-size:0.75rem">
-            This banner only appears when <code>APP_ENV = 'development'</code>.
-            It will not show in production.
-        </div>
-    </div>
-</div>
-<?php endif; ?>
 
 <div class="alert alert-info d-flex gap-2 align-items-start mb-4" style="font-size:0.85rem">
     <i class="bi bi-envelope-fill flex-shrink-0 mt-1 text-primary"></i>

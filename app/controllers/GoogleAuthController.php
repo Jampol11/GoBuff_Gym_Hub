@@ -144,10 +144,7 @@ class GoogleAuthController extends Controller
             ]);
             $this->session->set('otp_purpose', 'login');
 
-            $sent = $this->otpService->sendOtp($user['id'], $user['email'], $user['name'], 'login');
-            if (APP_ENV === 'development') {
-                $this->session->set('otp_dev_code', $sent);
-            }
+            $this->otpService->sendOtp($user['id'], $user['email'], $user['name'], 'login');
 
             $this->flash('info', 'A verification code has been sent to ' . $user['email']);
             $this->redirect('/otp/verify');

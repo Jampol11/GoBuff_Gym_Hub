@@ -36,16 +36,10 @@
             <div class="alert alert-info d-flex align-items-start gap-3 mb-4">
                 <i class="bi bi-info-circle-fill fs-5 mt-1 flex-shrink-0"></i>
                 <div>
-                    <?php if ($noOwnerExists): ?>
-                    <strong>No Gym Owner exists yet</strong><br>
-                    There is currently no Gym Owner registered in the system. Your application will be
-                    <strong>automatically approved</strong> as soon as you submit it.
-                    <?php else: ?>
                     <strong>How it works</strong><br>
                     Fill in your gym's business details and upload supporting legal documents (business permit,
-                    government ID, proof of ownership, etc.). The current Gym Owner will review your credentials
+                    government ID, proof of ownership, etc.). The Super Admin will review your credentials
                     before granting access.
-                    <?php endif; ?>
                 </div>
             </div>
 

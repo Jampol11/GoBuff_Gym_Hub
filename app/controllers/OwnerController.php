@@ -21,7 +21,7 @@ class OwnerController extends Controller
     public function index(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $expiringSoon   = $this->docModel->getExpiringSoon(30);
         $totalDocs      = $this->docModel->count();
@@ -48,7 +48,7 @@ class OwnerController extends Controller
     public function documents(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $search  = sanitize($_GET['search'] ?? '');
@@ -74,14 +74,14 @@ class OwnerController extends Controller
     public function createDocument(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
         $this->view('owner.document_create', ['title' => 'Upload Legal Document']);
     }
 
     public function storeDocument(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -158,7 +158,7 @@ class OwnerController extends Controller
     public function showDocument(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $doc = $this->docModel->findById((int)$id);
         if (!$doc) {
@@ -172,7 +172,7 @@ class OwnerController extends Controller
     public function editDocument(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $doc = $this->docModel->findById((int)$id);
         if (!$doc) {
@@ -186,7 +186,7 @@ class OwnerController extends Controller
     public function updateDocument(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -251,7 +251,7 @@ class OwnerController extends Controller
     public function deleteDocument(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -273,7 +273,7 @@ class OwnerController extends Controller
     public function downloadDocument(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $doc = $this->docModel->findById((int)$id);
         if (!$doc) {
@@ -300,7 +300,7 @@ class OwnerController extends Controller
     public function budgets(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $perPage = RECORDS_PER_PAGE;
@@ -316,14 +316,14 @@ class OwnerController extends Controller
     public function createBudget(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
         $this->view('owner.budget_create', ['title' => 'New Budget Plan']);
     }
 
     public function storeBudget(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -384,7 +384,7 @@ class OwnerController extends Controller
     public function showBudget(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $plan = $this->budgetModel->getWithItems((int)$id);
         if (!$plan) {
@@ -411,7 +411,7 @@ class OwnerController extends Controller
     public function editBudget(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $plan = $this->budgetModel->getWithItems((int)$id);
         if (!$plan) {
@@ -425,7 +425,7 @@ class OwnerController extends Controller
     public function updateBudget(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -471,7 +471,7 @@ class OwnerController extends Controller
     public function approveBudget(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -486,7 +486,7 @@ class OwnerController extends Controller
     public function deleteBudget(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -503,7 +503,7 @@ class OwnerController extends Controller
     public function expenses(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $search  = sanitize($_GET['search'] ?? '');
@@ -534,7 +534,7 @@ class OwnerController extends Controller
     public function createExpense(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $budgetPlans = $this->budgetModel->getActivePlans();
 
@@ -556,7 +556,7 @@ class OwnerController extends Controller
     public function storeExpense(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -626,7 +626,7 @@ class OwnerController extends Controller
     public function showExpense(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $expense = $this->expenseModel->getWithDetails((int)$id);
         if (!$expense) {
@@ -640,7 +640,7 @@ class OwnerController extends Controller
     public function editExpense(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $expense = $this->expenseModel->getWithDetails((int)$id);
         if (!$expense) {
@@ -669,7 +669,7 @@ class OwnerController extends Controller
     public function updateExpense(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -728,7 +728,7 @@ class OwnerController extends Controller
     public function approveExpense(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -743,7 +743,7 @@ class OwnerController extends Controller
     public function rejectExpense(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
@@ -758,7 +758,7 @@ class OwnerController extends Controller
     public function deleteExpense(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);

@@ -150,7 +150,7 @@ class AttendanceController extends Controller
     public function export(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         $records = $this->model->getAllWithEmployee();
         header('Content-Type: text/csv');

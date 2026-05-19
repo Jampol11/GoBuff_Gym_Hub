@@ -11,6 +11,12 @@ class DashboardController extends Controller
         $userId     = Auth::id();
         $notifModel = new Notification();
 
+        // Super Admin gets their own dedicated dashboard
+        if ($role === 'super_admin') {
+            header('Location: ' . base_url('/super-admin'));
+            exit;
+        }
+
         // Base data for everyone
         $data = [
             'title'        => 'Dashboard',
@@ -210,10 +216,22 @@ class DashboardController extends Controller
         if ($role === 'user') {
             $raModel = new RoleApplication();
             $campaignModel = new Campaign();
+            $gymAppModel = new GymOwnerApplication();
+
+            // Get the approved gym (registered gym) to display on dashboard
+            $registeredGym = $gymAppModel->query(
+                "SELECT goa.*, u.name AS owner_name
+                 FROM gym_owner_applications goa
+                 JOIN users u ON u.id = goa.user_id
+                 WHERE goa.status = 'approved'
+                 ORDER BY goa.reviewed_at DESC LIMIT 1"
+            )->fetch();
+
             $data += [
                 'my_applications'  => $raModel->getForUser($userId),
                 'pending_app'      => $raModel->getPendingForUser($userId),
                 'active_campaigns' => $campaignModel->getActiveCampaigns(),
+                'registered_gym'   => $registeredGym ?: null,
             ];
         }
 

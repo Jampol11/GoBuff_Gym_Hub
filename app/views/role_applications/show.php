@@ -44,6 +44,17 @@ $isPending = $application['status'] === 'pending';
                             <div class="text-muted small mb-1">Requested Role</div>
                             <div class="fw-semibold text-primary"><?= e($application['role_label'] ?? role_label($application['requested_role'])) ?></div>
                         </div>
+                        <?php if (!empty($application['gym_name'])): ?>
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">Applying to Gym</div>
+                            <div class="fw-semibold">
+                                <i class="bi bi-building me-1 text-primary"></i><?= e($application['gym_name']) ?>
+                            </div>
+                            <?php if (!empty($application['gym_address'])): ?>
+                            <div class="text-muted small"><i class="bi bi-geo-alt me-1"></i><?= e($application['gym_address']) ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
                         <div class="col-sm-6">
                             <div class="text-muted small mb-1">Submitted</div>
                             <div><?= date('F d, Y g:i A', strtotime($application['created_at'])) ?></div>
@@ -54,6 +65,50 @@ $isPending = $application['status'] === 'pending';
                         <div class="text-muted small mb-1">Reason / Background</div>
                         <div class="bg-light rounded p-3"><?= nl2br(e($application['reason'] ?? '—')) ?></div>
                     </div>
+
+                    <?php if (!empty($documents)): ?>
+                    <!-- Supporting Documents -->
+                    <div class="mb-4">
+                        <div class="text-muted small mb-2 fw-semibold">
+                            <i class="bi bi-paperclip me-1"></i>Supporting Documents
+                            <span class="badge bg-secondary ms-1"><?= count($documents) ?></span>
+                        </div>
+                        <div class="list-group list-group-flush rounded border">
+                            <?php foreach ($documents as $doc): ?>
+                            <?php
+                            $ext = strtolower(pathinfo($doc['file_original'], PATHINFO_EXTENSION));
+                            $iconClass = match($ext) {
+                                'pdf'  => 'bi-file-earmark-pdf-fill text-danger',
+                                'doc', 'docx' => 'bi-file-earmark-word-fill text-primary',
+                                'jpg', 'jpeg', 'png', 'webp' => 'bi-file-earmark-image-fill text-success',
+                                default => 'bi-file-earmark-fill text-secondary',
+                            };
+                            $sizeKb = round($doc['file_size'] / 1024, 1);
+                            ?>
+                            <div class="list-group-item d-flex align-items-center gap-3 py-3">
+                                <i class="bi <?= $iconClass ?> fs-4 flex-shrink-0"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="fw-semibold small text-truncate"><?= e($doc['file_original']) ?></div>
+                                    <div class="text-muted" style="font-size:.75rem">
+                                        <?= e($docTypes[$doc['document_type']] ?? ucfirst($doc['document_type'])) ?>
+                                        &bull; <?= $sizeKb ?> KB
+                                        &bull; <?= date('M d, Y', strtotime($doc['created_at'])) ?>
+                                    </div>
+                                </div>
+                                <a href="<?= base_url('/role-applications/documents/' . $doc['id'] . '/download') ?>"
+                                   class="btn btn-sm btn-outline-primary flex-shrink-0">
+                                    <i class="bi bi-download me-1"></i>Download
+                                </a>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php else: ?>
+                    <div class="mb-4">
+                        <div class="text-muted small mb-1 fw-semibold"><i class="bi bi-paperclip me-1"></i>Supporting Documents</div>
+                        <div class="text-muted small fst-italic">No documents uploaded.</div>
+                    </div>
+                    <?php endif; ?>
 
                     <?php if (!$isPending && $application['review_notes']): ?>
                     <div class="mb-2">

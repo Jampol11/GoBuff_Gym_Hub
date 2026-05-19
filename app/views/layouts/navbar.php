@@ -94,6 +94,13 @@ $user = auth_user();
                         <i class="bi bi-shield-lock me-2"></i>Change Password
                     </a>
                 </li>
+                <?php if (has_role(['super_admin'])): ?>
+                <li>
+                    <a class="dropdown-item" href="<?= base_url('/super-admin') ?>">
+                        <i class="bi bi-shield-fill-check me-2 text-dark"></i>Super Admin Panel
+                    </a>
+                </li>
+                <?php endif; ?>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <a class="dropdown-item text-danger" href="<?= base_url('/logout') ?>">

@@ -30,7 +30,7 @@ class EmployeeController extends Controller
     public function index(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $page    = max(1, (int)($_GET['page'] ?? 1));
         $search  = sanitize($_GET['search'] ?? '');
@@ -103,7 +103,7 @@ class EmployeeController extends Controller
     public function edit(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         $employee = $this->model->findById((int)$id);
         if (!$employee) {
@@ -120,7 +120,7 @@ class EmployeeController extends Controller
     public function update(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner']);
+        RoleMiddleware::handle(['gym_owner', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -189,7 +189,7 @@ class EmployeeController extends Controller
     public function scheduleSheet(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         $date      = sanitize($_GET['date'] ?? date('Y-m-d'));
         $employees = $this->model->getAllWithUser();
@@ -216,7 +216,7 @@ class EmployeeController extends Controller
     public function saveScheduleSheet(): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->flash('error', 'Invalid security token.');
@@ -276,7 +276,7 @@ class EmployeeController extends Controller
     public function deleteSchedule(string $id): void
     {
         AuthMiddleware::handle();
-        RoleMiddleware::handle(['gym_owner', 'admin']);
+        RoleMiddleware::handle(['gym_owner', 'admin', 'super_admin']);
 
         if (!verify_csrf()) {
             $this->json(['error' => 'Invalid token'], 403);
