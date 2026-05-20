@@ -148,6 +148,7 @@ $router->get('/maintenance/create',           'MaintenanceController@create');
 $router->post('/maintenance',                 'MaintenanceController@store');
 $router->get('/maintenance/{id}',             'MaintenanceController@show');
 $router->post('/maintenance/{id}/verify',     'MaintenanceController@verify');
+$router->post('/maintenance/{id}/decline',    'MaintenanceController@decline');
 $router->post('/maintenance/{id}/complete',   'MaintenanceController@complete');
 $router->post('/maintenance/{id}/approve',    'MaintenanceController@approve');
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 19, 2026 at 09:34 AM
+-- Generation Time: May 20, 2026 at 07:24 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -195,7 +195,14 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `description`, `ip_addre
 (152, 20, 'logout', 'User logged out', '::1', '2026-05-19 07:20:22'),
 (153, 20, 'login', 'User logged in (OTP verified)', '::1', '2026-05-19 07:28:40'),
 (154, 20, 'user_delete', 'Deleted user ID: 18', '::1', '2026-05-19 07:29:05'),
-(155, 3, 'login', 'User logged in (OTP verified)', '::1', '2026-05-19 07:31:17');
+(155, 3, 'login', 'User logged in (OTP verified)', '::1', '2026-05-19 07:31:17'),
+(156, 5, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 03:39:43'),
+(157, 19, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 04:20:57'),
+(158, 5, 'maintenance_report', 'Maintenance reported for equipment ID: 1', '::1', '2026-05-20 04:29:58'),
+(159, 5, 'maintenance_report', 'Maintenance reported for equipment ID: 4', '::1', '2026-05-20 04:36:40'),
+(160, 5, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 04:51:18'),
+(161, 19, 'maintenance_report', 'Maintenance reported for equipment ID: 5', '::1', '2026-05-20 04:53:12'),
+(162, 5, 'maintenance_report', 'Maintenance reported for equipment ID: 2', '::1', '2026-05-20 05:06:51');
 
 -- --------------------------------------------------------
 
@@ -416,11 +423,11 @@ CREATE TABLE `equipment` (
 --
 
 INSERT INTO `equipment` (`id`, `name`, `brand`, `model`, `serial_number`, `category`, `location`, `purchase_date`, `purchase_price`, `condition_status`, `last_maintenance_date`, `notes`, `created_at`, `updated_at`) VALUES
-(1, 'Treadmill A1', 'LifeFitness', NULL, NULL, 'Cardio', 'Main Floor', NULL, NULL, 'good', NULL, NULL, '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
-(2, 'Bench Press Rack', 'Hammer', '', NULL, 'Strength', 'Weight Room', NULL, NULL, 'good', '2026-05-18', 'Nabali ang butanganan', '2026-05-08 08:54:48', '2026-05-18 10:41:27'),
+(1, 'Treadmill A1', 'LifeFitness', NULL, NULL, 'Cardio', 'Main Floor', NULL, NULL, 'good', '2026-05-20', NULL, '2026-05-08 08:54:48', '2026-05-20 04:34:05'),
+(2, 'Bench Press Rack', 'Hammer', '', NULL, 'Strength', 'Weight Room', NULL, NULL, 'good', '2026-05-20', 'Nabali ang butanganan', '2026-05-08 08:54:48', '2026-05-20 05:15:58'),
 (3, 'Rowing Machine', 'Concept2', NULL, NULL, 'Cardio', 'Main Floor', NULL, NULL, 'good', '2026-05-18', NULL, '2026-05-08 08:54:48', '2026-05-18 09:39:10'),
-(4, 'Dumbbells Set', 'York', NULL, NULL, 'Free Weights', 'Weight Room', NULL, NULL, 'good', NULL, NULL, '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
-(5, 'Pull-up Station', 'Body-Solid', NULL, NULL, 'Functional', 'Main Floor', NULL, NULL, 'good', '2026-05-18', NULL, '2026-05-08 08:54:48', '2026-05-18 09:39:05'),
+(4, 'Dumbbells Set', 'York', NULL, NULL, 'Free Weights', 'Weight Room', NULL, NULL, 'good', '2026-05-20', NULL, '2026-05-08 08:54:48', '2026-05-20 04:52:09'),
+(5, 'Pull-up Station', 'Body-Solid', NULL, NULL, 'Functional', 'Main Floor', NULL, NULL, 'good', '2026-05-20', NULL, '2026-05-08 08:54:48', '2026-05-20 04:57:30'),
 (6, 'Giga Dumbells', 'STOIC', 'S3112', '123456789', 'Strength', 'Main Floor', '2026-05-15', 900.00, 'good', NULL, 'wala', '2026-05-15 07:28:04', '2026-05-15 07:28:04');
 
 -- --------------------------------------------------------
@@ -696,7 +703,13 @@ INSERT INTO `login_logs` (`id`, `email`, `success`, `ip_address`, `attempted_at`
 (100, 'jpogs565@gmail.com', 1, '::1', '2026-05-19 07:28:12'),
 (101, 'jpogs565@gmail.com', 1, '::1', '2026-05-19 07:28:40'),
 (102, 'marketing@gobuff.com', 1, '::1', '2026-05-19 07:30:53'),
-(103, 'marketing@gobuff.com', 1, '::1', '2026-05-19 07:31:17');
+(103, 'marketing@gobuff.com', 1, '::1', '2026-05-19 07:31:17'),
+(104, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 03:38:57'),
+(105, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 03:39:43'),
+(106, 'anzed333@gmail.com', 1, '::1', '2026-05-20 04:19:59'),
+(107, 'anzed333@gmail.com', 1, '::1', '2026-05-20 04:20:57'),
+(108, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 04:50:41'),
+(109, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 04:51:18');
 
 -- --------------------------------------------------------
 
@@ -710,6 +723,7 @@ CREATE TABLE `maintenance_reports` (
   `reported_by` int(10) UNSIGNED DEFAULT NULL,
   `issue_type` varchar(200) NOT NULL,
   `description` text NOT NULL,
+  `photo_evidence` varchar(255) DEFAULT NULL,
   `priority` enum('low','medium','high','critical') DEFAULT 'medium',
   `status` enum('pending','in_progress','completed','approved','cancelled') DEFAULT 'pending',
   `resolution` text DEFAULT NULL,
@@ -723,12 +737,16 @@ CREATE TABLE `maintenance_reports` (
 -- Dumping data for table `maintenance_reports`
 --
 
-INSERT INTO `maintenance_reports` (`id`, `equipment_id`, `reported_by`, `issue_type`, `description`, `priority`, `status`, `resolution`, `verified_at`, `completed_at`, `approved_at`, `created_at`) VALUES
-(1, 3, NULL, 'Wear and Tear', 'Paayu please', 'medium', 'approved', 'Maintenance completed', NULL, '2026-05-08 18:44:39', '2026-05-18 17:39:10', '2026-05-08 10:44:35'),
-(4, 2, 2, 'Wear and Tear', 'Paayu ni bi', 'low', 'approved', 'Maintenance completed', '2026-05-15 15:44:35', '2026-05-15 15:44:42', '2026-05-18 17:39:09', '2026-05-15 07:44:19'),
-(5, 5, 2, 'Wear and Tear', 'Nabali ang bakal', 'medium', 'approved', 'Maintenance completed', '2026-05-18 17:20:57', '2026-05-18 17:21:04', '2026-05-18 17:39:08', '2026-05-18 09:13:36'),
-(6, 5, 2, 'Wear and Tear', 'Nabali ang bakal', 'medium', 'approved', 'Gi ilisan na', '2026-05-18 17:33:37', '2026-05-18 17:34:01', '2026-05-18 17:39:05', '2026-05-18 09:21:48'),
-(7, 2, 2, 'Wear and Tear', 'Nabali gunitanan', 'medium', 'approved', 'Okay na', '2026-05-18 18:39:41', '2026-05-18 18:41:09', '2026-05-18 18:41:26', '2026-05-18 10:39:18');
+INSERT INTO `maintenance_reports` (`id`, `equipment_id`, `reported_by`, `issue_type`, `description`, `photo_evidence`, `priority`, `status`, `resolution`, `verified_at`, `completed_at`, `approved_at`, `created_at`) VALUES
+(1, 3, NULL, 'Wear and Tear', 'Paayu please', NULL, 'medium', 'approved', 'Maintenance completed', NULL, '2026-05-08 18:44:39', '2026-05-18 17:39:10', '2026-05-08 10:44:35'),
+(4, 2, 2, 'Wear and Tear', 'Paayu ni bi', NULL, 'low', 'approved', 'Maintenance completed', '2026-05-15 15:44:35', '2026-05-15 15:44:42', '2026-05-18 17:39:09', '2026-05-15 07:44:19'),
+(5, 5, 2, 'Wear and Tear', 'Nabali ang bakal', NULL, 'medium', 'approved', 'Maintenance completed', '2026-05-18 17:20:57', '2026-05-18 17:21:04', '2026-05-18 17:39:08', '2026-05-18 09:13:36'),
+(6, 5, 2, 'Wear and Tear', 'Nabali ang bakal', NULL, 'medium', 'approved', 'Gi ilisan na', '2026-05-18 17:33:37', '2026-05-18 17:34:01', '2026-05-18 17:39:05', '2026-05-18 09:21:48'),
+(7, 2, 2, 'Wear and Tear', 'Nabali gunitanan', NULL, 'medium', 'approved', 'Okay na', '2026-05-18 18:39:41', '2026-05-18 18:41:09', '2026-05-18 18:41:26', '2026-05-18 10:39:18'),
+(8, 1, 2, 'Mechanical Failure', 'Daot ang dashboard', NULL, 'medium', 'approved', 'Okay na', '2026-05-20 12:32:30', '2026-05-20 12:33:40', '2026-05-20 12:34:05', '2026-05-20 04:29:58'),
+(9, 4, 2, 'Other', 'Nawala ang isa ka 10kg', 'maintenance/maint_1779251019_5db0600962f0.jpg', 'medium', 'approved', 'Okay na', '2026-05-20 12:51:50', '2026-05-20 12:52:02', '2026-05-20 12:52:09', '2026-05-20 04:36:40'),
+(10, 5, 5, 'Wear and Tear', 'Nabali ang bakal', NULL, 'medium', 'approved', 'awdawdawd', '2026-05-20 12:56:39', '2026-05-20 12:57:25', '2026-05-20 12:57:30', '2026-05-20 04:53:12'),
+(11, 2, 2, 'Wear and Tear', 'blablablabal', 'maintenance/maint_1779253611_52902525230f.jpg', 'medium', 'approved', 'Goods babu', '2026-05-20 13:15:17', '2026-05-20 13:15:46', '2026-05-20 13:15:58', '2026-05-20 05:06:51');
 
 -- --------------------------------------------------------
 
@@ -832,10 +850,26 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `is_re
 (15, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Pull-up Station\" has been reviewed and approved by the owner. The equipment is back in service.', 1, '2026-05-18 09:39:05'),
 (16, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Pull-up Station\" has been reviewed and approved by the owner. The equipment is back in service.', 1, '2026-05-18 09:39:08'),
 (17, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Bench Press Rack\" has been reviewed and approved by the owner. The equipment is back in service.', 1, '2026-05-18 09:39:09'),
-(19, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Bench Press Rack\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 0, '2026-05-18 10:39:41'),
-(21, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Bench Press Rack\" has been reviewed and approved by the owner. The equipment is back in service.', 0, '2026-05-18 10:41:27'),
+(19, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Bench Press Rack\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 1, '2026-05-18 10:39:41'),
+(21, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Bench Press Rack\" has been reviewed and approved by the owner. The equipment is back in service.', 1, '2026-05-18 10:41:27'),
 (23, 19, 'system', 'Gym Owner Application Approved', 'Congratulations! Your application to become Gym Owner has been approved by the Super Admin. Please log out and log back in to access your new privileges.', 1, '2026-05-19 06:34:35'),
-(24, 3, '', 'New Services Submitted for Campaign', 'John Paul Manulat has submitted 1 service(s)/rate(s) for your review. You can now create a campaign featuring these services.', 1, '2026-05-19 06:39:24');
+(24, 3, '', 'New Services Submitted for Campaign', 'John Paul Manulat has submitted 1 service(s)/rate(s) for your review. You can now create a campaign featuring these services.', 1, '2026-05-19 06:39:24'),
+(25, 19, 'maintenance', 'New Maintenance Report', 'A new maintenance report was submitted for \"Treadmill A1\" (Priority: medium, Issue: Mechanical Failure) by Mark Santos. Please review and verify.', 1, '2026-05-20 04:29:58'),
+(26, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Treadmill A1\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 1, '2026-05-20 04:32:30'),
+(27, 19, 'maintenance', 'Maintenance Work Completed — Awaiting Approval', 'The maintenance work for \"Treadmill A1\" has been completed by staff. Please review and give final approval.', 1, '2026-05-20 04:33:40'),
+(28, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Treadmill A1\" has been reviewed and approved by the owner. The equipment is back in service.', 1, '2026-05-20 04:34:05'),
+(29, 19, 'maintenance', 'New Maintenance Report', 'A new maintenance report was submitted for \"Dumbbells Set\" (Priority: medium, Issue: Other) by Mark Santos. Please review and verify.', 1, '2026-05-20 04:36:40'),
+(30, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Dumbbells Set\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 1, '2026-05-20 04:51:50'),
+(31, 19, 'maintenance', 'Maintenance Work Completed — Awaiting Approval', 'The maintenance work for \"Dumbbells Set\" has been completed by staff. Please review and give final approval.', 0, '2026-05-20 04:52:02'),
+(32, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Dumbbells Set\" has been reviewed and approved by the owner. The equipment is back in service.', 1, '2026-05-20 04:52:09'),
+(33, 19, 'maintenance', 'New Maintenance Report', 'A new maintenance report was submitted for \"Pull-up Station\" (Priority: medium, Issue: Wear and Tear) by John Paul Manulat. Please review and verify.', 0, '2026-05-20 04:53:12'),
+(34, 19, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Pull-up Station\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 0, '2026-05-20 04:56:39'),
+(35, 19, 'maintenance', 'Maintenance Work Completed — Awaiting Approval', 'The maintenance work for \"Pull-up Station\" has been completed by staff. Please review and give final approval.', 0, '2026-05-20 04:57:25'),
+(36, 19, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Pull-up Station\" has been reviewed and approved by the owner. The equipment is back in service.', 0, '2026-05-20 04:57:30'),
+(37, 19, 'maintenance', 'New Maintenance Report', 'A new maintenance report was submitted for \"Bench Press Rack\" (Priority: medium, Issue: Wear and Tear) by Mark Santos. Please review and verify.', 0, '2026-05-20 05:06:51'),
+(38, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Bench Press Rack\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 0, '2026-05-20 05:15:17'),
+(39, 19, 'maintenance', 'Maintenance Work Completed — Awaiting Approval', 'The maintenance work for \"Bench Press Rack\" has been completed by staff. Please review and give final approval.', 0, '2026-05-20 05:15:46'),
+(40, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Bench Press Rack\" has been reviewed and approved by the owner. The equipment is back in service.', 0, '2026-05-20 05:15:58');
 
 -- --------------------------------------------------------
 
@@ -928,9 +962,12 @@ INSERT INTO `otp_tokens` (`id`, `user_id`, `token`, `purpose`, `attempts`, `expi
 (55, 19, '463090', 'login', 0, '2026-05-19 14:45:28', '2026-05-19 14:35:36', '2026-05-19 06:35:28'),
 (56, 20, '152969', 'register', 0, '2026-05-19 14:50:58', '2026-05-19 14:41:06', '2026-05-19 06:40:58'),
 (57, 19, '385455', 'login', 0, '2026-05-19 15:25:07', '2026-05-19 15:15:23', '2026-05-19 07:15:07'),
-(58, 19, '892259', 'login', 0, '2026-05-19 15:25:23', NULL, '2026-05-19 07:15:23'),
+(58, 19, '892259', 'login', 0, '2026-05-19 15:25:23', '2026-05-20 12:19:59', '2026-05-19 07:15:23'),
 (59, 20, '398245', 'login', 0, '2026-05-19 15:38:12', '2026-05-19 15:28:40', '2026-05-19 07:28:12'),
-(60, 3, '329030', 'login', 0, '2026-05-19 15:40:53', '2026-05-19 15:31:17', '2026-05-19 07:30:53');
+(60, 3, '329030', 'login', 0, '2026-05-19 15:40:53', '2026-05-19 15:31:17', '2026-05-19 07:30:53'),
+(61, 5, '091364', 'login', 0, '2026-05-20 11:48:57', '2026-05-20 11:39:43', '2026-05-20 03:38:57'),
+(62, 19, '936946', 'login', 0, '2026-05-20 12:29:59', '2026-05-20 12:20:57', '2026-05-20 04:19:59'),
+(63, 5, '444630', 'login', 0, '2026-05-20 13:00:41', '2026-05-20 12:51:18', '2026-05-20 04:50:41');
 
 -- --------------------------------------------------------
 
@@ -1078,9 +1115,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `username`, `google_id`, `avatar_url
 (2, 'Admin Officer', 'admin@gobuff.com', 'admin', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'admin', 'active', '2026-05-18 17:06:01', '2026-05-08 08:54:48', '2026-05-18 09:06:01'),
 (3, 'Marketing Staff', 'marketing@gobuff.com', 'marketing', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'marketing', 'active', '2026-05-19 15:31:17', '2026-05-08 08:54:48', '2026-05-19 07:31:17'),
 (4, 'John Trainer', 'trainer@gobuff.com', 'trainer1', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'trainer', 'active', '2026-05-13 14:39:44', '2026-05-08 08:54:48', '2026-05-13 06:39:44'),
-(5, 'Maintenance Head', 'maintenance@gobuff.com', 'maintenance', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'maintenance', 'active', '2026-05-18 18:37:58', '2026-05-08 08:54:48', '2026-05-18 10:37:58'),
+(5, 'Maintenance Head', 'maintenance@gobuff.com', 'maintenance', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'maintenance', 'active', '2026-05-20 12:51:18', '2026-05-08 08:54:48', '2026-05-20 04:51:18'),
 (6, 'Juan dela Cruz', 'member@gobuff.com', 'member1', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'member', 'active', NULL, '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
-(19, 'John Paul Manulat', 'anzed333@gmail.com', 'Mr. Owner Pogi', NULL, NULL, 'local', '$2y$12$WHSDyqFon8JsrgDrrvlz4eUX6nibie7vV8.aAyW94rXwyct6s82Yy', 'gym_owner', 'active', '2026-05-19 14:35:37', '2026-05-19 06:31:37', '2026-05-19 06:35:37'),
+(19, 'John Paul Manulat', 'anzed333@gmail.com', 'Mr. Owner Pogi', NULL, NULL, 'local', '$2y$12$WHSDyqFon8JsrgDrrvlz4eUX6nibie7vV8.aAyW94rXwyct6s82Yy', 'gym_owner', 'active', '2026-05-20 12:20:57', '2026-05-19 06:31:37', '2026-05-20 04:20:57'),
 (20, 'John Doe', 'jpogs565@gmail.com', 'Jampol', NULL, NULL, 'local', '$2y$12$bIUtxO3Cg.IlkTz9whGNXevsceSh7Mr2QVsvXzCQkjtulXXMDrBV.', 'super_admin', 'active', '2026-05-19 15:28:40', '2026-05-19 06:40:58', '2026-05-19 07:28:40');
 
 -- --------------------------------------------------------
@@ -1426,7 +1463,7 @@ ALTER TABLE `work_schedules`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
 
 --
 -- AUTO_INCREMENT for table `attendance`
@@ -1522,13 +1559,13 @@ ALTER TABLE `legal_documents`
 -- AUTO_INCREMENT for table `login_logs`
 --
 ALTER TABLE `login_logs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT for table `maintenance_reports`
 --
 ALTER TABLE `maintenance_reports`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `members`
@@ -1552,7 +1589,7 @@ ALTER TABLE `membership_payments`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `nutrition_plans`
@@ -1570,7 +1607,7 @@ ALTER TABLE `operational_expenses`
 -- AUTO_INCREMENT for table `otp_tokens`
 --
 ALTER TABLE `otp_tokens`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `progress_tracking`

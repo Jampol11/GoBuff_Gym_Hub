@@ -13,6 +13,9 @@
                         <i class="bi bi-check-circle me-1"></i>Verify
                     </button>
                 </form>
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#declineModal">
+                    <i class="bi bi-x-circle me-1"></i>Decline
+                </button>
             <?php endif; ?>
             <?php if (has_role(['gym_owner', 'admin']) && $report['status'] === 'completed'): ?>
                 <form method="POST" action="<?= base_url('/maintenance/' . $report['id'] . '/approve') ?>" class="d-inline">
@@ -22,6 +25,9 @@
                         <i class="bi bi-patch-check me-1"></i>Approve
                     </button>
                 </form>
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#declineModal">
+                    <i class="bi bi-x-circle me-1"></i>Decline
+                </button>
             <?php endif; ?>
             <a href="<?= base_url('/maintenance') ?>" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i>Back
@@ -39,10 +45,19 @@
                     'in_progress' => ['label' => '2. Verified',    'icon' => 'bi-check-circle-fill','color' => 'info'],
                     'completed'   => ['label' => '3. Work Done',   'icon' => 'bi-wrench',           'color' => 'primary'],
                     'approved'    => ['label' => '4. Approved',    'icon' => 'bi-patch-check-fill', 'color' => 'success'],
+                    'declined'    => ['label' => 'Declined',       'icon' => 'bi-x-circle-fill',    'color' => 'danger'],
                 ];
-                $order  = array_keys($steps);
-                $current = array_search($report['status'], $order);
-                if ($current === false) $current = -1;
+                // For declined status, show only the declined step as active
+                if ($report['status'] === 'declined') {
+                    $steps = ['declined' => $steps['declined']];
+                    $order   = ['declined'];
+                    $current = 0;
+                } else {
+                    unset($steps['declined']);
+                    $order   = array_keys($steps);
+                    $current = array_search($report['status'], $order);
+                    if ($current === false) $current = -1;
+                }
                 ?>
                 <?php foreach ($steps as $key => $step):
                     $idx    = array_search($key, $order);
@@ -130,6 +145,26 @@
                 </div>
             </div>
 
+            <?php if (!empty($report['photo_evidence'])): ?>
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-semibold"><i class="bi bi-camera me-2 text-danger"></i>Photo Evidence</h6>
+                </div>
+                <div class="card-body text-center p-2">
+                    <a href="<?= base_url('/assets/uploads/' . e($report['photo_evidence'])) ?>"
+                       target="_blank" title="Click to view full size">
+                        <img src="<?= base_url('/assets/uploads/' . e($report['photo_evidence'])) ?>"
+                             alt="Photo evidence"
+                             class="img-fluid rounded shadow-sm"
+                             style="max-height:320px; object-fit:contain; cursor:zoom-in;">
+                    </a>
+                    <p class="text-muted mt-2 mb-0" style="font-size:.75rem;">
+                        <i class="bi bi-zoom-in me-1"></i>Click image to view full size
+                    </p>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <?php if (!empty($report['resolution'])): ?>
             <div class="card shadow-sm border-start border-primary border-3">
                 <div class="card-header">
@@ -137,6 +172,22 @@
                 </div>
                 <div class="card-body">
                     <p class="mb-0"><?= nl2br(e($report['resolution'])) ?></p>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($report['decline_reason'])): ?>
+            <div class="card shadow-sm border-start border-danger border-3">
+                <div class="card-header">
+                    <h6 class="mb-0 fw-semibold"><i class="bi bi-x-circle me-2 text-danger"></i>Decline Reason</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><?= nl2br(e($report['decline_reason'])) ?></p>
+                    <?php if (!empty($report['declined_at'])): ?>
+                    <p class="text-muted mb-0" style="font-size:.8rem;">
+                        <i class="bi bi-clock me-1"></i>Declined on <?= format_date($report['declined_at']) ?>
+                    </p>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php endif; ?>
@@ -174,13 +225,19 @@
                     <p class="text-muted small mb-3">
                         The maintenance staff has completed the work. Review the resolution above and approve to restore the equipment to service.
                     </p>
-                    <form method="POST" action="<?= base_url('/maintenance/' . $report['id'] . '/approve') ?>">
-                        <?= csrf_field() ?>
-                        <button type="submit" class="btn btn-success w-100"
-                                onclick="return confirm('Approve this report and mark the equipment as back in service?')">
-                            <i class="bi bi-patch-check me-1"></i>Approve & Close Report
+                    <div class="d-flex gap-2">
+                        <form method="POST" action="<?= base_url('/maintenance/' . $report['id'] . '/approve') ?>" class="flex-grow-1">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn btn-success w-100"
+                                    onclick="return confirm('Approve this report and mark the equipment as back in service?')">
+                                <i class="bi bi-patch-check me-1"></i>Approve & Close Report
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-outline-danger flex-grow-1"
+                                data-bs-toggle="modal" data-bs-target="#declineModal">
+                            <i class="bi bi-x-circle me-1"></i>Decline Work
                         </button>
-                    </form>
+                    </div>
                 </div>
             </div>
             <?php endif; ?>
@@ -189,3 +246,47 @@
 
     </div>
 </div>
+
+<?php if (has_role(['gym_owner', 'admin']) && in_array($report['status'], ['pending', 'completed'])): ?>
+<!-- Decline Modal -->
+<div class="modal fade" id="declineModal" tabindex="-1" aria-labelledby="declineModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="<?= base_url('/maintenance/' . $report['id'] . '/decline') ?>">
+                <?= csrf_field() ?>
+                <div class="modal-header border-danger">
+                    <h5 class="modal-title text-danger" id="declineModalLabel">
+                        <i class="bi bi-x-circle me-2"></i>
+                        <?= $report['status'] === 'pending' ? 'Decline Report' : 'Decline Work Done' ?>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <?php if ($report['status'] === 'pending'): ?>
+                    <p class="text-muted small mb-3">
+                        Declining this report will mark it as invalid and notify the reporter. The equipment status will be restored.
+                    </p>
+                    <?php else: ?>
+                    <p class="text-muted small mb-3">
+                        Declining the work will send it back to the maintenance staff for correction. They will be notified with your reason.
+                    </p>
+                    <?php endif; ?>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Reason for declining <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" name="decline_reason" rows="4" required
+                                  placeholder="Explain why this is being declined..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-x-circle me-1"></i>Confirm Decline
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
