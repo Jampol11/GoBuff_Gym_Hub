@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 20, 2026 at 07:24 AM
+-- Generation Time: May 20, 2026 at 11:49 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -202,7 +202,57 @@ INSERT INTO `activity_logs` (`id`, `user_id`, `action`, `description`, `ip_addre
 (159, 5, 'maintenance_report', 'Maintenance reported for equipment ID: 4', '::1', '2026-05-20 04:36:40'),
 (160, 5, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 04:51:18'),
 (161, 19, 'maintenance_report', 'Maintenance reported for equipment ID: 5', '::1', '2026-05-20 04:53:12'),
-(162, 5, 'maintenance_report', 'Maintenance reported for equipment ID: 2', '::1', '2026-05-20 05:06:51');
+(162, 5, 'maintenance_report', 'Maintenance reported for equipment ID: 2', '::1', '2026-05-20 05:06:51'),
+(163, 21, 'register', 'New user registered', '::1', '2026-05-20 08:33:06'),
+(164, 21, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:33:23'),
+(165, 21, 'gym_owner_application', 'User applied to become Gym Owner (application #5)', '::1', '2026-05-20 08:34:18'),
+(166, 20, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:35:01'),
+(167, 20, 'super_admin_approve_owner', 'Super Admin approved Gym Owner application #5 for user #21', '::1', '2026-05-20 08:35:18'),
+(168, 20, 'logout', 'User logged out', '::1', '2026-05-20 08:35:26'),
+(169, 5, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:35:55'),
+(170, 21, 'logout', 'User logged out', '::1', '2026-05-20 08:36:06'),
+(171, 21, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:36:30'),
+(172, 21, 'budget_create', 'Created budget plan: June Budget', '::1', '2026-05-20 08:38:21'),
+(173, 21, 'budget_approve', 'Approved budget plan ID: 4', '::1', '2026-05-20 08:38:28'),
+(174, 21, 'expense_create', 'Recorded expense: Monthly Electricity Bill - ₱2999.99', '::1', '2026-05-20 08:39:05'),
+(175, 21, 'expense_approve', 'Approved expense ID: 6', '::1', '2026-05-20 08:39:11'),
+(176, 21, 'expense_create', 'Recorded expense: Energy Drinks - ₱1000', '::1', '2026-05-20 08:40:42'),
+(177, 21, 'expense_update', 'Updated expense: Energy Drinks', '::1', '2026-05-20 08:41:05'),
+(178, 21, 'expense_approve', 'Approved expense ID: 7', '::1', '2026-05-20 08:41:08'),
+(179, 21, 'equipment_create', 'Added equipment: Mechanical Treadmill', '::1', '2026-05-20 08:42:28'),
+(180, 5, 'maintenance_report', 'Maintenance reported for equipment ID: 7', '::1', '2026-05-20 08:43:27'),
+(181, 5, 'logout', 'User logged out', '::1', '2026-05-20 08:44:52'),
+(182, 22, 'register', 'New user registered', '::1', '2026-05-20 08:45:33'),
+(183, 22, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:45:52'),
+(184, 22, 'role_application', 'User applied for role: admin', '::1', '2026-05-20 08:48:24'),
+(185, 21, 'role_approve', 'Approved role application ID: 4, role: admin', '::1', '2026-05-20 08:48:52'),
+(186, 22, 'logout', 'User logged out', '::1', '2026-05-20 08:49:47'),
+(187, 22, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:50:14'),
+(188, 22, 'logout', 'User logged out', '::1', '2026-05-20 08:51:26'),
+(189, 3, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:52:15'),
+(190, 21, 'service_create', 'Created gym service: Boxing', '::1', '2026-05-20 08:53:04'),
+(191, 21, 'services_submitted', 'Owner submitted 1 services to marketing.', '::1', '2026-05-20 08:53:19'),
+(192, 3, 'campaign_create', 'Created campaign: Student Promo', '::1', '2026-05-20 08:55:30'),
+(193, 3, 'logout', 'User logged out', '::1', '2026-05-20 08:56:04'),
+(194, 21, 'logout', 'User logged out', '::1', '2026-05-20 08:56:08'),
+(195, 22, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:56:54'),
+(196, 23, 'register', 'New user registered', '::1', '2026-05-20 08:57:53'),
+(197, 23, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 08:58:09'),
+(198, 23, 'role_application', 'User applied for role: member', '::1', '2026-05-20 09:00:12'),
+(199, 22, 'member_app_approve', 'Admin approved membership application ID: 5', '::1', '2026-05-20 09:00:37'),
+(200, 23, 'logout', 'User logged out', '::1', '2026-05-20 09:00:48'),
+(201, 23, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 09:01:40'),
+(202, 23, 'membership_checkout', 'User 23 initiated PayMongo checkout for membership ID: 3', '::1', '2026-05-20 09:02:03'),
+(203, 23, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 09:03:17'),
+(204, 22, 'membership_approve', 'Approved membership ID: 3', '::1', '2026-05-20 09:03:36'),
+(205, 23, 'logout', 'User logged out', '::1', '2026-05-20 09:04:16'),
+(206, 23, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 09:04:51'),
+(207, 23, 'logout', 'User logged out', '::1', '2026-05-20 09:09:33'),
+(208, 23, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 09:10:41'),
+(209, 23, 'logout', 'User logged out', '::1', '2026-05-20 09:14:57'),
+(210, 23, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 09:15:36'),
+(211, 23, 'logout', 'User logged out', '::1', '2026-05-20 09:39:50'),
+(212, 23, 'login', 'User logged in (OTP verified)', '::1', '2026-05-20 09:40:16');
 
 -- --------------------------------------------------------
 
@@ -226,7 +276,9 @@ CREATE TABLE `attendance` (
 
 INSERT INTO `attendance` (`id`, `employee_id`, `date`, `time_in`, `time_out`, `status`, `notes`) VALUES
 (1, 3, '2026-05-15', '16:51:55', '16:53:05', 'present', NULL),
-(2, 2, '2026-05-15', '17:21:16', '17:21:19', 'present', NULL);
+(2, 2, '2026-05-15', '17:21:16', '17:21:19', 'present', NULL),
+(3, 6, '2026-05-20', '16:49:22', '16:49:30', 'present', NULL),
+(4, 7, '2026-05-20', '16:50:29', '16:50:33', 'present', NULL);
 
 -- --------------------------------------------------------
 
@@ -242,6 +294,14 @@ CREATE TABLE `budget_items` (
   `allocated` decimal(12,2) NOT NULL DEFAULT 0.00,
   `sort_order` tinyint(3) UNSIGNED DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `budget_items`
+--
+
+INSERT INTO `budget_items` (`id`, `budget_plan_id`, `category`, `description`, `allocated`, `sort_order`) VALUES
+(9, 4, 'Rent', 'Rent', 3000.00, 0),
+(10, 4, 'Essentials', 'Energy Drinks', 1000.00, 1);
 
 -- --------------------------------------------------------
 
@@ -264,6 +324,13 @@ CREATE TABLE `budget_plans` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `budget_plans`
+--
+
+INSERT INTO `budget_plans` (`id`, `created_by`, `title`, `fiscal_year`, `period`, `period_label`, `total_budget`, `notes`, `status`, `approved_by`, `approved_at`, `created_at`, `updated_at`) VALUES
+(4, 21, 'June Budget', '2026', 'monthly', 'June 2026', 4000.00, '', 'approved', 21, '2026-05-20 16:38:28', '2026-05-20 08:38:21', '2026-05-20 08:38:28');
 
 -- --------------------------------------------------------
 
@@ -300,7 +367,8 @@ CREATE TABLE `campaigns` (
 INSERT INTO `campaigns` (`id`, `title`, `description`, `target_audience`, `start_date`, `end_date`, `budget`, `discount_pct`, `banner_image`, `service_ids`, `platform_website`, `platform_facebook`, `platform_instagram`, `size`, `theme`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
 (1, 'Summer Fitness Promo', 'Get fit this summer! 20% off all monthly plans.', 'New Members', '2026-05-08', '2026-06-07', 0.00, 20.00, NULL, NULL, 1, 0, 0, NULL, NULL, 'active', NULL, '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
 (2, 'Refer a Friend', 'Refer a friend and get 1 month free!', 'Existing Members', '2026-05-08', '2026-07-07', 0.00, 0.00, NULL, NULL, 1, 0, 0, NULL, NULL, 'active', NULL, '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
-(3, 'Boxing', 'Boxing ta bai', 'All Members', '2026-05-18', '2026-05-18', 300.00, 10.00, '81dfdafac26f5b204a9b8e5a61f28ef8.jpg', NULL, 1, 0, 0, NULL, NULL, 'active', 3, '2026-05-18 09:43:30', '2026-05-18 09:43:30');
+(3, 'Boxing', 'Boxing ta bai', 'All Members', '2026-05-18', '2026-05-18', 300.00, 10.00, '81dfdafac26f5b204a9b8e5a61f28ef8.jpg', NULL, 1, 0, 0, NULL, NULL, 'active', 3, '2026-05-18 09:43:30', '2026-05-18 09:43:30'),
+(4, 'Student Promo', 'Less 100', 'General Public', '2026-05-20', '2027-05-20', 600.00, 0.00, 'ad35ddafa2396e66908de7cda04872a3.jpg', '1', 1, 0, 0, 'square', 'promo', 'active', 3, '2026-05-20 08:55:30', '2026-05-20 08:55:30');
 
 -- --------------------------------------------------------
 
@@ -333,13 +401,6 @@ CREATE TABLE `checkins` (
   `status` enum('checked_in','checked_out') DEFAULT 'checked_in',
   `notes` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `checkins`
---
-
-INSERT INTO `checkins` (`id`, `member_id`, `check_in_time`, `check_out_time`, `method`, `status`, `notes`) VALUES
-(1, 1, '2026-05-08 17:22:57', '2026-05-08 19:38:54', 'manual', 'checked_out', NULL);
 
 -- --------------------------------------------------------
 
@@ -393,7 +454,9 @@ INSERT INTO `employees` (`id`, `user_id`, `first_name`, `last_name`, `job_role`,
 (2, 5, 'Mark', 'Santos', 'maintenance', 'Maintenance', 'Equipment Repair', NULL, NULL, NULL, NULL, 'active', '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
 (3, NULL, 'Mr.', 'Owner', 'gym_owner', 'Management', NULL, NULL, NULL, NULL, NULL, 'active', '2026-05-13 07:46:50', '2026-05-13 07:46:50'),
 (4, NULL, 'John', 'Paul Manulat', 'gym_owner', 'Management', NULL, NULL, NULL, NULL, NULL, 'active', '2026-05-18 10:31:28', '2026-05-18 10:31:28'),
-(5, 19, 'John', 'Paul Manulat', 'gym_owner', 'Management', NULL, NULL, NULL, NULL, NULL, 'active', '2026-05-19 06:34:35', '2026-05-19 06:34:35');
+(5, 19, 'John', 'Paul Manulat', 'gym_owner', 'Management', NULL, NULL, NULL, NULL, NULL, 'active', '2026-05-19 06:34:35', '2026-05-19 06:34:35'),
+(6, 21, 'Eileen', 'Dela Cruz', 'gym_owner', 'Management', NULL, NULL, NULL, NULL, NULL, 'active', '2026-05-20 08:35:18', '2026-05-20 08:35:18'),
+(7, 22, 'Janpol', '', 'admin', 'Admin', NULL, NULL, NULL, NULL, NULL, 'active', '2026-05-20 08:48:52', '2026-05-20 08:48:52');
 
 -- --------------------------------------------------------
 
@@ -428,7 +491,8 @@ INSERT INTO `equipment` (`id`, `name`, `brand`, `model`, `serial_number`, `categ
 (3, 'Rowing Machine', 'Concept2', NULL, NULL, 'Cardio', 'Main Floor', NULL, NULL, 'good', '2026-05-18', NULL, '2026-05-08 08:54:48', '2026-05-18 09:39:10'),
 (4, 'Dumbbells Set', 'York', NULL, NULL, 'Free Weights', 'Weight Room', NULL, NULL, 'good', '2026-05-20', NULL, '2026-05-08 08:54:48', '2026-05-20 04:52:09'),
 (5, 'Pull-up Station', 'Body-Solid', NULL, NULL, 'Functional', 'Main Floor', NULL, NULL, 'good', '2026-05-20', NULL, '2026-05-08 08:54:48', '2026-05-20 04:57:30'),
-(6, 'Giga Dumbells', 'STOIC', 'S3112', '123456789', 'Strength', 'Main Floor', '2026-05-15', 900.00, 'good', NULL, 'wala', '2026-05-15 07:28:04', '2026-05-15 07:28:04');
+(6, 'Giga Dumbells', 'STOIC', 'S3112', '123456789', 'Strength', 'Main Floor', '2026-05-15', 900.00, 'good', NULL, 'wala', '2026-05-15 07:28:04', '2026-05-15 07:28:04'),
+(7, 'Mechanical Treadmill', 'STIOC', '', '321546', 'Cardio', 'Main Floor', '2026-05-20', 13000.00, 'good', '2026-05-20', '', '2026-05-20 08:42:28', '2026-05-20 08:44:13');
 
 -- --------------------------------------------------------
 
@@ -504,7 +568,8 @@ CREATE TABLE `gym_owner_applications` (
 --
 
 INSERT INTO `gym_owner_applications` (`id`, `user_id`, `business_name`, `contact_number`, `address`, `reason`, `status`, `reviewed_by`, `reviewed_at`, `review_notes`, `created_at`, `updated_at`) VALUES
-(4, 19, 'Onse Powerfitness Gym', '09774233211', 'Toril Davao City', 'Because I want to ayaw nag pangutana', 'approved', NULL, '2026-05-19 14:34:35', '', '2026-05-19 06:33:36', '2026-05-19 06:34:35');
+(4, 19, 'Onse Powerfitness Gym', '09774233211', 'Toril Davao City', 'Because I want to ayaw nag pangutana', 'approved', NULL, '2026-05-19 14:34:35', '', '2026-05-19 06:33:36', '2026-05-19 06:34:35'),
+(5, 21, 'Powerfitness Gym', '09094773126', 'Toril Davao City', 'Build dreams Get fit and help community', 'approved', 20, '2026-05-20 16:35:18', '', '2026-05-20 08:34:18', '2026-05-20 08:35:18');
 
 -- --------------------------------------------------------
 
@@ -528,7 +593,8 @@ CREATE TABLE `gym_owner_application_documents` (
 --
 
 INSERT INTO `gym_owner_application_documents` (`id`, `application_id`, `document_type`, `file_name`, `file_original`, `file_size`, `file_type`, `created_at`) VALUES
-(6, 4, 'business_permit', '856608025a4beea260ec35aa9c96e39f.jpg', 'Certificate.jpg', 96825, 'image/jpeg', '2026-05-19 06:33:36');
+(6, 4, 'business_permit', '856608025a4beea260ec35aa9c96e39f.jpg', 'Certificate.jpg', 96825, 'image/jpeg', '2026-05-19 06:33:36'),
+(7, 5, 'business_permit', '08f1c38fc86f36294e8abca4fd015ffe.jpg', 'COR.jpg', 97804, 'image/jpeg', '2026-05-20 08:34:18');
 
 -- --------------------------------------------------------
 
@@ -557,7 +623,8 @@ CREATE TABLE `gym_services` (
 --
 
 INSERT INTO `gym_services` (`id`, `created_by`, `name`, `description`, `category`, `price`, `duration`, `is_active`, `submitted_to_marketing`, `submitted_at`, `notes`, `created_at`, `updated_at`) VALUES
-(1, 19, 'Student Membership', 'Access to the gym.', 'membership', 600.00, 'Per Month', 1, 1, '2026-05-19 14:39:24', '', '2026-05-19 06:38:41', '2026-05-19 06:39:24');
+(1, 19, 'Student Membership', 'Access to the gym.', 'membership', 600.00, 'Per Month', 1, 1, '2026-05-19 14:39:24', '', '2026-05-19 06:38:41', '2026-05-19 06:39:24'),
+(2, 21, 'Boxing', 'Boxing ra', 'personal_training', 99.98, 'Per week', 1, 1, '2026-05-20 16:53:19', '', '2026-05-20 08:53:04', '2026-05-20 08:53:19');
 
 -- --------------------------------------------------------
 
@@ -709,7 +776,34 @@ INSERT INTO `login_logs` (`id`, `email`, `success`, `ip_address`, `attempted_at`
 (106, 'anzed333@gmail.com', 1, '::1', '2026-05-20 04:19:59'),
 (107, 'anzed333@gmail.com', 1, '::1', '2026-05-20 04:20:57'),
 (108, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 04:50:41'),
-(109, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 04:51:18');
+(109, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 04:51:18'),
+(110, 'owner@gobuff.com', 1, '::1', '2026-05-20 08:33:23'),
+(111, 'jpogs565@gmail.com', 1, '::1', '2026-05-20 08:34:43'),
+(112, 'jpogs565@gmail.com', 1, '::1', '2026-05-20 08:35:01'),
+(113, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 08:35:35'),
+(114, 'maintenance@gobuff.com', 1, '::1', '2026-05-20 08:35:55'),
+(115, 'owner@gobuff.com', 1, '::1', '2026-05-20 08:36:15'),
+(116, 'owner@gobuff.com', 1, '::1', '2026-05-20 08:36:30'),
+(117, 'admin@gobuff.com', 1, '::1', '2026-05-20 08:45:52'),
+(118, 'admin@gobuff.com', 1, '::1', '2026-05-20 08:49:56'),
+(119, 'admin@gobuff.com', 1, '::1', '2026-05-20 08:50:14'),
+(120, 'marketing@gobuff.com', 1, '::1', '2026-05-20 08:51:58'),
+(121, 'marketing@gobuff.com', 1, '::1', '2026-05-20 08:52:15'),
+(122, 'admin@gobuff.com', 1, '::1', '2026-05-20 08:56:40'),
+(123, 'admin@gobuff.com', 1, '::1', '2026-05-20 08:56:54'),
+(124, 'member@gobuff.com', 1, '::1', '2026-05-20 08:58:09'),
+(125, 'member@gobuff.com', 1, '::1', '2026-05-20 09:01:22'),
+(126, 'member@gobuff.com', 1, '::1', '2026-05-20 09:01:40'),
+(127, 'member@gobuff.com', 1, '::1', '2026-05-20 09:02:49'),
+(128, 'member@gobuff.com', 1, '::1', '2026-05-20 09:03:17'),
+(129, 'member@gobuff.com', 1, '::1', '2026-05-20 09:04:31'),
+(130, 'member@gobuff.com', 1, '::1', '2026-05-20 09:04:51'),
+(131, 'member@gobuff.com', 1, '::1', '2026-05-20 09:10:16'),
+(132, 'member@gobuff.com', 1, '::1', '2026-05-20 09:10:41'),
+(133, 'member@gobuff.com', 1, '::1', '2026-05-20 09:15:11'),
+(134, 'member@gobuff.com', 1, '::1', '2026-05-20 09:15:36'),
+(135, 'member@gobuff.com', 1, '::1', '2026-05-20 09:40:00'),
+(136, 'member@gobuff.com', 1, '::1', '2026-05-20 09:40:16');
 
 -- --------------------------------------------------------
 
@@ -738,15 +832,7 @@ CREATE TABLE `maintenance_reports` (
 --
 
 INSERT INTO `maintenance_reports` (`id`, `equipment_id`, `reported_by`, `issue_type`, `description`, `photo_evidence`, `priority`, `status`, `resolution`, `verified_at`, `completed_at`, `approved_at`, `created_at`) VALUES
-(1, 3, NULL, 'Wear and Tear', 'Paayu please', NULL, 'medium', 'approved', 'Maintenance completed', NULL, '2026-05-08 18:44:39', '2026-05-18 17:39:10', '2026-05-08 10:44:35'),
-(4, 2, 2, 'Wear and Tear', 'Paayu ni bi', NULL, 'low', 'approved', 'Maintenance completed', '2026-05-15 15:44:35', '2026-05-15 15:44:42', '2026-05-18 17:39:09', '2026-05-15 07:44:19'),
-(5, 5, 2, 'Wear and Tear', 'Nabali ang bakal', NULL, 'medium', 'approved', 'Maintenance completed', '2026-05-18 17:20:57', '2026-05-18 17:21:04', '2026-05-18 17:39:08', '2026-05-18 09:13:36'),
-(6, 5, 2, 'Wear and Tear', 'Nabali ang bakal', NULL, 'medium', 'approved', 'Gi ilisan na', '2026-05-18 17:33:37', '2026-05-18 17:34:01', '2026-05-18 17:39:05', '2026-05-18 09:21:48'),
-(7, 2, 2, 'Wear and Tear', 'Nabali gunitanan', NULL, 'medium', 'approved', 'Okay na', '2026-05-18 18:39:41', '2026-05-18 18:41:09', '2026-05-18 18:41:26', '2026-05-18 10:39:18'),
-(8, 1, 2, 'Mechanical Failure', 'Daot ang dashboard', NULL, 'medium', 'approved', 'Okay na', '2026-05-20 12:32:30', '2026-05-20 12:33:40', '2026-05-20 12:34:05', '2026-05-20 04:29:58'),
-(9, 4, 2, 'Other', 'Nawala ang isa ka 10kg', 'maintenance/maint_1779251019_5db0600962f0.jpg', 'medium', 'approved', 'Okay na', '2026-05-20 12:51:50', '2026-05-20 12:52:02', '2026-05-20 12:52:09', '2026-05-20 04:36:40'),
-(10, 5, 5, 'Wear and Tear', 'Nabali ang bakal', NULL, 'medium', 'approved', 'awdawdawd', '2026-05-20 12:56:39', '2026-05-20 12:57:25', '2026-05-20 12:57:30', '2026-05-20 04:53:12'),
-(11, 2, 2, 'Wear and Tear', 'blablablabal', 'maintenance/maint_1779253611_52902525230f.jpg', 'medium', 'approved', 'Goods babu', '2026-05-20 13:15:17', '2026-05-20 13:15:46', '2026-05-20 13:15:58', '2026-05-20 05:06:51');
+(12, 7, 2, 'Wear and Tear', 'Di mo dagan ang treadmill', NULL, 'medium', 'approved', 'Okay na', '2026-05-20 16:43:54', '2026-05-20 16:44:06', '2026-05-20 16:44:13', '2026-05-20 08:43:27');
 
 -- --------------------------------------------------------
 
@@ -776,7 +862,7 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `user_id`, `membership_id`, `first_name`, `last_name`, `phone`, `address`, `date_of_birth`, `gender`, `emergency_contact`, `photo`, `status`, `created_at`, `updated_at`) VALUES
-(1, 6, '7749', 'Juan', 'dela Cruz', '09171234567', NULL, NULL, 'male', NULL, NULL, 'active', '2026-05-08 08:54:48', '2026-05-08 09:21:25');
+(9, 23, '2421', 'John Paul', 'Manulat', '09774233211', 'Bankas Heights', '2004-08-11', 'male', 'Niga man (09094773126) - Homie', NULL, 'active', '2026-05-20 09:02:00', '2026-05-20 09:38:06');
 
 -- --------------------------------------------------------
 
@@ -802,7 +888,7 @@ CREATE TABLE `memberships` (
 --
 
 INSERT INTO `memberships` (`id`, `member_id`, `plan_name`, `plan_type`, `start_date`, `expiry_date`, `amount`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Monthly Basic', 'monthly', '2026-05-08', '2026-06-08', 600.00, 'active', '2026-05-08 08:54:48', '2026-05-19 06:37:43');
+(3, 9, 'Monthly Basic', 'monthly', '2026-05-20', '2026-06-20', 999.00, 'active', '2026-05-20 09:02:00', '2026-05-20 09:03:36');
 
 -- --------------------------------------------------------
 
@@ -821,6 +907,14 @@ CREATE TABLE `membership_payments` (
   `status` enum('paid','pending','failed','refunded') DEFAULT 'paid',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `membership_payments`
+--
+
+INSERT INTO `membership_payments` (`id`, `membership_id`, `member_id`, `amount`, `payment_date`, `payment_method`, `reference_no`, `status`, `created_at`) VALUES
+(2, 3, 9, 999.00, '2026-05-20', 'paymongo', 'cs_4c3cf48bfb7c5a81a5a8d038', 'pending', '2026-05-20 09:02:03'),
+(3, 3, 9, 999.00, '2026-05-20', 'cash', NULL, 'paid', '2026-05-20 09:03:36');
 
 -- --------------------------------------------------------
 
@@ -843,8 +937,6 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `is_read`, `created_at`) VALUES
-(7, 2, 'system', 'New Membership Application', 'John Doe has submitted a membership application and is awaiting your review.', 1, '2026-05-17 13:48:12'),
-(10, 2, 'membership', 'Payment Confirmed', 'Payment for John Paul Manulat\'s Monthly Basic membership has been confirmed via PayMongo.', 1, '2026-05-17 13:56:17'),
 (11, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Pull-up Station\" has been verified by the owner and is now in progress.', 1, '2026-05-18 09:20:57'),
 (13, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Pull-up Station\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 1, '2026-05-18 09:33:37'),
 (15, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Pull-up Station\" has been reviewed and approved by the owner. The equipment is back in service.', 1, '2026-05-18 09:39:05'),
@@ -869,7 +961,24 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `message`, `is_re
 (37, 19, 'maintenance', 'New Maintenance Report', 'A new maintenance report was submitted for \"Bench Press Rack\" (Priority: medium, Issue: Wear and Tear) by Mark Santos. Please review and verify.', 0, '2026-05-20 05:06:51'),
 (38, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Bench Press Rack\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 0, '2026-05-20 05:15:17'),
 (39, 19, 'maintenance', 'Maintenance Work Completed — Awaiting Approval', 'The maintenance work for \"Bench Press Rack\" has been completed by staff. Please review and give final approval.', 0, '2026-05-20 05:15:46'),
-(40, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Bench Press Rack\" has been reviewed and approved by the owner. The equipment is back in service.', 0, '2026-05-20 05:15:58');
+(40, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Bench Press Rack\" has been reviewed and approved by the owner. The equipment is back in service.', 0, '2026-05-20 05:15:58'),
+(41, 19, 'system', 'New Gym Owner Application', 'Eileen Dela Cruz has submitted an application to become Gym Owner.', 0, '2026-05-20 08:34:18'),
+(42, 21, 'system', 'Gym Owner Application Approved', 'Congratulations! Your application to become Gym Owner has been approved by the Super Admin. Please log out and log back in to access your new privileges.', 1, '2026-05-20 08:35:18'),
+(43, 21, 'maintenance', 'New Maintenance Report', 'A new maintenance report was submitted for \"Mechanical Treadmill\" (Priority: medium, Issue: Wear and Tear) by Mark Santos. Please review and verify.', 0, '2026-05-20 08:43:27'),
+(44, 19, 'maintenance', 'New Maintenance Report', 'A new maintenance report was submitted for \"Mechanical Treadmill\" (Priority: medium, Issue: Wear and Tear) by Mark Santos. Please review and verify.', 0, '2026-05-20 08:43:27'),
+(45, 5, 'maintenance', 'Maintenance Report Verified', 'Your maintenance report for \"Mechanical Treadmill\" has been verified by the owner. Please proceed with the repair work and mark it complete when done.', 0, '2026-05-20 08:43:54'),
+(46, 21, 'maintenance', 'Maintenance Work Completed — Awaiting Approval', 'The maintenance work for \"Mechanical Treadmill\" has been completed by staff. Please review and give final approval.', 0, '2026-05-20 08:44:06'),
+(47, 19, 'maintenance', 'Maintenance Work Completed — Awaiting Approval', 'The maintenance work for \"Mechanical Treadmill\" has been completed by staff. Please review and give final approval.', 0, '2026-05-20 08:44:06'),
+(48, 5, 'maintenance', 'Maintenance Report Approved', 'The maintenance report for \"Mechanical Treadmill\" has been reviewed and approved by the owner. The equipment is back in service.', 0, '2026-05-20 08:44:13'),
+(49, 21, 'system', 'New Role Application', 'Janpol has applied for the role: Administrative Officer', 1, '2026-05-20 08:48:24'),
+(50, 19, 'system', 'New Role Application', 'Janpol has applied for the role: Administrative Officer', 0, '2026-05-20 08:48:24'),
+(51, 22, 'system', 'Role Application Approved', 'Your application for the role \"Administrative Officer\" has been approved! Please log out and log back in to access your new features.', 1, '2026-05-20 08:48:52'),
+(52, 3, '', 'New Services Submitted for Campaign', 'Eileen Dela Cruz has submitted 1 service(s)/rate(s) for your review. You can now create a campaign featuring these services.', 0, '2026-05-20 08:53:19'),
+(53, 21, '', 'Campaign Posted', 'Marketing Staff has created and posted the campaign \"Student Promo\" featuring your services.', 0, '2026-05-20 08:55:30'),
+(54, 19, '', 'Campaign Posted', 'Marketing Staff has created and posted the campaign \"Student Promo\" featuring your services.', 0, '2026-05-20 08:55:30'),
+(55, 22, 'system', 'New Membership Application', 'John Paul T. Manulat has submitted a membership application and is awaiting your review.', 1, '2026-05-20 09:00:12'),
+(56, 23, 'membership', 'Membership Application Approved', 'Your membership application has been approved by the Administrative Office! Please go to \"My Membership\" to submit your payment and activate your membership.', 1, '2026-05-20 09:00:37'),
+(57, 23, 'membership', 'Membership Approved', 'Your Monthly Basic membership has been approved!', 1, '2026-05-20 09:03:36');
 
 -- --------------------------------------------------------
 
@@ -917,6 +1026,14 @@ CREATE TABLE `operational_expenses` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `operational_expenses`
+--
+
+INSERT INTO `operational_expenses` (`id`, `recorded_by`, `budget_plan_id`, `category`, `description`, `amount`, `expense_date`, `payment_method`, `reference_no`, `receipt_file`, `status`, `approved_by`, `approved_at`, `notes`, `created_at`, `updated_at`) VALUES
+(6, 21, 4, 'Rent', 'Monthly Electricity Bill', 2999.99, '2026-05-20', 'cash', 'OR-2026-02', '96a012198747c46e9f377beffaecefd6.jpg', 'approved', 21, '2026-05-20 16:39:11', '', '2026-05-20 08:39:05', '2026-05-20 08:39:11'),
+(7, 21, 4, 'Essentials', 'Energy Drinks', 1000.00, '2026-05-20', 'cash', 'OR-2026-02', '506cb1e82518cc10eac9cf2a64cfeaba.jpg', 'approved', 21, '2026-05-20 16:41:08', '', '2026-05-20 08:40:42', '2026-05-20 08:41:08');
+
 -- --------------------------------------------------------
 
 --
@@ -940,20 +1057,11 @@ CREATE TABLE `otp_tokens` (
 
 INSERT INTO `otp_tokens` (`id`, `user_id`, `token`, `purpose`, `attempts`, `expires_at`, `used_at`, `created_at`) VALUES
 (1, 5, '807227', 'login', 0, '2026-05-08 19:32:17', '2026-05-13 15:14:17', '2026-05-08 11:22:17'),
-(12, 2, '237507', 'login', 0, '2026-05-08 19:55:53', '2026-05-08 19:46:09', '2026-05-08 11:45:53'),
-(16, 2, '108510', 'login', 0, '2026-05-13 14:17:16', '2026-05-13 14:07:56', '2026-05-13 06:07:16'),
-(17, 2, '157145', 'login', 0, '2026-05-13 14:17:56', '2026-05-13 14:08:07', '2026-05-13 06:07:56'),
 (19, 3, '277034', 'login', 0, '2026-05-13 14:47:48', '2026-05-13 14:37:59', '2026-05-13 06:37:48'),
 (20, 4, '387318', 'login', 0, '2026-05-13 14:49:32', '2026-05-13 14:39:44', '2026-05-13 06:39:32'),
 (21, 5, '949902', 'login', 0, '2026-05-13 15:24:17', '2026-05-13 15:14:27', '2026-05-13 07:14:17'),
 (26, 5, '496228', 'login', 0, '2026-05-15 15:33:45', '2026-05-15 15:23:57', '2026-05-15 07:23:45'),
 (29, 5, '090805', 'login', 0, '2026-05-15 17:28:47', '2026-05-15 17:18:56', '2026-05-15 09:18:47'),
-(31, 2, '709245', 'login', 0, '2026-05-17 18:27:32', '2026-05-17 18:17:41', '2026-05-17 10:17:32'),
-(35, 2, '725601', 'login', 0, '2026-05-17 19:29:59', '2026-05-17 19:20:06', '2026-05-17 11:19:59'),
-(36, 2, '143409', 'login', 0, '2026-05-17 21:55:06', '2026-05-17 21:45:35', '2026-05-17 13:45:06'),
-(38, 2, '952296', 'login', 0, '2026-05-17 21:55:35', '2026-05-17 21:47:06', '2026-05-17 13:45:35'),
-(40, 2, '029831', 'login', 0, '2026-05-17 21:57:06', '2026-05-17 21:47:14', '2026-05-17 13:47:06'),
-(43, 2, '391136', 'login', 0, '2026-05-18 17:15:50', '2026-05-18 17:06:01', '2026-05-18 09:05:50'),
 (44, 5, '452755', 'login', 0, '2026-05-18 17:22:26', '2026-05-18 17:12:37', '2026-05-18 09:12:26'),
 (46, 3, '002421', 'login', 0, '2026-05-18 17:52:06', '2026-05-18 17:42:17', '2026-05-18 09:42:06'),
 (50, 5, '940565', 'login', 0, '2026-05-18 18:47:50', '2026-05-18 18:37:58', '2026-05-18 10:37:50'),
@@ -967,7 +1075,22 @@ INSERT INTO `otp_tokens` (`id`, `user_id`, `token`, `purpose`, `attempts`, `expi
 (60, 3, '329030', 'login', 0, '2026-05-19 15:40:53', '2026-05-19 15:31:17', '2026-05-19 07:30:53'),
 (61, 5, '091364', 'login', 0, '2026-05-20 11:48:57', '2026-05-20 11:39:43', '2026-05-20 03:38:57'),
 (62, 19, '936946', 'login', 0, '2026-05-20 12:29:59', '2026-05-20 12:20:57', '2026-05-20 04:19:59'),
-(63, 5, '444630', 'login', 0, '2026-05-20 13:00:41', '2026-05-20 12:51:18', '2026-05-20 04:50:41');
+(63, 5, '444630', 'login', 0, '2026-05-20 13:00:41', '2026-05-20 12:51:18', '2026-05-20 04:50:41'),
+(64, 21, '113430', 'register', 0, '2026-05-20 16:43:06', '2026-05-20 16:33:23', '2026-05-20 08:33:06'),
+(65, 20, '920809', 'login', 0, '2026-05-20 16:44:43', '2026-05-20 16:35:01', '2026-05-20 08:34:43'),
+(66, 5, '701754', 'login', 0, '2026-05-20 16:45:35', '2026-05-20 16:35:55', '2026-05-20 08:35:35'),
+(67, 21, '559601', 'login', 0, '2026-05-20 16:46:15', '2026-05-20 16:36:30', '2026-05-20 08:36:15'),
+(68, 22, '251446', 'register', 0, '2026-05-20 16:55:33', '2026-05-20 16:45:52', '2026-05-20 08:45:33'),
+(69, 22, '185910', 'login', 0, '2026-05-20 16:59:56', '2026-05-20 16:50:14', '2026-05-20 08:49:56'),
+(70, 3, '820548', 'login', 0, '2026-05-20 17:01:58', '2026-05-20 16:52:15', '2026-05-20 08:51:58'),
+(71, 22, '415413', 'login', 0, '2026-05-20 17:06:40', '2026-05-20 16:56:54', '2026-05-20 08:56:40'),
+(72, 23, '118996', 'register', 0, '2026-05-20 17:07:53', '2026-05-20 16:58:09', '2026-05-20 08:57:53'),
+(73, 23, '980590', 'login', 0, '2026-05-20 17:11:22', '2026-05-20 17:01:40', '2026-05-20 09:01:22'),
+(74, 23, '141318', 'login', 0, '2026-05-20 17:12:49', '2026-05-20 17:03:17', '2026-05-20 09:02:49'),
+(75, 23, '123504', 'login', 0, '2026-05-20 17:14:31', '2026-05-20 17:04:51', '2026-05-20 09:04:31'),
+(76, 23, '575259', 'login', 0, '2026-05-20 17:20:17', '2026-05-20 17:10:41', '2026-05-20 09:10:17'),
+(77, 23, '803150', 'login', 0, '2026-05-20 17:25:11', '2026-05-20 17:15:36', '2026-05-20 09:15:11'),
+(78, 23, '144034', 'login', 0, '2026-05-20 17:50:00', '2026-05-20 17:40:16', '2026-05-20 09:40:00');
 
 -- --------------------------------------------------------
 
@@ -1035,6 +1158,14 @@ CREATE TABLE `role_applications` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `role_applications`
+--
+
+INSERT INTO `role_applications` (`id`, `user_id`, `requested_role`, `reason`, `membership_form_data`, `gym_id`, `status`, `reviewed_by`, `reviewed_at`, `review_notes`, `created_at`, `updated_at`) VALUES
+(4, 22, 'admin', 'Casher Ra okay na', NULL, 5, 'approved', 21, '2026-05-20 16:48:52', '', '2026-05-20 08:48:24', '2026-05-20 08:48:52'),
+(5, 23, 'member', 'Membership application submitted via membership form.', '{\"first_name\":\"John Paul\",\"last_name\":\"Manulat\",\"date_of_birth\":\"2004-08-11\",\"gender\":\"male\",\"phone\":\"09774233211\",\"address\":\"Bankas Heights\",\"emergency_name\":\"Niga man\",\"emergency_phone\":\"09094773126\",\"emergency_relation\":\"Homie\",\"plan_preference\":\"monthly\",\"health_conditions\":\"\",\"fitness_goals\":\"Build masil\"}', NULL, 'approved', 22, '2026-05-20 17:00:37', '', '2026-05-20 09:00:12', '2026-05-20 09:00:37');
+
 -- --------------------------------------------------------
 
 --
@@ -1051,6 +1182,13 @@ CREATE TABLE `role_application_documents` (
   `file_type` varchar(100) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `role_application_documents`
+--
+
+INSERT INTO `role_application_documents` (`id`, `application_id`, `document_type`, `file_name`, `file_original`, `file_size`, `file_type`, `created_at`) VALUES
+(1, 4, 'resume', '68cfdcde8662cdc2313e0fb3d5d05014.pdf', 'MOU CAP (1).docx.pdf', 111024, 'application/pdf', '2026-05-20 08:48:24');
 
 -- --------------------------------------------------------
 
@@ -1112,13 +1250,14 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `username`, `google_id`, `avatar_url`, `auth_provider`, `password`, `role`, `status`, `last_login`, `created_at`, `updated_at`) VALUES
-(2, 'Admin Officer', 'admin@gobuff.com', 'admin', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'admin', 'active', '2026-05-18 17:06:01', '2026-05-08 08:54:48', '2026-05-18 09:06:01'),
-(3, 'Marketing Staff', 'marketing@gobuff.com', 'marketing', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'marketing', 'active', '2026-05-19 15:31:17', '2026-05-08 08:54:48', '2026-05-19 07:31:17'),
+(3, 'Marketing Staff', 'marketing@gobuff.com', 'marketing', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'marketing', 'active', '2026-05-20 16:52:15', '2026-05-08 08:54:48', '2026-05-20 08:52:15'),
 (4, 'John Trainer', 'trainer@gobuff.com', 'trainer1', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'trainer', 'active', '2026-05-13 14:39:44', '2026-05-08 08:54:48', '2026-05-13 06:39:44'),
-(5, 'Maintenance Head', 'maintenance@gobuff.com', 'maintenance', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'maintenance', 'active', '2026-05-20 12:51:18', '2026-05-08 08:54:48', '2026-05-20 04:51:18'),
-(6, 'Juan dela Cruz', 'member@gobuff.com', 'member1', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'member', 'active', NULL, '2026-05-08 08:54:48', '2026-05-08 08:54:48'),
+(5, 'Maintenance Head', 'maintenance@gobuff.com', 'maintenance', NULL, NULL, 'local', '$2y$12$xJ/XSwQhmE7ZtFdA5GxLW.UPtj5umbBy2GOXyoRkkInS.xNN.ihlS', 'maintenance', 'active', '2026-05-20 16:35:55', '2026-05-08 08:54:48', '2026-05-20 08:35:55'),
 (19, 'John Paul Manulat', 'anzed333@gmail.com', 'Mr. Owner Pogi', NULL, NULL, 'local', '$2y$12$WHSDyqFon8JsrgDrrvlz4eUX6nibie7vV8.aAyW94rXwyct6s82Yy', 'gym_owner', 'active', '2026-05-20 12:20:57', '2026-05-19 06:31:37', '2026-05-20 04:20:57'),
-(20, 'John Doe', 'jpogs565@gmail.com', 'Jampol', NULL, NULL, 'local', '$2y$12$bIUtxO3Cg.IlkTz9whGNXevsceSh7Mr2QVsvXzCQkjtulXXMDrBV.', 'super_admin', 'active', '2026-05-19 15:28:40', '2026-05-19 06:40:58', '2026-05-19 07:28:40');
+(20, 'John Doe', 'jpogs565@gmail.com', 'Jampol', NULL, NULL, 'local', '$2y$12$bIUtxO3Cg.IlkTz9whGNXevsceSh7Mr2QVsvXzCQkjtulXXMDrBV.', 'super_admin', 'active', '2026-05-20 16:35:01', '2026-05-19 06:40:58', '2026-05-20 08:35:01'),
+(21, 'Eileen Dela Cruz', 'owner@gobuff.com', 'Owner', NULL, NULL, 'local', '$2y$12$oDg0WYrNrM0S2WsJsdWayereG5gx08Pdm5megEFr0V/OpOI2BteWW', 'gym_owner', 'active', '2026-05-20 16:36:30', '2026-05-20 08:33:06', '2026-05-20 08:36:30'),
+(22, 'Janpol', 'admin@gobuff.com', 'Admin Officer', NULL, NULL, 'local', '$2y$12$FuQrjRaqxO/1pNMN9wtuEeZbKrxndoGhcnGcKfUB1BT9JYPVIOi7.', 'admin', 'active', '2026-05-20 16:56:54', '2026-05-20 08:45:33', '2026-05-20 08:56:54'),
+(23, 'John Paul T. Manulat', 'member@gobuff.com', 'Member Pol', NULL, NULL, 'local', '$2y$12$4OV8fYlXhSfz4E60XQ0ceOZd4mupzJHMwefkei2Pp1.R8oL4hB2MW', 'member', 'active', '2026-05-20 17:40:16', '2026-05-20 08:57:53', '2026-05-20 09:40:16');
 
 -- --------------------------------------------------------
 
@@ -1463,31 +1602,31 @@ ALTER TABLE `work_schedules`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=213;
 
 --
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `budget_items`
 --
 ALTER TABLE `budget_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `budget_plans`
 --
 ALTER TABLE `budget_plans`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `campaigns`
 --
 ALTER TABLE `campaigns`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `campaign_participations`
@@ -1511,13 +1650,13 @@ ALTER TABLE `dietary_logs`
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `equipment`
 --
 ALTER TABLE `equipment`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `fitness_plans`
@@ -1535,19 +1674,19 @@ ALTER TABLE `gyms`
 -- AUTO_INCREMENT for table `gym_owner_applications`
 --
 ALTER TABLE `gym_owner_applications`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `gym_owner_application_documents`
 --
 ALTER TABLE `gym_owner_application_documents`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `gym_services`
 --
 ALTER TABLE `gym_services`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `legal_documents`
@@ -1559,37 +1698,37 @@ ALTER TABLE `legal_documents`
 -- AUTO_INCREMENT for table `login_logs`
 --
 ALTER TABLE `login_logs`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
 
 --
 -- AUTO_INCREMENT for table `maintenance_reports`
 --
 ALTER TABLE `maintenance_reports`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `memberships`
 --
 ALTER TABLE `memberships`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `membership_payments`
 --
 ALTER TABLE `membership_payments`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `nutrition_plans`
@@ -1601,13 +1740,13 @@ ALTER TABLE `nutrition_plans`
 -- AUTO_INCREMENT for table `operational_expenses`
 --
 ALTER TABLE `operational_expenses`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `otp_tokens`
 --
 ALTER TABLE `otp_tokens`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `progress_tracking`
@@ -1625,13 +1764,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `role_applications`
 --
 ALTER TABLE `role_applications`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `role_application_documents`
 --
 ALTER TABLE `role_application_documents`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `schedules`
@@ -1649,7 +1788,7 @@ ALTER TABLE `trainer_bookings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `workout_activities`

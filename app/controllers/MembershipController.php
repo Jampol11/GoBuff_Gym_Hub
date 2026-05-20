@@ -106,13 +106,26 @@ class MembershipController extends Controller
             );
             $stmt->execute([$id, $membership['member_id'], $membership['amount']]);
 
+            // Activate the member record and assign the 'member' role
+            $memberModel = new Member();
+            $member      = $memberModel->findById($membership['member_id']);
+            if ($member) {
+                $memberModel->update($member['id'], ['status' => 'active']);
+
+                if (!empty($member['user_id'])) {
+                    $userModel = new User();
+                    $userModel->update((int)$member['user_id'], [
+                        'role'       => 'member',
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ]);
+                }
+            }
+
             // Notify member
             $notifModel = new Notification();
-            $memberModel = new Member();
-            $member = $memberModel->findById($membership['member_id']);
-            if ($member) {
+            if ($member && !empty($member['user_id'])) {
                 $notifModel->createNotification(
-                    $member['user_id'] ?? null,
+                    $member['user_id'],
                     'membership',
                     'Membership Approved',
                     "Your {$membership['plan_name']} membership has been approved!"
@@ -413,8 +426,14 @@ class MembershipController extends Controller
 
         // Already activated (e.g. webhook fired first)
         if ($membership['status'] === 'active') {
+            // Still refresh the session in case the role wasn't updated in the session yet
+            $memberModel = new Member();
+            $member = $memberModel->findById($membership['member_id']);
+            if ($member && !empty($member['user_id']) && Auth::id() === (int)$member['user_id']) {
+                Auth::refreshUser((int)$member['user_id']);
+            }
             $this->flash('success', 'Your membership is already active. Welcome to GoBuff!');
-            $this->redirect('/my-membership');
+            $this->redirect('/dashboard');
         }
 
         // Fetch the PayMongo session ID from the payment record
@@ -444,14 +463,14 @@ class MembershipController extends Controller
 
         if ($verified) {
             $this->activateMembership($membershipId, $membership);
-            $this->flash('success', 'Payment confirmed! Your membership is now active. Please log out and log back in to access all member features.');
+            $this->flash('success', 'Payment confirmed! Your membership is now active. Welcome to GoBuff!');
         } else {
             // PayMongo confirmed the redirect — treat as paid even if API check is slow
             $this->activateMembership($membershipId, $membership);
-            $this->flash('success', 'Payment received! Your membership is being activated. Please log out and log back in.');
+            $this->flash('success', 'Payment received! Your membership is now active. Welcome to GoBuff!');
         }
 
-        $this->redirect('/my-membership');
+        $this->redirect('/dashboard');
     }
 
     /**
@@ -548,38 +567,29 @@ class MembershipController extends Controller
         )->execute([$membershipId]);
 
         $memberModel = new Member();
+        $userModel   = new User();
         $member      = $memberModel->findById($membership['member_id']);
+
+        // Resolve the user_id from the member record
+        $userId = $member['user_id'] ?? null;
 
         // 3. If member record doesn't exist yet, create it from the application form data
         if (!$member) {
-            // Fetch the approved role application to get form data
-            $raModel     = new RoleApplication();
-            $approvedApp = $raModel->query(
-                "SELECT ra.*, u.name FROM role_applications ra
-                 JOIN users u ON u.id = ra.user_id
-                 WHERE ra.requested_role = 'member' AND ra.status = 'approved'
-                   AND ra.user_id = (
-                       SELECT user_id FROM members WHERE id = ? LIMIT 1
-                   )
-                 ORDER BY ra.created_at DESC LIMIT 1",
-                [$membership['member_id']]
-            )->fetch();
-
-            // Fallback: look up by membership record's member_id → user_id
-            $userModel = new User();
-            $existingMember = $memberModel->findById($membership['member_id']);
-            $userId = $existingMember['user_id'] ?? null;
-
-            if (!$userId) {
-                // Try to get user_id from the membership record via member
-                $row = $db->query(
-                    "SELECT user_id FROM members WHERE id = {$membership['member_id']} LIMIT 1"
-                )->fetch();
-                $userId = $row['user_id'] ?? null;
-            }
+            // Get user_id directly from the members table (the record was created during checkout)
+            $row = $db->prepare("SELECT user_id FROM members WHERE id = ? LIMIT 1");
+            $row->execute([$membership['member_id']]);
+            $userId = $row->fetchColumn() ?: null;
 
             if ($userId) {
-                $user      = $userModel->findById($userId);
+                $user        = $userModel->findById($userId);
+                $raModel     = new RoleApplication();
+                $approvedApp = $raModel->query(
+                    "SELECT * FROM role_applications
+                     WHERE user_id = ? AND requested_role = 'member' AND status = 'approved'
+                     ORDER BY created_at DESC LIMIT 1",
+                    [$userId]
+                )->fetch();
+
                 $formData  = [];
                 if ($approvedApp && !empty($approvedApp['membership_form_data'])) {
                     $formData = json_decode($approvedApp['membership_form_data'], true) ?? [];
@@ -589,7 +599,7 @@ class MembershipController extends Controller
                 $emergencyContact = null;
                 if (!empty($formData['emergency_name'])) {
                     $emergencyContact = $formData['emergency_name'];
-                    if (!empty($formData['emergency_phone']))   $emergencyContact .= ' (' . $formData['emergency_phone'] . ')';
+                    if (!empty($formData['emergency_phone']))    $emergencyContact .= ' (' . $formData['emergency_phone'] . ')';
                     if (!empty($formData['emergency_relation'])) $emergencyContact .= ' - ' . $formData['emergency_relation'];
                 }
 
@@ -607,29 +617,27 @@ class MembershipController extends Controller
                     'created_at'        => date('Y-m-d H:i:s'),
                 ]);
 
-                // 4. Assign 'member' role to the user
-                $userModel->update($userId, [
-                    'role'       => 'member',
-                    'updated_at' => date('Y-m-d H:i:s'),
-                ]);
-
                 $member = $memberModel->getMemberByUserId($userId);
             }
         } else {
-            // Member record exists — just make sure the user role is set
-            if (!empty($member['user_id'])) {
-                $userModel = new User();
-                $user = $userModel->findById($member['user_id']);
-                if ($user && $user['role'] !== 'member') {
-                    $userModel->update($member['user_id'], [
-                        'role'       => 'member',
-                        'updated_at' => date('Y-m-d H:i:s'),
-                    ]);
-                }
+            // Member record exists — activate it
+            $memberModel->update($member['id'], ['status' => 'active']);
+        }
+
+        // 4. Always assign 'member' role — unconditionally, regardless of current DB value
+        if ($userId) {
+            $userModel->update((int)$userId, [
+                'role'       => 'member',
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+
+            // 5. Refresh the session immediately so the role change takes effect without re-login
+            if (Auth::id() === (int)$userId) {
+                Auth::refreshUser((int)$userId);
             }
         }
 
-        // 5. Notify the member
+        // 6. Notify the member
         if ($member && !empty($member['user_id'])) {
             $notifModel = new Notification();
             $notifModel->createNotification(
@@ -638,13 +646,11 @@ class MembershipController extends Controller
                 'Membership Activated',
                 "Your {$membership['plan_name']} membership is now active! " .
                 "Your Membership ID is: {$member['membership_id']}. " .
-                "Valid until " . date('F d, Y', strtotime($membership['expiry_date'])) . ". " .
-                "Please log out and log back in to access all member features."
+                "Valid until " . date('F d, Y', strtotime($membership['expiry_date'])) . "."
             );
         }
 
-        // 6. Notify admins
-        $userModel  = new User();
+        // 7. Notify admins
         $notifModel = new Notification();
         $admins     = $userModel->getUsersByRole('admin');
         $memberName = ($member['first_name'] ?? '') . ' ' . ($member['last_name'] ?? '');
